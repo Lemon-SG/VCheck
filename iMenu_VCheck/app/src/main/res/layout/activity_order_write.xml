@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/topbar"
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_orderWrite_mobile"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:singleLine="true"
+                android:textColorHint="@color/gray_9c"
+                android:hint="手机号码"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_orderWrite_getVerifyCode"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:padding="5dp"
+                android:layout_marginLeft="10dp"
+                android:text="获取验证码"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:background="@drawable/reg_veriy_bg_gray_shape"
+                android:textColor="@color/gray_87"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/et_orderWrite_verifyCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="验证码"
+            android:singleLine="true"
+            android:textColorHint="@color/gray_9c"
+            android:padding="10dp"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_buy_now"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFF9"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_price_tishi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="合计:"
+                android:layout_marginRight="3dp"
+                android:layout_alignBottom="@+id/tv_price"
+                android:textColor="@color/orange_red"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="88"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/tv_price_tishi"
+                android:layout_centerVertical="true"
+                android:textSize="20sp"
+                android:textColor="@color/orange_red"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="元"
+                android:layout_toRightOf="@+id/tv_price"
+                android:layout_alignBottom="@+id/tv_price"
+                android:textSize="16sp"
+                android:layout_marginLeft="3dp"
+                android:textColor="@color/orange_red"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_orderWrite_submitOrder"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:padding="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="提交订单"
+            android:background="@color/orange_red"/>
+    </LinearLayout>
+
+</RelativeLayout>

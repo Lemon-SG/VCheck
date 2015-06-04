@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/et_newPass"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:singleLine="true"
+        android:inputType="textPassword"
+        android:textColorHint="@color/gray_9c"
+        android:hint="新密码"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/et_affirm_newPass"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:singleLine="true"
+        android:inputType="textPassword"
+        android:textColorHint="@color/gray_9c"
+        android:hint="确认新密码"
+        android:textSize="16sp"/>
+</LinearLayout>

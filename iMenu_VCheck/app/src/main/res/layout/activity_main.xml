@@ -1,0 +1,66 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:background="@color/top_black">
+
+        <LinearLayout
+            android:id="@+id/ll_choose_city"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:text="iMenu"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/white"
+                android:drawableRight="@drawable/triangle_down"
+                android:drawablePadding="3dp"
+                android:text="西安"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_mine"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:padding="10dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_member"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <!--/** 只留一个分类，并隐藏*/-->
+        <!--<cc.siyo.imenu.imenu_enjoy.view.viewpager_indicator.TabPageIndicator-->
+            <!--android:id="@+id/indicator"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_width="fill_parent"/>-->
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/white"/>
+    </LinearLayout>
+
+</LinearLayout>

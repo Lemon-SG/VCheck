@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red">#900</color>
+    <color name="blue">#49b8ef</color>
+    <color name="white">#FFF</color>
+    <color name="black">#000</color>
+    <color name="gray_e6">#E6E6E6</color>
+    <color name="gray_87">#878787</color>
+    <color name="gray_eee">#eee</color>
+    <color name="gray_b3">#b3b3b3</color>
+    <color name="gray_9c">#9C969C</color>
+    <color name="orange">#ffff8800</color>
+    <color name="orange_red">#FF5A00</color>
+    <color name="gray_ddd">#ddd</color>
+    <color name="green">#92b478</color>
+    <color name="dark_red">#C00000</color>
+    <color name="transparent_black20">#a0000000</color>
+    
+    <color name="num1">#111</color>
+    <color name="num2">#222</color>
+    <color name="num3">#333</color>
+    <color name="num4">#444</color>
+    <color name="num5">#555</color>
+    <color name="num6">#666</color>
+    <color name="num7">#777</color>
+    <color name="num8">#888</color>
+    <color name="num9">#999</color>
+    <color name="org_1">#e07e27</color>
+    <color name="org_2">#f48f00</color>
+    <color name="green_1">#39977d</color>
+    <color name="green_2">#65b9a2</color>
+    <color name="blue_1">#46699f</color>
+    <color name="blue_2">#6b8fc9</color>
+    <color name="red_1">#9e3e3f</color>
+    <color name="red_2">#ca5c5d</color>
+    
+    <color name="saffron">#F4B63E</color>
+    <color name="eggplant">#663D4E</color>
+    <color name="sienna">#EB6460</color>
+    
+    <color name="viewfinder_frame">#ff000000</color>
+  	<color name="viewfinder_laser">#ffff0000</color>
+  	<color name="viewfinder_mask">#60000000</color>
+  	<color name="result_image_border">#ffffffff</color>
+  	<color name="result_minor_text">#ffc0c0c0</color>
+  	<color name="result_points">#c000ff00</color>
+  	<color name="result_text">#ffffffff</color>
+  	<color name="result_view">#b0000000</color>
+  	<color name="possible_result_points">#c0ffff00</color>
+
+    <color name="top_black">#1A1A1A</color>
+    <color name="driver_up">#27292B</color>
+    <color name="driver_down">#46484A</color>
+</resources>

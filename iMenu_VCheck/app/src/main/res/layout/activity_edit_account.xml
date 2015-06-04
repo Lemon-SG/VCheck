@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <!--修改邮箱-->
+    <LinearLayout
+        android:id="@+id/ll_edit_email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/et_email"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:textColorHint="@color/gray_9c"
+            android:hint="邮箱"
+            android:singleLine="true"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/et_affirm_eamil"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:textColorHint="@color/gray_9c"
+            android:hint="确认邮箱"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/gray_87"
+            android:text="邮箱设置成功后不可修改"
+            android:padding="15dp"/>
+    </LinearLayout>
+
+    <!--修改昵称-->
+    <LinearLayout
+        android:id="@+id/ll_edit_nickname"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/et_nickname"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:textColorHint="@color/gray_9c"
+            android:hint="昵称"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <!--修改密码-->
+    <LinearLayout
+        android:id="@+id/ll_edit_pass"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <EditText
+            android:id="@+id/et_oldPass"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:textColorHint="@color/gray_9c"
+            android:hint="旧密码"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/et_newPass"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:textColorHint="@color/gray_9c"
+            android:hint="新密码"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/et_affirm_newPass"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:textColorHint="@color/gray_9c"
+            android:hint="确认新密码"
+            android:textSize="16sp"/>
+    </LinearLayout>
+</LinearLayout>
