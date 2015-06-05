@@ -1,6 +1,5 @@
 package cc.siyo.iMenu.VCheck.adapter;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +76,7 @@ public abstract class AbsAdapter<T> extends BaseAdapter {
 		
 		if(getItem(position)!=null)
 		{
-			vh.updateDatas(getItem(position), position);
+			vh.updateData(getItem(position), position);
 			vh.doOthers(getItem(position), position);
 		}
 		
@@ -86,7 +85,7 @@ public abstract class AbsAdapter<T> extends BaseAdapter {
 	
 	public static interface ViewHolder<T>{
 		public void initViews(View v, int position);
-		public void updateDatas(T t, int position);
+		public void updateData(T t, int position);
 		public void doOthers(T t, int position);
 	}
 

@@ -9,7 +9,7 @@ import cc.siyo.iMenu.VCheck.model.Region;
 
 /**
  * Created by Lemon on 2015/5/25.
- * Desc:
+ * Desc:城市列表适配器
  */
 public class RegionAdapter extends AbsAdapter<Region>{
 
@@ -35,7 +35,7 @@ public class RegionAdapter extends AbsAdapter<Region>{
         }
 
         @Override
-        public void updateDatas(Region region, int position) {
+        public void updateData(Region region, int position) {
             tv_city.setText(region.region_name);
         }
 

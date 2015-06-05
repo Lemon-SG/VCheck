@@ -4,8 +4,7 @@ import org.json.JSONObject;
 
 /**
  * 页数实体
- * 
- * @author Created by ShangGuan on 15-3-19
+ * Created by Lemon on 15-3-19
  */
 public class PageInfo extends BaseModel<PageInfo>{
 

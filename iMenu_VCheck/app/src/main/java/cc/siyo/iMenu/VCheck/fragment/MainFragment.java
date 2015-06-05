@@ -6,10 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.activity.DetailActivity;
 import cc.siyo.iMenu.VCheck.adapter.MainAdapter;
@@ -20,8 +18,8 @@ import cc.siyo.iMenu.VCheck.model.Menu;
  * Desc:主页界面
  */
 public class MainFragment extends BaseFragment{
-    private static final String TAG = "StoreFragment";
 
+    private static final String TAG = "StoreFragment";
     /** LIST VIEW*/
     private ListView store_list;
     /** Adapter*/
@@ -55,7 +53,7 @@ public class MainFragment extends BaseFragment{
         makeData();
         mineAdapter = new MainAdapter(getActivity(), R.layout.list_item_store);
         store_list.setAdapter(mineAdapter);
-        mineAdapter.getDataList().clear();;
+        mineAdapter.getDataList().clear();
         mineAdapter.getDataList().addAll(menuList);
         mineAdapter.notifyDataSetChanged();
     }
@@ -65,7 +63,7 @@ public class MainFragment extends BaseFragment{
         menuList = new ArrayList<>();
         for (int i = 0; i < 10; i ++){
             Menu menu = new Menu();
-            menu.setText("13款烤鸟 刺身打造东瀛风情宵夜 千和日料双人菜单" + i);
+//            menu.setText("13款烤鸟 刺身打造东瀛风情宵夜 千和日料双人菜单" + i);
             menuList.add(menu);
         }
     }

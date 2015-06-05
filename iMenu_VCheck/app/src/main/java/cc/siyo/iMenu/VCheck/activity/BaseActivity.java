@@ -322,6 +322,18 @@ public abstract class BaseActivity extends FinalActivity {
         return jsonStaus;
     }
 
+    /** 传送页数封装*/
+    public JSONObject makeJsonPageText(int page, int count){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("page", page + "");
+            json.put("count", count + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
     /** 本类存储至本地属性*/
     public void savePreferences(String memberId, String token){
         PreferencesUtils.putString(this, Constant.KEY_TOKEN, token);

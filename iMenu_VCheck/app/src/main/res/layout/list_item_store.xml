@@ -32,13 +32,60 @@
         android:textSize="15sp"
         android:textColor="@color/gray_b3"
         android:text="沪上难得的日料深夜食堂"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginTop="5dp"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/tv_special_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/orange_red"
+            android:text="168"/>
+
+        <TextView
+            android:id="@+id/tv_price_menu_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_special_price"
+            android:textColor="@color/orange_red"
+            android:text="元/份"/>
+
+        <TextView
+            android:id="@+id/tv_original_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/tv_price_menu_unit"
+            android:layout_centerVertical="true"
+            android:textColor="@color/gray_b3"
+            android:text="198元"/>
+        <TextView
+            android:id="@+id/tv_menu_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/orange_red"
+            android:text="仅剩6份"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/driver"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:gravity="center_vertical"
         android:orientation="vertical">
 

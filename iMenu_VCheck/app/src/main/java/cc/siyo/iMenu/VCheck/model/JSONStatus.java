@@ -6,8 +6,7 @@ import org.json.JSONObject;
 
 /**
  * 返回数据状态实体
- * 
- * @author Created by ShangGuan on 15-03-04.
+ * Created by Lemon on 15-03-04.
  */
 @SuppressWarnings("rawtypes")
 public class JSONStatus extends BaseModel implements Serializable{
