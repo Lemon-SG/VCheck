@@ -22,12 +22,18 @@ public class Article extends BaseModel<Article>{
     public String summary;
     /** 文章日期*/
     public String article_date;
-    /** 解析时直接取出ID：菜单ID*/
-    public String menu_id;
-    /** 解析时直接取出ID：商家ID*/
-    public String store_id;
-    /** 解析时直接取出ID：会员ID*/
-    public String member_id;
+//    /** 解析时直接取出ID：菜单ID*/
+//    public String menu_id;
+//    /** 解析时直接取出ID：商家ID*/
+//    public String store_id;
+//    /** 解析时直接取出ID：会员ID*/
+//    public String member_id;
+    /** 菜单实体*/
+    public Menu menu_info;
+    /** 商家实体*/
+    public Store store_info;
+    /** 会员实体*/
+    public Member member_info;
     /** 图片实体类*/
     public Image article_image;
     /** 提示实体类*/
@@ -52,15 +58,18 @@ public class Article extends BaseModel<Article>{
             sub_title = jsonObject.optString("sub_title");
             summary = jsonObject.optString("summary");
             article_date = jsonObject.optString("article_date");
-            if(jsonObject.optJSONObject("menu_info") != null && jsonObject.optJSONObject("menu_info").length() > 0){
-                menu_id = jsonObject.optJSONObject("menu_info").optString("menu_id");
-            }
-            if(jsonObject.optJSONObject("store_info") != null && jsonObject.optJSONObject("store_info").length() > 0){
-                store_id = jsonObject.optJSONObject("store_info").optString("store_id");
-            }
-            if(jsonObject.optJSONObject("member_info") != null && jsonObject.optJSONObject("member_info").length() > 0){
-                member_id = jsonObject.optJSONObject("member_info").optString("member_id");
-            }
+//            if(jsonObject.optJSONObject("menu_info") != null && jsonObject.optJSONObject("menu_info").length() > 0){
+//                menu_id = jsonObject.optJSONObject("menu_info").optString("menu_id");
+//            }
+//            if(jsonObject.optJSONObject("store_info") != null && jsonObject.optJSONObject("store_info").length() > 0){
+//                store_id = jsonObject.optJSONObject("store_info").optString("store_id");
+//            }
+//            if(jsonObject.optJSONObject("member_info") != null && jsonObject.optJSONObject("member_info").length() > 0){
+//                member_id = jsonObject.optJSONObject("member_info").optString("member_id");
+//            }
+            menu_info = new Menu().parse(jsonObject.optJSONObject("menu_info"));
+            store_info = new Store().parse(jsonObject.optJSONObject("store_info"));
+            member_info = new Member().parse(jsonObject.optJSONObject("member_info"));
             if(jsonObject.optJSONObject("article_image") != null && jsonObject.optJSONObject("article_image").length() > 0){
                 article_image = new Image().parse(jsonObject.optJSONObject("article_image"));
             }

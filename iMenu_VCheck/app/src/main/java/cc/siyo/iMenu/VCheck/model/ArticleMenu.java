@@ -18,7 +18,6 @@ public class ArticleMenu extends BaseModel<ArticleMenu> {
     /** ²Ëµ¥ÄÚÈÝ*/
     public String content;
 
-
     @Override
     public ArticleMenu parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){

@@ -35,4 +35,12 @@ public class API {
     public static final String EDIT_MEMBER_INFO = "member/member/editMemberInfo";
     /** 获取城市列表*/
     public static final String GET_REGION_LIST = "base/region/getRegionList";
+    /** 获取产品品列表*/
+    public static final String GET_PRODUCT_LIST = "product/product/getProductList";
+    /** 获取产品详情*/
+    public static final String GET_PRODUCT_DETAIL = "product/product/getProductDetail";
+    /** 获取商家详情*/
+    public static final String GET_STORE_DETAIL = "store/store/getStoreDetail";
+    /** 获取菜品详情*/
+    public static final String GET_MENU_DETAIL = "store/menu/getMenuDetail";
 }
