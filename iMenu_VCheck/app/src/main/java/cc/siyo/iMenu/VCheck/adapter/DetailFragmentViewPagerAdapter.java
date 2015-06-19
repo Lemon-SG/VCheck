@@ -36,8 +36,9 @@ public class DetailFragmentViewPagerAdapter extends FragmentPagerAdapter{
         return Html.fromHtml("<font color = '#878787'>" + TITLE[position % TITLE.length] + "</font>");
     }
 
+    //TITLE.length
     @Override
     public int getCount() {
-        return TITLE.length;
+        return fragmentList.size();
     }
 }

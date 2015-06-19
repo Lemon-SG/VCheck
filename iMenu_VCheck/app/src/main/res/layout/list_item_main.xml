@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_menu_img_item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/img"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:layout_marginTop="10dp"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:text="13款烤鸟 刺身打造东瀛风情宵夜 千和日料双人菜单"/>
+
+    <TextView
+        android:id="@+id/tv_sub_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:textSize="15sp"
+        android:textColor="@color/gray_b3"
+        android:text="沪上难得的日料深夜食堂"
+        android:layout_marginTop="5dp"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/tv_special_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/orange_red"
+            android:text="168"/>
+
+        <TextView
+            android:id="@+id/tv_price_menu_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_special_price"
+            android:textColor="@color/orange_red"
+            android:text="元/份"/>
+
+        <TextView
+            android:id="@+id/tv_original_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/tv_price_menu_unit"
+            android:layout_centerVertical="true"
+            android:textColor="@color/gray_b3"
+            android:text="198元"/>
+        <TextView
+            android:id="@+id/tv_menu_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/orange_red"
+            android:text="仅剩6份"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/driver"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="1.5dp"
+            android:background="@color/black"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="1.5dp"
+            android:background="@color/black"/>
+    </LinearLayout>
+</LinearLayout>

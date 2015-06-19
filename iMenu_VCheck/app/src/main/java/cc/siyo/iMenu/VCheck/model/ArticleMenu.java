@@ -6,22 +6,22 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 18:14.
- * Desc:ÎÄÕÂ²Ëµ¥ÊµÌåÀà
+ * Desc:æ–‡ç« èœå•å®ä½“ç±»
  */
 public class ArticleMenu extends BaseModel<ArticleMenu> {
 
     private static final String TAG = "ArticleMenu";
-    /** ²Ëµ¥ID*/
+    /** èœå•ID*/
     public String article_menu_id;
-    /** ²Ëµ¥±êÌâ*/
+    /** èœå•æ ‡é¢˜*/
     public String title;
-    /** ²Ëµ¥ÄÚÈİ*/
+    /** èœå•å†…å®¹*/
     public String content;
 
     @Override
     public ArticleMenu parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             article_menu_id = jsonObject.optString("article_menu_id");
             title = jsonObject.optString("title");
             content = jsonObject.optString("content");

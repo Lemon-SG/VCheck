@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
@@ -8,7 +7,7 @@
         android:id="@+id/ScrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/driver_buttom"
+        android:layout_above="@+id/driver_bottom"
         android:background="@color/white">
 
         <LinearLayout
@@ -34,6 +33,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_detail_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
@@ -41,6 +41,7 @@
                     android:text="可以一次尝到4种口味的拼盘Pizza RAMO餐吧双人菜单"/>
 
                 <TextView
+                    android:id="@+id/tv_detail_stockAndTime"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/gray_ddd"
@@ -49,6 +50,7 @@
                     android:text="剩余22份   剩余一周以上"/>
 
                 <TextView
+                    android:id="@+id/tv_detail_summary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/gray_b3"
@@ -98,7 +100,7 @@
     </cc.siyo.iMenu.VCheck.view.stiky_scrollview.StickyScrollView>
 
     <TextView
-        android:id="@+id/driver_buttom"
+        android:id="@+id/driver_bottom"
         android:layout_width="fill_parent"
         android:layout_height="0.5dp"
         android:background="@color/gray_b3"

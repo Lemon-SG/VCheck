@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/activity/Launch.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/adapter/DetailLightSpotAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/adapter/DetailMenuAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/adapter/RegionAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Article.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/ArticleContent.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/ArticleImage.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/ArticleMenu.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/BaseModel.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Collection.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Image.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Menu.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/MenuStatus.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/MenuUnit.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Price.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Region.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Stock.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Store.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Tips.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/view/MyViewPager.java" charset="UTF-8" />
+  </component>
+</project>

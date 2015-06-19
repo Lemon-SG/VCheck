@@ -6,24 +6,24 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 17:42.
- * Desc:²úÆ·ÏêÇéÄÚÎÄÕÂÍ¼Æ¬¼¯ºÏÊµÌåÀà
+ * Desc:äº§å“è¯¦æƒ…å†…æ–‡ç« å›¾ç‰‡é›†åˆå®ä½“ç±»
  */
 public class ArticleImage extends BaseModel<ArticleImage> {
 
     private static final String TAG = "ArticleImageList";
-    /** Í¼Æ¬ID*/
+    /** å›¾ç‰‡ID*/
     public String article_image_id;
-    /** Í¼Æ¬ÊµÌåÀà*/
+    /** å›¾ç‰‡å®ä½“ç±»*/
     public Image image;
-    /** ÅÅĞòºÅ*/
+    /** æ’åºå·*/
     public String sort_order;
-    /** ÊÇ·ñÎª·âÃæÍ¼(1-·âÃæ/0-·Ç·âÃæ)*/
+    /** æ˜¯å¦ä¸ºå°é¢å›¾(1-å°é¢/0-éå°é¢)*/
     public String is_index;
 
     @Override
     public ArticleImage parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             article_image_id = jsonObject.optString("article_image_id");
             if(jsonObject.optJSONObject("image") != null && jsonObject.optJSONObject("image").length() > 0){
                 image = new Image().parse(jsonObject.optJSONObject("image"));

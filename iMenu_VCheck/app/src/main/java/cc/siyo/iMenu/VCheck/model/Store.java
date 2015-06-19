@@ -5,36 +5,36 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/8 12:30.
- * Desc:ÉÌ¼ÒÊµÌåÀà
+ * Desc:å•†å®¶å®ä½“ç±»
  */
 public class Store extends BaseModel<Store> {
 
     private static final String TAG = "Store";
-    /** ÉÌ¼ÒID*/
+    /** å•†å®¶ID*/
     public String store_id;
-    /** ÉÌ¼ÒÃû³Æ*/
+    /** å•†å®¶åç§°*/
     public String store_name;
-    /** µØÖ·*/
+    /** åœ°å€*/
     public String address;
-    /** ¾­¶È*/
+    /** ç»åº¦*/
     public String longitude_num;
-    /** Î³¶È*/
+    /** çº¬åº¦*/
     public String latitude_num;
-    /** µç»°*/
+    /** ç”µè¯*/
     public String tel_1;
-    /** µç»°±¸ÓÃ*/
+    /** ç”µè¯å¤‡ç”¨*/
     public String tel_2;
-    /** Í¼Æ¬×ÊÔ´*/
+    /** å›¾ç‰‡èµ„æº*/
     public Image icon_image;
-    /** ÓªÒµÊ±¼ä*/
+    /** è¥ä¸šæ—¶é—´*/
     public String hours;
-    /** ÈË¾ùÏû·Ñ*/
+    /** äººå‡æ¶ˆè´¹*/
     public String per;
 
     @Override
     public Store parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             store_id = jsonObject.optString("store_id");
             store_name = jsonObject.optString("store_name");
             address = jsonObject.optString("address");

@@ -6,30 +6,30 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/4/30.
- * Desc:²ËÆ·ÊµÌåÀàmenu_info
+ * Desc:èœå“å®ä½“ç±»menu_info
  */
 public class Menu extends BaseModel<Menu>{
 
     private static final String TAG = "Menu";
-    /** ²ËÆ·ID*/
+    /** èœå“ID*/
     public String menu_id;
-    /** ²ËÆ·Ãû³Æ*/
+    /** èœå“åç§°*/
     public String menu_name;
-    /** ¼Û¸ñÊµÌå*/
+    /** ä»·æ ¼å®ä½“*/
     public Price price;
-    /** ²úÆ·ÊıÁ¿ÊµÌå*/
+    /** äº§å“æ•°é‡å®ä½“*/
     public Stock stock;
-    /** ²ËÆ·µ¥Î»*/
+    /** èœå“å•ä½*/
     public MenuUnit menu_unit;
-    /** ²ËÆ·×´Ì¬*/
+    /** èœå“çŠ¶æ€*/
     public MenuStatus menu_status;
-    /** ½áÊøÊ±¼ä*/
+    /** ç»“æŸæ—¶é—´*/
     public String end_date;
 
     @Override
     public Menu parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             menu_id = jsonObject.optString("menu_id");
             menu_name = jsonObject.optString("menu_name");
             if(jsonObject.optJSONObject("price") != null && jsonObject.optJSONObject("price").length() > 0){

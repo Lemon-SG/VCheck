@@ -5,21 +5,21 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 17:50.
- * Desc:ÊÕ²ØÊµÌåÀà
+ * Desc:æ”¶è—å®ä½“ç±»
  */
 public class Collection extends BaseModel<Collection> {
 
     private static final String TAG = "Collection";
-    /** ÊÕ²Ø×ÜÊı*/
+    /** æ”¶è—æ€»æ•°*/
     public String collection_count;
-    /** ÊÇ·ñÒÑÊÕ²Ø(1-ÒÑÊÕ²Ø/0-Î´ÊÕ²Ø)*/
+    /** æ˜¯å¦å·²æ”¶è—(1-å·²æ”¶è—/0-æœªæ”¶è—)*/
     public String is_collected;
 
 
     @Override
     public Collection parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             collection_count = jsonObject.optString("collection_count");
             is_collected = jsonObject.optString("is_collected");
             return  this;

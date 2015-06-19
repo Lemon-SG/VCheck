@@ -6,22 +6,22 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 16:34.
- * Desc:²úÆ·ÊıÁ¿ÊµÌåÀà
+ * Desc:äº§å“æ•°é‡å®ä½“ç±»
  */
 public class Stock extends BaseModel<Stock> {
 
     private static final String TAG = "Stock";
-    /** ²úÆ·ÊıÁ¿*/
+    /** äº§å“æ•°é‡*/
     public String menu_count;
-    /** ÊıÁ¿µ¥Î»*/
+    /** æ•°é‡å•ä½*/
     public String menu_unit;
-    /** ÔÚÃ»ÓĞ²úÆ·Ê±ÏÔÊ¾µÄÎÄ×Ö*/
+    /** åœ¨æ²¡æœ‰äº§å“æ—¶æ˜¾ç¤ºçš„æ–‡å­—*/
     public String out_of_stock_info;
-            
+
     @Override
     public Stock parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             menu_count = jsonObject.optString("menu_count");
             menu_unit = jsonObject.optString("menu_unit");
             out_of_stock_info = jsonObject.optString("out_of_stock_info");

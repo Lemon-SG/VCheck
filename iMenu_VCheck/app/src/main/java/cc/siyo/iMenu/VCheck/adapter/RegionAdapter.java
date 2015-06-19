@@ -9,7 +9,7 @@ import cc.siyo.iMenu.VCheck.model.Region;
 
 /**
  * Created by Lemon on 2015/5/25.
- * Desc:³ÇÊĞÁĞ±íÊÊÅäÆ÷
+ * Desc:åŸå¸‚åˆ—è¡¨é€‚é…å™¨
  */
 public class RegionAdapter extends AbsAdapter<Region>{
 

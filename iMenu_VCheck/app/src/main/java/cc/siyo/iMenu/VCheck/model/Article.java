@@ -7,54 +7,55 @@ import java.util.List;
 
 /**
  * Created by Lemon on 2015/6/4 16:53.
- * Desc:ÎÄÕÂÊµÌåÀà article_info|article_list
+ * Desc:æ–‡ç« å®ä½“ç±» article_info|article_list
  */
 public class Article extends BaseModel<Article>{
 
     private static final String TAG = "Article";
-    /** ÎÄÕÂID*/
+    /** æ–‡ç« ID*/
     public String article_id;
-    /** ±êÌâ*/
+    /** æ ‡é¢˜*/
     public String title;
-    /** ×Ó±êÌâ*/
+    /** å­æ ‡é¢˜*/
     public String sub_title;
-    /** ÕªÒª*/
+    /** æ‘˜è¦*/
     public String summary;
-    /** ÎÄÕÂÈÕÆÚ*/
+    /** æ–‡ç« æ—¥æœŸ*/
     public String article_date;
-//    /** ½âÎöÊ±Ö±½ÓÈ¡³öID£º²Ëµ¥ID*/
+//    /** è§£ææ—¶ç›´æ¥å–å‡ºIDï¼šèœå•ID*/
 //    public String menu_id;
-//    /** ½âÎöÊ±Ö±½ÓÈ¡³öID£ºÉÌ¼ÒID*/
+//    /** è§£ææ—¶ç›´æ¥å–å‡ºIDï¼šå•†å®¶ID*/
 //    public String store_id;
-//    /** ½âÎöÊ±Ö±½ÓÈ¡³öID£º»áÔ±ID*/
+//    /** è§£ææ—¶ç›´æ¥å–å‡ºIDï¼šä¼šå‘˜ID*/
 //    public String member_id;
-    /** ²Ëµ¥ÊµÌå*/
+    /** èœå•å®ä½“*/
     public Menu menu_info;
-    /** ÉÌ¼ÒÊµÌå*/
+    /** å•†å®¶å®ä½“*/
     public Store store_info;
-    /** »áÔ±ÊµÌå*/
+    /** ä¼šå‘˜å®ä½“*/
     public Member member_info;
-    /** Í¼Æ¬ÊµÌåÀà*/
+    /** å›¾ç‰‡å®ä½“ç±»*/
     public Image article_image;
-    /** ÌáÊ¾ÊµÌåÀà*/
+    /** æç¤ºå®ä½“ç±»*/
     public Tips tips_info;
-    /** ÎÄÕÂÄÚÍ¼Æ¬¼¯ºÏ*/
+    /** æ–‡ç« å†…å›¾ç‰‡é›†åˆ*/
     public List<ArticleImage> article_image_list;
-    /** ÊÕ²ØÊµÌåÀà*/
+    /** æ”¶è—å®ä½“ç±»*/
     public Collection collection_info;
-    /** ·ÖÏíÊµÌåÀà*/
+    /** åˆ†äº«å®ä½“ç±»*/
     public Share share_info;
-    /** ÎÄÕÂÁÁµãÊµÌåÀà*/
+    /** æ–‡ç« äº®ç‚¹å®ä½“ç±»*/
     public List<ArticleContent> article_content_list;
-    /** ÎÄÕÂ²Ëµ¥ÁĞ±í*/
+    /** æ–‡ç« èœå•åˆ—è¡¨*/
     public List<ArticleMenu> article_menu_list;
 
 
     @Override
     public Article parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             article_id = jsonObject.optString("article_id");
+            title = jsonObject.optString("title");
             sub_title = jsonObject.optString("sub_title");
             summary = jsonObject.optString("summary");
             article_date = jsonObject.optString("article_date");

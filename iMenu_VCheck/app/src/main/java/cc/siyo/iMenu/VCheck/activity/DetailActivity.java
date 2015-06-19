@@ -28,12 +28,11 @@ import java.util.List;
 import cc.siyo.iMenu.VCheck.MyApplication;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.adapter.DetailFragmentViewPagerAdapter;
-import cc.siyo.iMenu.VCheck.fragment.LightSpotFragment;
-import cc.siyo.iMenu.VCheck.fragment.MenuFragment;
+import cc.siyo.iMenu.VCheck.fragment.DetailLightSpotFragment;
+import cc.siyo.iMenu.VCheck.fragment.DetailMenuFragment;
 import cc.siyo.iMenu.VCheck.fragment.NoticeFragment;
 import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Article;
-import cc.siyo.iMenu.VCheck.model.ArticleContent;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Share;
@@ -79,6 +78,12 @@ public class DetailActivity extends FragmentActivity{
     private String article_id;
     /** 数据源*/
     private Article article;
+    /** 文章详情标题显示*/
+    private TextView tv_detail_title;
+    /** 剩余库存及时间显示*/
+    private TextView tv_detail_stockAndTime;
+    /** 文章详情摘要显示*/
+    private TextView tv_detail_summary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +97,10 @@ public class DetailActivity extends FragmentActivity{
 
     public void initView() {
         tv_detail_submit = (TextView) findViewById(R.id.tv_detail_submit);
+        tv_detail_title = (TextView) findViewById(R.id.tv_detail_title);
+        tv_detail_stockAndTime = (TextView) findViewById(R.id.tv_detail_stockAndTime);
+        tv_detail_summary = (TextView) findViewById(R.id.tv_detail_summary);
+
         topbar = (TopBar) findViewById(R.id.topbar);
         topbar.settitleViewText("礼遇详情");
         topbar.setButtonImage(TopBar.RIGHT_BUTTON, R.drawable.abc_ic_menu_share_mtrl_alpha);
@@ -123,19 +132,29 @@ public class DetailActivity extends FragmentActivity{
 
         if(fragmentsList == null)
             fragmentsList = new ArrayList<Fragment>();
-        //TODO newInstance是否传递参数成功
-        fragmentsList.add(new LightSpotFragment().newInstance(article.article_content_list));
-        fragmentsList.add(new MenuFragment());
-        fragmentsList.add(new NoticeFragment());
         /** 只留一个分类,如需多个，需重新增加新的Fragment，FragmentViewPagerAdapter进行加入标题数组即可*/
-
         mAdapter = new DetailFragmentViewPagerAdapter(getApplicationContext(), this.getSupportFragmentManager(), fragmentsList);
 
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
-        /** 只留一个分类*/
+//        /** 只留一个分类*/
         TabPageIndicator indicator = (TabPageIndicator)findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
+    }
+
+    /** 加载FragmentViewPager*/
+    private void initViewPager(){
+        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content_list));
+        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu_list));
+        fragmentsList.add(new NoticeFragment().newInstance(article.store_info));
+        mAdapter.notifyDataSetChanged();
+
+        tv_detail_title.setText(article.title);
+        tv_detail_summary.setText(article.summary);
+        //TODO 分别用ID去调用菜品详情，商家详情，会员详情
+//        if(article.menu_info.stock != null){
+//            tv_detail_stockAndTime.setText("剩余" + article.menu_info.stock.menu_count + "   剩余" + article.article_date);
+//        }
     }
 
     private void initData(){
@@ -159,29 +178,18 @@ public class DetailActivity extends FragmentActivity{
             super.handleMessage(msg);
             switch (msg.what) {
                 case GET_DETAIL_SUCCESS:
-                    closeProgressDialog();
+//                    closeProgressDialog();
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         JSONObject data = jsonStatus.data;
                         if(data.optJSONObject("article_info") != null){
                             article = new Article().parse(data.optJSONObject("article_info"));
+                            initViewPager();
                         }
-//                        if(data.optJSONArray("article_list") != null && data.optJSONArray("article_list").length() > 0){
-//                            articleList = new ArrayList<>();
-//                            for (int i = 0; i < data.optJSONArray("article_list").length(); i++) {
-//                                Article article = new Article().parse(data.optJSONArray("article_list").optJSONObject(i));
-//                                articleList.add(article);
-//                            }
-//                            mainAdapter.getDataList().clear();
-//                            mainAdapter.getDataList().addAll(articleList);
-//                            mainAdapter.notifyDataSetChanged();
-//                        }else{
-//                            prompt(getResources().getString(R.string.request_no_data));
-//                        }
                     }
                     break;
                 case GET_DETAIL_FALSE:
-                    closeProgressDialog();
+//                    closeProgressDialog();
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(!StringUtils.isBlank(jsonStatus.error_desc)){
@@ -211,7 +219,7 @@ public class DetailActivity extends FragmentActivity{
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-                closeProgressDialog();
+//                closeProgressDialog();
                 prompt(getResources().getString(R.string.request_time_out));
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }
@@ -219,7 +227,7 @@ public class DetailActivity extends FragmentActivity{
             @Override
             public void onStart() {
                 super.onStart();
-                showProgressDialog(getResources().getString(R.string.loading));
+//                showProgressDialog(getResources().getString(R.string.loading));
             }
 
             @Override
@@ -254,7 +262,7 @@ public class DetailActivity extends FragmentActivity{
         JSONObject json = new JSONObject();
         try {
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
-            json.put("article_id", article_id);
+            json.put("article_id", "1");//TODO article_id 暂写死为1
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -288,32 +296,33 @@ public class DetailActivity extends FragmentActivity{
         Toast.makeText(context, content, Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * 进行耗时阻塞操作时,需要调用改方法,显示等待效果
-     *
-     * @author Sylar *
-     */
-    public void showProgressDialog(String content) {
-        if (loadingDialog == null) {
-            loadingDialog = new LoadingDialog(context, content);
-        }
-
-        if (!isFinishing() && !loadingDialog.isShowing()) {
-            loadingDialog.show();
-        }
-    }
-
-    /**
-     * 耗时阻塞操作结束时,需要调用改方法,关闭等待效果
-     *
-     * @author Sylar *
-     */
-    public void closeProgressDialog() {
-        if (loadingDialog != null && !isFinishing()) {
-            loadingDialog.dismiss();
-            loadingDialog = null;
-        }
-    }
+    //TODO 此页面进度圈显示稍后调整
+//    /**
+//     * 进行耗时阻塞操作时,需要调用改方法,显示等待效果
+//     *
+//     * @author Sylar *
+//     */
+//    public void showProgressDialog(String content) {
+//        if (loadingDialog == null) {
+//            loadingDialog = new LoadingDialog(context, content);
+//        }
+//
+//        if (!isFinishing() && !loadingDialog.isShowing()) {
+//            loadingDialog.show();
+//        }
+//    }
+//
+//    /**
+//     * 耗时阻塞操作结束时,需要调用改方法,关闭等待效果
+//     *
+//     * @author Sylar *
+//     */
+//    public void closeProgressDialog() {
+//        if (loadingDialog != null && !isFinishing()) {
+//            loadingDialog.dismiss();
+//            loadingDialog = null;
+//        }
+//    }
 
     public JSONStatus BaseJSONData(String t){
         JSONStatus jsonStatus = new JSONStatus();

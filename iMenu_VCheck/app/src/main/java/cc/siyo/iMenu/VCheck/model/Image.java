@@ -6,20 +6,20 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 17:27.
- * Desc:Í¼Æ¬ÊµÌåÀà
+ * Desc:å›¾ç‰‡å®ä½“ç±»
  */
 public class Image extends BaseModel<Image> {
 
     private static final String TAG = "Image";
-    /** ËõÂÔÍ¼*/
+    /** ç¼©ç•¥å›¾*/
     public String thumb;
-    /** Ô­Í¼*/
+    /** åŸå›¾*/
     public String source;
 
     @Override
     public Image parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             thumb = jsonObject.optString("thumb");
             source = jsonObject.optString("source");
             return this;

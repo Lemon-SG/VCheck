@@ -5,18 +5,18 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 17:37.
- * Desc:ÌáÊ¾ÊµÌåÀà
+ * Desc:æç¤ºå®ä½“ç±»
  */
 public class Tips extends BaseModel<Tips> {
 
     private static final String TAG = "Tips";
-    /** ÌáÊ¾ÄÚÈİ*/
+    /** æç¤ºå†…å®¹*/
     public String content;
 
     @Override
     public Tips parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             content = jsonObject.optString("content");
             return this;
         }

@@ -6,20 +6,20 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 16:40.
- * Desc:²ËÆ·×´Ì¬ÊµÌåÀà
+ * Desc:èœå“çŠ¶æ€å®ä½“ç±»
  */
 public class MenuStatus extends BaseModel<MenuStatus>{
 
     private static final String TAG = "MenuStatus";
-    /** ²ËÆ·×´Ì¬ID*/
+    /** èœå“çŠ¶æ€ID*/
     public String menu_status_id;
-    /** ²ËÆ·×´Ì¬*/
+    /** èœå“çŠ¶æ€*/
     public String menu_status;
 
     @Override
     public MenuStatus parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             menu_status_id = jsonObject.optString("menu_status_id");
             menu_status = jsonObject.optString("menu_status");
             return this;

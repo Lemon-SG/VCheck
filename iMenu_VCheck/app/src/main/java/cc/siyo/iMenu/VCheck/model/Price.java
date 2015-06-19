@@ -6,24 +6,24 @@ import org.json.JSONObject;
 
 /**
  * Created by Lemon on 2015/6/4 16:28.
- * Desc:¼Û¸ñÊµÌåÀà
+ * Desc:ä»·æ ¼å®ä½“ç±»
  */
 public class Price extends BaseModel<Price> {
 
     private static final String TAG = "Price";
-    /** Ô­¼Û*/
+    /** åŸä»·*/
     public String original_price;
-    /** ÓÅ»İ¼Û¸ñ*/
+    /** ä¼˜æƒ ä»·æ ¼*/
     public String special_price;
-    /** ¼Û¸ñµ¥Î»*/
+    /** ä»·æ ¼å•ä½*/
     public String price_unit;
 
     @Override
     public Price parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
-            Log.e(TAG, "¿ªÊ¼½âÎö");
+            Log.e(TAG, "å¼€å§‹è§£æ");
             original_price = jsonObject.optString("original_price");
-            //TODO special_priceÎÄµµÉÏÆ´Ğ´Îªspeical_price£¬´ı½Ó¿ÚÊı¾İÍê³Éºó¶Ô±È
+            //TODO special_priceæ–‡æ¡£ä¸Šæ‹¼å†™ä¸ºspeical_priceï¼Œå¾…æ¥å£æ•°æ®å®Œæˆåå¯¹æ¯”
             special_price = jsonObject.optString("special_price");
             price_unit = jsonObject.optString("price_unit");
             return this;

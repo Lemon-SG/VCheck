@@ -39,33 +39,28 @@ import cn.sharesdk.framework.ShareSDK;
 
 /**
  * Created by Lemon on 2015/5/26.
- * Desc:闪屏
  */
 public class Launch extends BaseActivity{
 
     private static final String TAG = "Launch";
-    /** A FINAL框架的HTTP请求工具 */
     private FinalHttp finalHttp;
-    /** 记住登录状态成功标石*/
     private static final int GET_CLIENT_CONFIG_SUCCESS = 100;
-    /** 记住登录状态失败标石*/
     private static final int GET_CLIENT_CONFIG_FALSE = 200;
     private Context mContext;
-    /** 版本号*/
     private String versionCode;
-    /** 配置文件集合*/
     private List<ClientConfig> clientConfigsList;
-    /** 版本更新路径*/
     private String versionUrl;
-    /** 版本号*/
     @ViewInject(id = R.id.tv_version)private TextView tv_version;
     Dialog dialog;
-    /** 由于onResume方法有时会出发两次，标石进行拦截，如正在请求即不再重复请求*/
+    /** because onResume have send http one and second,so...
+     *  this is isHTTP holdup send http,
+     *  if http(ing) -> not send http
+     */
     private boolean isHttp = false;
 
     @Override
     public int getContentView() {
-        // 开启LOGCAT输出，方便debug，发布时请关闭
+        // open LOGCAT output , provide debug ,release is close
         XGPushConfig.enableDebug(this, true);
         return R.layout.activity_launch;
     }
@@ -97,12 +92,6 @@ public class Launch extends BaseActivity{
                 UploadAdapter(getVersionCode());
             }
         }
-//		XGPushClickedResult click = XGPushManager.onActivityStarted(this);
-//		Log.d("TPush", "onResumeXGPushClickedResult:" + click);
-//		if (click != null) { // 判断是否来自信鸽的打开方式
-//			Toast.makeText(this, "通知被点击:" + click.toString(),
-//					Toast.LENGTH_SHORT).show();
-//		}
     }
 
     private Handler handler = new Handler() {
@@ -146,7 +135,6 @@ public class Launch extends BaseActivity{
         }
     };
 
-    /** 获取配置信息请求*/
     private void UploadAdapter(String versionAndroid) {
         isHttp = true;
         AjaxParams ajaxParams = new AjaxParams();
@@ -195,8 +183,8 @@ public class Launch extends BaseActivity{
     }
 
     /***
-     * device_type	设备类型:10-iPhone/11-iPad/20-Android
-     * version_android	Android版本
+     * device_type	10-iPhone/11-iPad/20-Android
+     * version_android
      * @return json
      */
     private String makeJsonText(String versionAndroid) {
@@ -210,7 +198,6 @@ public class Launch extends BaseActivity{
         return json.toString();
     }
 
-    /** 存储配置*/
     private void saveClientConfig() {
         if(clientConfigsList != null && clientConfigsList.size() > 0){
             for (int i = 0; i < clientConfigsList.size(); i++) {
@@ -230,28 +217,28 @@ public class Launch extends BaseActivity{
                 }
             }
         }
-        //是否弹出更新提示
+        //Is popup update hint
         Boolean isTips = false;
         if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_IS_TIPS))){
             if(PreferencesUtils.getString(mContext, Constant.KEY_IS_TIPS).equals(Constant.IS_TIPS_YES)){
                 isTips = true;
             }
         }
-        //是否强制更新
+        //Is do constraint update
         Boolean needUpdate = false;
         if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_NEED_UPDATE))){
             if(PreferencesUtils.getString(mContext, Constant.KEY_NEED_UPDATE).equals(Constant.NEED_UPDATE_YES)){
-                //强制更新
+                //constraint update
                 needUpdate = true;
             }
         }
-        /** 判断是否需要更新*/
+        /** do constraint update*/
         if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_VERSION_ANDROID))){
             System.out.println("version:" + getVersionCode());
             Double currentVersion = Double.parseDouble(getVersionCode());
             Double newVersion = Double.parseDouble(PreferencesUtils.getString(mContext, Constant.KEY_VERSION_ANDROID));
             if(currentVersion < newVersion){
-                //需要更新
+                //need update
                 if(!StringUtils.isBlank(versionUrl)){
                     doUpdate(isTips, needUpdate);
                 }else{
@@ -265,12 +252,12 @@ public class Launch extends BaseActivity{
         }
     }
 
-    /** 执行更新前判断*/
+    /** update before verify*/
     private void doUpdate(Boolean isTips, Boolean needUpdate) {
         if(isTips){
-            //需要弹出提示对话框
+            //need prompt dialog
             if(needUpdate){
-                //强制更新，弹出一个按钮的对话框
+                //constraint update,prompt one button dialog
                 showTokenDialog(Launch.this, getResources().getString(R.string.found_newVersion), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -278,7 +265,7 @@ public class Launch extends BaseActivity{
                     }
                 });
             }else{
-                //不强制更新，弹出两个按钮的对话框
+                //not constraint update , prompt two dialog
                 showDialog(Launch.this, getResources().getString(R.string.found_newVersion), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -292,18 +279,17 @@ public class Launch extends BaseActivity{
                 }, false).show();
             }
         }else{
-            //不弹出对话框，直接进行更新，如果不强制，即不更新
+            //not prompt dialog , background do update , if not constraint update..so not update
             if(needUpdate){
-                //强制更新，弹出下载进度框
+                //constraint update , prompt download dialog
                 downloadApk(versionUrl);
             }
-            //不需要强制更新，即不执行更新
+            //not need constraint update and not do update
         }
     }
 
-    /** 执行下载*/
     private void downloadApk(String url){
-//		url = "http://www.imenu.so/android/iMenu.apk";//测试专用
+//		url = "http://www.imenu.so/android/iMenu.apk";//TEST
         final ProgressDialog downloadDialog = new ProgressDialog(mContext, R.style.LightDialog);
         downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         downloadDialog.setTitle(getResources().getString(R.string.down_downing));
@@ -329,26 +315,25 @@ public class Launch extends BaseActivity{
                     progress = 100;
                 }
                 downloadDialog.setProgress(progress);
-                Log.e(TAG, "下载进度:" + progress + "%");
+                Log.e(TAG, "download:" + progress + "%");
             }
 
             @Override
             public void onStart() {
                 super.onStart();
-                Log.e(TAG, "开始下载");
+                Log.e(TAG, "start download");
             }
 
             @Override
             public void onSuccess(File t) {
                 super.onSuccess(t);
-                Log.e(TAG, "下载成功");
+                Log.e(TAG, "download success");
                 downloadDialog.dismiss();
                 PackageUtils.installNormal(mContext, Constant.APK_TARGET);
             }
         });
     }
 
-    /** 检查网络 */
     private boolean checkNetwork() {
         if (!CheckNetWorkUtil.isNetwork(this)) {
             showNetWorkDialog();
@@ -357,7 +342,6 @@ public class Launch extends BaseActivity{
         return true;
     }
 
-    /** 获取版本信息 */
     private String getVersionCode() {
         PackageManager pm = getPackageManager();
         PackageInfo packageInfo;
@@ -372,7 +356,6 @@ public class Launch extends BaseActivity{
         return versionCode + "";
     }
 
-    /** 延迟两秒进入主页 */
     private void ToMain() {
         handler.postDelayed(new Runnable() {
             @Override
@@ -384,7 +367,7 @@ public class Launch extends BaseActivity{
         }, 2500);
     }
 
-    /** 请求失败弹出对话框*/
+    /** http false prompt dialog*/
     private void showNetWorkDialog(){
         if(!dialog.isShowing()){
             dialog.show();

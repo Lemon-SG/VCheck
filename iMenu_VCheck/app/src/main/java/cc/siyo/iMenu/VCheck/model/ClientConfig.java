@@ -10,6 +10,7 @@ import org.json.JSONObject;
 @SuppressWarnings("rawtypes")
 public class ClientConfig extends BaseModel {
 
+
 	/**
 	 * 
 	 */
