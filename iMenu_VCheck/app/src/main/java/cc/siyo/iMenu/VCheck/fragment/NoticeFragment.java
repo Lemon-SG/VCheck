@@ -61,22 +61,22 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void initData() {
-        if(getArguments() != null){
-            store = (Store) getArguments().getSerializable("store");
-            tv_notice_store_name.setText(store.store_name);
-            tv_notice_address.setText(store.address);
-            if(!StringUtils.isBlank(store.tel_1)){
-                tv_notice_tel.setText(store.tel_1);
-            }else{
-                tv_notice_tel.setText(store.tel_2);
-            }
-        }
+//        if(getArguments() != null){
+//            store = (Store) getArguments().getSerializable("store");
+//            tv_notice_store_name.setText(store.store_name);
+//            tv_notice_address.setText(store.address);
+//            if(!StringUtils.isBlank(store.tel_1)){
+//                tv_notice_tel.setText(store.tel_1);
+//            }else{
+//                tv_notice_tel.setText(store.tel_2);
+//            }
+//        }
     }
 
-    public static final NoticeFragment newInstance(Store store){
+    public static final NoticeFragment newInstance(String article_tips){
         NoticeFragment noticeFragment = new NoticeFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("store", store);
+        bundle.putString("article_tips", article_tips);
         noticeFragment.setArguments(bundle);
         return noticeFragment;
     }

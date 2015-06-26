@@ -24,7 +24,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img"/>
+                android:src="@drawable/test_menu_img"/>
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -74,7 +74,6 @@
                     android:id="@+id/pager"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:padding="20dp"
                     android:background="@android:color/white"/>
 
             <LinearLayout
@@ -122,6 +121,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_detail_original_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="247元"
@@ -136,7 +136,7 @@
                 android:layout_gravity="center_horizontal">
 
                 <TextView
-                    android:id="@+id/tv_price"
+                    android:id="@+id/tv_detail_special_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="168"
@@ -145,11 +145,12 @@
                     android:textSize="18sp"/>
 
                 <TextView
+                    android:id="@+id/tv_detail_price_menu_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="元/2位"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_price"
+                    android:layout_toRightOf="@+id/tv_detail_special_price"
                     android:textSize="14sp"
                     android:textColor="@color/orange_red"/>
             </RelativeLayout>

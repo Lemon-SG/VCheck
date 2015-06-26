@@ -11,7 +11,9 @@ import net.tsz.afinal.FinalBitmap;
 
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.Article;
+import cc.siyo.iMenu.VCheck.model.Image;
 import cc.siyo.iMenu.VCheck.model.Menu;
+import cc.siyo.iMenu.VCheck.util.NumberFormatUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.util.Util;
 
@@ -27,8 +29,8 @@ public class MainAdapter extends AbsAdapter<Article> {
     public MainAdapter(Activity context, int layout) {
         super(context, layout);
         finalBitmap = FinalBitmap.create(context);
-        finalBitmap.configLoadingImage(R.drawable.img);
-        finalBitmap.configLoadfailImage(R.drawable.img);
+        finalBitmap.configLoadingImage(R.drawable.test_menu_img);
+        finalBitmap.configLoadfailImage(R.drawable.test_menu_img);
     }
 
     @Override
@@ -42,6 +44,8 @@ public class MainAdapter extends AbsAdapter<Article> {
         private LinearLayout driver;
         /** 文章图片显示*/
         private ImageView iv_menu_img_item;
+        /** 商家图标*/
+        private ImageView iv_member_img_item;
         /** 文章标题显示*/
         private TextView tv_title;
         /** 文章子标题显示*/
@@ -65,36 +69,44 @@ public class MainAdapter extends AbsAdapter<Article> {
             tv_price_menu_unit = (TextView) v.findViewById(R.id.tv_price_menu_unit);
             tv_original_price = (TextView) v.findViewById(R.id.tv_original_price);
             tv_menu_stock = (TextView) v.findViewById(R.id.tv_menu_stock);
+            iv_member_img_item = (ImageView) v.findViewById(R.id.iv_member_img_item);
         }
 
         @Override
         public void updateData(Article article, int position) {
-            finalBitmap.display(iv_menu_img_item, "https://dn-img-seriousapps.qbox.me/business/14071541323372?imageView2/1/w/639/h/472/interlace/1/format/webp");
+            finalBitmap.display(iv_menu_img_item, article.article_image.source);
+            finalBitmap.display(iv_member_img_item, article.member_info.icon_image.thumb);
             driver.setVisibility(View.VISIBLE);
             Log.e(TAG, "position = " + position + "|size = " + getDataList().size());
             if(position + 1 == getDataList().size()){
-                //需要处理末尾的分割线
-                Log.e(TAG, "KILL分割线");
+                //不是末尾->分割线隐藏
                 driver.setVisibility(View.GONE);
             }
             tv_title.setText(article.title);
             tv_sub_title.setText(article.sub_title);
-//            tv_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit);
+            tv_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit.menu_unit);
             //TODO 待测试优惠价格的展示方式
             //判断是否有优惠价格：如果有优惠价格，显示优惠价格并显示原价添加删除线；如果没有优惠价格，显示原价，隐藏原价view
-            //TODO 先注释
-//            if(!StringUtils.isBlank(article.menu_info.price.special_price)){
-//                //有优惠价格
-//                tv_special_price.setText(article.menu_info.price.special_price);
-//                tv_original_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
-//                Util.PaintTvAddStrike(tv_original_price);
-//                tv_original_price.setVisibility(View.VISIBLE);
-//            }else{
-//                //无优惠价格
-//                tv_special_price.setText(article.menu_info.price.original_price);
-//                tv_original_price.setVisibility(View.GONE);
-//            }
-//            tv_menu_stock.setText("仅剩" + article.menu_info.stock.menu_count + article.menu_info.menu_unit);
+            if(!StringUtils.isBlank(article.menu_info.price.special_price)){
+                //有优惠价格
+                Log.e(TAG, "有优惠价格");
+                tv_special_price.setText(article.menu_info.price.special_price);
+                tv_original_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
+                Util.PaintTvAddStrike(tv_original_price);
+                tv_original_price.setVisibility(View.VISIBLE);
+            }else{
+                //无优惠价格
+                Log.e(TAG, "无优惠价格");
+                tv_special_price.setText(article.menu_info.price.original_price);
+                tv_original_price.setVisibility(View.GONE);
+            }
+            if(article.menu_info.stock.menu_count.equals(0)) {
+                //无库存
+                tv_menu_stock.setText(article.menu_info.stock.out_of_stock_info);
+            } else {
+                //有库存
+                tv_menu_stock.setText("仅剩" + article.menu_info.stock.menu_count + article.menu_info.stock.menu_unit);
+            }
         }
 
         @Override

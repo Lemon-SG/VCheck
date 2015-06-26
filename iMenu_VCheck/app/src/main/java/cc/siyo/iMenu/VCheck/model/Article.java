@@ -20,8 +20,6 @@ public class Article extends BaseModel<Article>{
     public String sub_title;
     /** 摘要*/
     public String summary;
-    /** 文章日期*/
-    public String article_date;
 //    /** 解析时直接取出ID：菜单ID*/
 //    public String menu_id;
 //    /** 解析时直接取出ID：商家ID*/
@@ -36,19 +34,26 @@ public class Article extends BaseModel<Article>{
     public Member member_info;
     /** 图片实体类*/
     public Image article_image;
-    /** 提示实体类*/
-    public Tips tips_info;
+//    /** 提示实体类*/
+//    public Tips tips_info;
     /** 文章内图片集合*/
     public List<ArticleImage> article_image_list;
     /** 收藏实体类*/
     public Collection collection_info;
-    /** 分享实体类*/
-    public Share share_info;
-    /** 文章亮点实体类*/
-    public List<ArticleContent> article_content_list;
-    /** 文章菜单列表*/
-    public List<ArticleMenu> article_menu_list;
-
+//    /** 分享实体类*/
+//    public Share share_info;
+//    /** 文章亮点实体类*/
+//    public List<ArticleContent> article_content_list;
+//    /** 文章菜单列表*/
+//    public List<ArticleMenu> article_menu_list;
+    /** 文章日期*/
+    public String article_date;
+    /** 文章亮点*/
+    public String article_content;
+    /** 文章菜单*/
+    public String article_menu;
+    /** 文章提示*/
+    public String article_tips;
 
     @Override
     public Article parse(JSONObject jsonObject) {
@@ -58,7 +63,6 @@ public class Article extends BaseModel<Article>{
             title = jsonObject.optString("title");
             sub_title = jsonObject.optString("sub_title");
             summary = jsonObject.optString("summary");
-            article_date = jsonObject.optString("article_date");
 //            if(jsonObject.optJSONObject("menu_info") != null && jsonObject.optJSONObject("menu_info").length() > 0){
 //                menu_id = jsonObject.optJSONObject("menu_info").optString("menu_id");
 //            }
@@ -74,9 +78,9 @@ public class Article extends BaseModel<Article>{
             if(jsonObject.optJSONObject("article_image") != null && jsonObject.optJSONObject("article_image").length() > 0){
                 article_image = new Image().parse(jsonObject.optJSONObject("article_image"));
             }
-            if(jsonObject.optJSONObject("tips_info") != null && jsonObject.optJSONObject("tips_info").length() > 0){
-                tips_info = new Tips().parse(jsonObject.optJSONObject("tips_info"));
-            }
+//            if(jsonObject.optJSONObject("tips_info") != null && jsonObject.optJSONObject("tips_info").length() > 0){
+//                tips_info = new Tips().parse(jsonObject.optJSONObject("tips_info"));
+//            }
             if(jsonObject.optJSONArray("article_image_list") != null && jsonObject.optJSONArray("article_image_list").length() > 0){
                 article_image_list = new ArrayList<>();
                 for (int i = 0; i < jsonObject.optJSONArray("article_image_list").length(); i++) {
@@ -87,23 +91,27 @@ public class Article extends BaseModel<Article>{
             if(jsonObject.optJSONObject("collection_info") != null && jsonObject.optJSONObject("collection_info").length() > 0){
                 collection_info = new Collection().parse(jsonObject.optJSONObject("collection_info"));
             }
-            if(jsonObject.optJSONObject("share_info") != null && jsonObject.optJSONObject("share_info").length() > 0){
-                share_info = new Share().parse(jsonObject.optJSONObject("share_info"));
-            }
-            if(jsonObject.optJSONArray("article_content_list") != null && jsonObject.optJSONArray("article_content_list").length() > 0){
-                article_content_list = new ArrayList<>();
-                for (int i = 0; i < jsonObject.optJSONArray("article_content_list").length(); i++) {
-                    ArticleContent articleContent = new ArticleContent().parse(jsonObject.optJSONArray("article_content_list").optJSONObject(i));
-                    article_content_list.add(articleContent);
-                }
-            }
-            if(jsonObject.optJSONArray("article_menu_list") != null && jsonObject.optJSONArray("article_menu_list").length() > 0){
-                article_menu_list = new ArrayList<>();
-                for (int i = 0; i < jsonObject.optJSONArray("article_menu_list").length(); i++) {
-                    ArticleMenu articleMenu = new ArticleMenu().parse(jsonObject.optJSONArray("article_menu_list").optJSONObject(i));
-                    article_menu_list.add(articleMenu);
-                }
-            }
+//            if(jsonObject.optJSONObject("share_info") != null && jsonObject.optJSONObject("share_info").length() > 0){
+//                share_info = new Share().parse(jsonObject.optJSONObject("share_info"));
+//            }
+//            if(jsonObject.optJSONArray("article_content_list") != null && jsonObject.optJSONArray("article_content_list").length() > 0){
+//                article_content_list = new ArrayList<>();
+//                for (int i = 0; i < jsonObject.optJSONArray("article_content_list").length(); i++) {
+//                    ArticleContent articleContent = new ArticleContent().parse(jsonObject.optJSONArray("article_content_list").optJSONObject(i));
+//                    article_content_list.add(articleContent);
+//                }
+//            }
+//            if(jsonObject.optJSONArray("article_menu_list") != null && jsonObject.optJSONArray("article_menu_list").length() > 0){
+//                article_menu_list = new ArrayList<>();
+//                for (int i = 0; i < jsonObject.optJSONArray("article_menu_list").length(); i++) {
+//                    ArticleMenu articleMenu = new ArticleMenu().parse(jsonObject.optJSONArray("article_menu_list").optJSONObject(i));
+//                    article_menu_list.add(articleMenu);
+//                }
+//            }
+            article_date = jsonObject.optString("article_date");
+            article_content = jsonObject.optString("article_content");
+            article_menu = jsonObject.optString("article_menu");
+            article_tips = jsonObject.optString("article_tips");
             return this;
         }
         return null;

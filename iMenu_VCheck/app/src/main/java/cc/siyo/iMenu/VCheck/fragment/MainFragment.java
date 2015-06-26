@@ -65,6 +65,7 @@ public class MainFragment extends BaseFragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("article_id", mainAdapter.getDataList().get(position).article_id);
                 getActivity().startActivity(intent);
             }
         });
@@ -73,13 +74,9 @@ public class MainFragment extends BaseFragment{
     @Override
     public void initData() {
         finalHttp = new FinalHttp();
-//        UploadAdapter();
+        UploadAdapter();
         mainAdapter = new MainAdapter(getActivity(), R.layout.list_item_main);
         store_list.setAdapter(mainAdapter);
-
-        mainAdapter.getDataList().clear();
-        mainAdapter.getDataList().addAll(getArticleList());
-        mainAdapter.notifyDataSetChanged();
     }
 
     Handler handler = new Handler() {
@@ -95,6 +92,7 @@ public class MainFragment extends BaseFragment{
                             articleList = new ArrayList<>();
                             for (int i = 0; i < data.optJSONArray("article_list").length(); i++) {
                                 Article article = new Article().parse(data.optJSONArray("article_list").optJSONObject(i));
+                                Log.e(TAG, "TITLE ->" + article.title);
                                 articleList.add(article);
                             }
                             mainAdapter.getDataList().clear();
@@ -186,22 +184,22 @@ public class MainFragment extends BaseFragment{
      * filter_info:{filter_value:搜索关键字+region_id:地区ID} |
      * @return json
      */
-    private String makeJsonText_filterInfo() {
+    private JSONObject makeJsonText_filterInfo() {
         JSONObject json = new JSONObject();
         try {
             json.put("filter_value", "");
-            json.put("region_id", "");
+            json.put("region_id", "29");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return json.toString();
+        return json;
     }
 
     /***
      * pagination:{page；页+count：数量}
      * @return json
      */
-    private String makeJsonText_pagination() {
+    private JSONObject makeJsonText_pagination() {
         JSONObject json = new JSONObject();
         try {
             json.put("page", page + "");
@@ -209,21 +207,6 @@ public class MainFragment extends BaseFragment{
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return json.toString();
-    }
-
-    //TODO 假数据
-    /** 假数据封装*/
-    private List<Article> getArticleList(){
-        List<Article> articles = new ArrayList<>();
-        String t = "{\"article_id\":\"1\",\"title\":\"在美式旧日氛围里喝一杯自酿啤酒 地下酒馆双人菜单\",\"sub_title\":\"风味烤物自酿啤酒 夏日宵夜首选\",\"summary\":\"地下酒馆空间不大，设计思路参考了1920年代颁布禁酒令后的美国地下酒馆。几百种进口啤酒，美味的下酒小吃，还有幽默风趣愿意和你喝一杯的店主。夏日已至，约上爱酒好友，来此共度漫漫长夜。双人烤肉啤酒菜单，ENJOY 独享69折\",\"article_date\":\"2015-05-26 09:47:25\",\"menu_info\":{\"menu_id\":\"00\"},\"store_info\":{\"store_id\":\"2222\",\"store_name\":\"赵锋的店-在线付\",\"address\":\"金花北路26号\",\"longitude_num\":\"108.899122\",\"latitude_num\":\"34.222339\",\"tel_1\":\"029-88372520\",\"tel_2\":\"18602951905\",\"per\":\"300.00\",\"icon_image\":{\"thumb\":\"http://218.244.158.175/imenu_test/image/data/store/2222/thumb/221ECE640_thumb.jpg\",\"source\":\"http://218.244.158.175/imenu_test/image/data/store/2222/221ECE640.jpg\"}},\"member_info\":{\"member_id\":\"2\",\"member_name\":\"122\",\"sex\":\"1\",\"email\":\"moxiso@163.com\",\"mobile\":\"18602951906\",\"icon_image\":{\"thumb\":\"http://218.244.158.175/imenu_test/image/data/member/2/icon/thumb/73D842AEF_thumb.jpg\",\"source\":\"http://218.244.158.175/imenu_test/image/data/member/2/icon/73D842AEF.jpg\"}},\"tips_info\":\"00\"}\");";
-        try {
-            JSONObject jsonObject = new JSONObject(t);
-            articles.add(new Article().parse(jsonObject));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.e(TAG, "TITLE ->" + articles.get(0).title);
-        return  articles;
+        return json;
     }
 }

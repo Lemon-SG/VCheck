@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.text.Html;
+import android.util.Log;
+import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -28,7 +30,10 @@ public class DetailFragmentViewPagerAdapter extends FragmentPagerAdapter{
 
     @Override
     public Fragment getItem(int arg0) {
-        return fragmentList.get(arg0);
+        if(fragmentList != null && fragmentList.size() > 0){
+            return fragmentList.get(arg0);
+        }
+        return null;
     }
 
     @Override

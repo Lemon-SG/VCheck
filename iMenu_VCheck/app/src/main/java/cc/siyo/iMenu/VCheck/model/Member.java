@@ -21,6 +21,8 @@ public class Member extends BaseModel<Member> {
     public String email;
     /** 会员手机号*/
     public String mobile;
+    /** 图片资源*/
+    public Image icon_image;
 
     @Override
     public Member parse(JSONObject jsonObject) {
@@ -28,6 +30,7 @@ public class Member extends BaseModel<Member> {
             Log.e(TAG, "开始解析");
             member_id = jsonObject.optString("member_id");
             member_name = jsonObject.optString("member_name");
+            icon_image = new Image().parse(jsonObject.optJSONObject("icon_image"));
             sex = jsonObject.optString("sex");
             email = jsonObject.optString("email");
             mobile = jsonObject.optString("mobile");

@@ -9,7 +9,8 @@
         android:id="@+id/iv_lightSpot_img"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/img"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/test_menu_img"/>
 
     <TextView
         android:id="@+id/tv_lightSpot_title"

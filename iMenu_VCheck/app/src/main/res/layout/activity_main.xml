@@ -22,9 +22,10 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textColor="@color/white"
-                android:text="iMenu"/>
+                android:text="VCheck"/>
 
             <TextView
+                android:id="@+id/tv_show_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"

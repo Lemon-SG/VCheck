@@ -80,7 +80,7 @@ public class Constant {
     /** 请求数据页数*/
     public static final int PAGE = 1;
     /** 请求数据每页显示条数*/
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 5;
     /** 非法TOKEN CODE*/
     public static final String TOKEN_ERROR_CODE = "2002";
     /** 错误码:该手机号已存在*/

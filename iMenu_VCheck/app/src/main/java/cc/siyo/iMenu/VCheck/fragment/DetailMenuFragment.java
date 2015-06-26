@@ -28,10 +28,10 @@ public class DetailMenuFragment extends BaseFragment {
     /** 列表适配器*/
     private DetailMenuAdapter detailMenuAdapter;
 
-    public static final DetailMenuFragment newInstance(List<ArticleMenu> articleMenuList){
+    public static final DetailMenuFragment newInstance(String article_menu){
         DetailMenuFragment detailMenuFragment = new DetailMenuFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("articleMenuList", (Serializable) articleMenuList);
+        bundle.putString("article_menu", article_menu);
         detailMenuFragment.setArguments(bundle);
         return detailMenuFragment;
     }
@@ -49,17 +49,17 @@ public class DetailMenuFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        articleMenuList = new ArrayList<>();
-        detailMenuAdapter = new DetailMenuAdapter(getActivity(), R.layout.list_item_detail_menu);
-        list_menu.setAdapter(detailMenuAdapter);
-
-        if(getArguments() != null){
-            articleMenuList = (List<ArticleMenu>) getArguments().getSerializable("articleMenuList");
-            if(articleMenuList != null && articleMenuList.size() > 0){
-                detailMenuAdapter.getDataList().clear();
-                detailMenuAdapter.getDataList().addAll(articleMenuList);
-                detailMenuAdapter.notifyDataSetChanged();
-            }
-        }
+//        articleMenuList = new ArrayList<>();
+//        detailMenuAdapter = new DetailMenuAdapter(getActivity(), R.layout.list_item_detail_menu);
+//        list_menu.setAdapter(detailMenuAdapter);
+//
+//        if(getArguments() != null){
+//            articleMenuList = (List<ArticleMenu>) getArguments().getSerializable("articleMenuList");
+//            if(articleMenuList != null && articleMenuList.size() > 0){
+//                detailMenuAdapter.getDataList().clear();
+//                detailMenuAdapter.getDataList().addAll(articleMenuList);
+//                detailMenuAdapter.notifyDataSetChanged();
+//            }
+//        }
     }
 }

@@ -11,8 +11,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="-30dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/test_menu_img"/>
+
+    <ImageView
+        android:id="@+id/iv_member_img_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginRight="15dp"
         android:scaleType="fitXY"
-        android:src="@drawable/img"/>
+        android:src="@drawable/ic_member"/>
 
     <TextView
         android:id="@+id/tv_title"
@@ -44,7 +54,7 @@
             android:id="@+id/tv_special_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="17sp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:textColor="@color/orange_red"
@@ -64,17 +74,18 @@
             android:id="@+id/tv_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/tv_price_menu_unit"
             android:layout_centerVertical="true"
             android:textColor="@color/gray_b3"
             android:text="198元"/>
+
         <TextView
             android:id="@+id/tv_menu_stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:textColor="@color/orange_red"

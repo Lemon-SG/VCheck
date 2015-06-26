@@ -4,6 +4,8 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import cc.siyo.iMenu.VCheck.util.NumberFormatUtils;
+
 /**
  * Created by Lemon on 2015/6/4 16:28.
  * Desc:价格实体类
@@ -22,9 +24,8 @@ public class Price extends BaseModel<Price> {
     public Price parse(JSONObject jsonObject) {
         if(jsonObject != null && jsonObject.length() > 0){
             Log.e(TAG, "开始解析");
-            original_price = jsonObject.optString("original_price");
-            //TODO special_price文档上拼写为speical_price，待接口数据完成后对比
-            special_price = jsonObject.optString("special_price");
+            original_price = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("original_price")));
+            special_price = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("special_price")));
             price_unit = jsonObject.optString("price_unit");
             return this;
         }

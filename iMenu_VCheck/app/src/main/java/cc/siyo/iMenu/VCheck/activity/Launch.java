@@ -39,6 +39,7 @@ import cn.sharesdk.framework.ShareSDK;
 
 /**
  * Created by Lemon on 2015/5/26.
+ * 闪屏
  */
 public class Launch extends BaseActivity{
 
@@ -84,6 +85,12 @@ public class Launch extends BaseActivity{
     protected void onResume() {
         super.onResume();
         mContext = this;
+
+        if(getIntent() != null && getIntent().getDataString() != null) {
+            Intent intent = getIntent();
+            String data = intent.getDataString();
+            Log.e(TAG, data);
+        }
         tv_version.setText("version" + PackageUtils.getAppVersionName(mContext));
         finalHttp = new FinalHttp();
         if (checkNetwork()) {

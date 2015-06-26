@@ -13,11 +13,13 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Handler;
 
@@ -59,6 +61,8 @@ public class MainActivity extends FragmentActivity {
     private ImageView iv_mine;
     /** 选择城市按钮*/
     private LinearLayout ll_choose_city;
+    /** 显示当前城市名称*/
+    private TextView tv_show_city;
     /** 城市名称*/
     private ListView list_city;
     private PopupWindow popupWindow;
@@ -101,6 +105,7 @@ public class MainActivity extends FragmentActivity {
         animationController = new AnimationController();
         iv_mine = (ImageView) findViewById(R.id.iv_mine);
         ll_choose_city = (LinearLayout) findViewById(R.id.ll_choose_city);
+        tv_show_city = (TextView) findViewById(R.id.tv_show_city);
         iv_mine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +127,8 @@ public class MainActivity extends FragmentActivity {
         finalHttp = new FinalHttp();
         UploadAdapter_GetCityList();
         doUploadLoginWithToken();
+        //TODO 定位当前所在城市，如定位不到，打开popWindow，手动选择城市，暂时默认西安
+        tv_show_city.setText("西安");
     }
 
     @SuppressLint("HandlerLeak")
@@ -280,11 +287,21 @@ public class MainActivity extends FragmentActivity {
             popupWindow.showAsDropDown(ll_choose_city);
             animationController.fadeIn(list_city, 2000, 0);
 
-            RegionAdapter regionAdapter = new RegionAdapter(this, R.layout.list_item_textview);
+            final RegionAdapter regionAdapter = new RegionAdapter(this, R.layout.list_item_textview);
             list_city.setAdapter(regionAdapter);
-            regionAdapter.getDataList().clear();;
+            regionAdapter.getDataList().clear();
             regionAdapter.getDataList().addAll(regionList);
             regionAdapter.notifyDataSetChanged();
+
+            list_city.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    popupWindow.dismiss();
+                    tv_show_city.setText(regionAdapter.getDataList().get(position).getRegion_name());
+                    //TODO 切换城市后更新数据
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
         }else{
             if(popupWindow.isShowing()){
                 popupWindow.dismiss();

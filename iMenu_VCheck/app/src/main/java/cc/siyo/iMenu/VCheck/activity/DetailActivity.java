@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -38,6 +39,7 @@ import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Share;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
+import cc.siyo.iMenu.VCheck.util.Util;
 import cc.siyo.iMenu.VCheck.view.LoadingDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 import cc.siyo.iMenu.VCheck.view.viewpager_indicator.TabPageIndicator;
@@ -57,6 +59,7 @@ public class DetailActivity extends FragmentActivity{
     private TopBar topbar;
     /** ViewPager控件*/
     private ViewPager mPager;
+    private TabPageIndicator indicator;
     /** 碎片viewPager适配器*/
     private DetailFragmentViewPagerAdapter mAdapter;
     /** 碎片集合数据源*/
@@ -84,6 +87,12 @@ public class DetailActivity extends FragmentActivity{
     private TextView tv_detail_stockAndTime;
     /** 文章详情摘要显示*/
     private TextView tv_detail_summary;
+    /** 产品原价格显示*/
+    private TextView tv_detail_original_price;
+    /** 产品优惠价格显示*/
+    private TextView tv_detail_special_price;
+    /** 产品价格单位及人数单位显示*/
+    private TextView tv_detail_price_menu_unit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +109,9 @@ public class DetailActivity extends FragmentActivity{
         tv_detail_title = (TextView) findViewById(R.id.tv_detail_title);
         tv_detail_stockAndTime = (TextView) findViewById(R.id.tv_detail_stockAndTime);
         tv_detail_summary = (TextView) findViewById(R.id.tv_detail_summary);
+        tv_detail_original_price = (TextView) findViewById(R.id.tv_detail_original_price);
+        tv_detail_special_price = (TextView) findViewById(R.id.tv_detail_special_price);
+        tv_detail_price_menu_unit = (TextView) findViewById(R.id.tv_detail_price_menu_unit);
 
         topbar = (TopBar) findViewById(R.id.topbar);
         topbar.settitleViewText("礼遇详情");
@@ -138,23 +150,42 @@ public class DetailActivity extends FragmentActivity{
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 //        /** 只留一个分类*/
-        TabPageIndicator indicator = (TabPageIndicator)findViewById(R.id.indicator);
+        indicator = (TabPageIndicator)findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
     }
 
     /** 加载FragmentViewPager*/
     private void initViewPager(){
-        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content_list));
-        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu_list));
-        fragmentsList.add(new NoticeFragment().newInstance(article.store_info));
+        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content));
+        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu));
+        fragmentsList.add(new NoticeFragment().newInstance(article.article_tips));
         mAdapter.notifyDataSetChanged();
+        indicator.notifyDataSetChanged();
 
         tv_detail_title.setText(article.title);
         tv_detail_summary.setText(article.summary);
+        tv_detail_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit.menu_unit);
+        //判断是否有优惠价格：如果有优惠价格，显示优惠价格并显示原价添加删除线；如果没有优惠价格，显示原价，隐藏原价view
+        if(!StringUtils.isBlank(article.menu_info.price.special_price)){
+            //有优惠价格
+            Log.e(TAG, "有优惠价格");
+            tv_detail_special_price.setText(article.menu_info.price.special_price);
+            tv_detail_original_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
+            Util.PaintTvAddStrike(tv_detail_original_price);
+            tv_detail_original_price.setVisibility(View.VISIBLE);
+        }else{
+            //无优惠价格
+            Log.e(TAG, "无优惠价格");
+            tv_detail_special_price.setText(article.menu_info.price.original_price);
+            tv_detail_original_price.setVisibility(View.GONE);
+        }
         //TODO 分别用ID去调用菜品详情，商家详情，会员详情
 //        if(article.menu_info.stock != null){
 //            tv_detail_stockAndTime.setText("剩余" + article.menu_info.stock.menu_count + "   剩余" + article.article_date);
 //        }
+
+
+
     }
 
     private void initData(){
@@ -162,7 +193,7 @@ public class DetailActivity extends FragmentActivity{
             article_id = getIntent().getExtras().getString("article_id");
         }
         finalHttp = new FinalHttp();
-        UploadAdapter();
+        UploadAdapter_Articel();
         tv_detail_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,6 +204,7 @@ public class DetailActivity extends FragmentActivity{
         });
     }
 
+    /************************************ 请求数据 ********************************************/
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -208,18 +240,17 @@ public class DetailActivity extends FragmentActivity{
     };
 
     /** 获取产品详情请求*/
-    private void UploadAdapter() {
+    private void UploadAdapter_Articel() {
         ajaxParams = new AjaxParams();
         ajaxParams.put("route", API.GET_PRODUCT_DETAIL);
         ajaxParams.put("token", PreferencesUtils.getString(getApplicationContext(), Constant.KEY_TOKEN));
         ajaxParams.put("device_type", Constant.DEVICE_TYPE);
-        ajaxParams.put("jsonText", makeJsonText());
+        ajaxParams.put("jsonText", makeJsonText_Article());
         Log.e(TAG, Constant.REQUEST + API.GET_PRODUCT_DETAIL + "\n" + ajaxParams.toString());
         finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
-//                closeProgressDialog();
                 prompt(getResources().getString(R.string.request_time_out));
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }
@@ -227,7 +258,6 @@ public class DetailActivity extends FragmentActivity{
             @Override
             public void onStart() {
                 super.onStart();
-//                showProgressDialog(getResources().getString(R.string.loading));
             }
 
             @Override
@@ -258,16 +288,74 @@ public class DetailActivity extends FragmentActivity{
      * member_id	会员ID(可选)
      * article_id	文章ID(必须)
      */
-    private String makeJsonText() {
+    private String makeJsonText_Article() {
         JSONObject json = new JSONObject();
         try {
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
-            json.put("article_id", "1");//TODO article_id 暂写死为1
+            json.put("article_id", article_id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json.toString();
     }
+
+//    /** 获取菜品详情请求*/
+//    private void UploadAdapter_Menu() {
+//        ajaxParams = new AjaxParams();
+//        ajaxParams.put("route", API.GET_MENU_DETAIL);
+//        ajaxParams.put("token", PreferencesUtils.getString(getApplicationContext(), Constant.KEY_TOKEN));
+//        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+//        ajaxParams.put("jsonText", makeJsonText_Menu());
+//        Log.e(TAG, Constant.REQUEST + API.GET_MENU_DETAIL + "\n" + ajaxParams.toString());
+//        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
+//            @Override
+//            public void onFailure(Throwable t, int errorNo, String strMsg) {
+//                super.onFailure(t, errorNo, strMsg);
+//                prompt(getResources().getString(R.string.request_time_out));
+//                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+//            }
+//
+//            @Override
+//            public void onStart() {
+//                super.onStart();
+//            }
+//
+//            @Override
+//            public void onLoading(long count, long current) {
+//                super.onLoading(count, current);
+//            }
+//
+//            @Override
+//            public void onSuccess(String t) {
+//                super.onSuccess(t);
+//                if (!StringUtils.isBlank(t)) {
+//                    Log.e(TAG, Constant.RESULT + API.GET_MENU_DETAIL + "\n" + t.toString());
+//                    JSONStatus jsonStatus = BaseJSONData(t);
+//                    if (jsonStatus.isSuccess) {
+//                        handler.sendMessage(handler.obtainMessage(GET_MENU_DETAIL_SUCCESS, BaseJSONData(t)));
+//                    } else {
+//                        handler.sendMessage(handler.obtainMessage(GET_DETAIL_FALSE, BaseJSONData(t)));
+//                    }
+//                } else {
+//                    prompt(getResources().getString(R.string.request_no_data));
+//                }
+//            }
+//        });
+//    }
+
+//    /***
+//     * 请求数据封装
+//     * menu_id	菜品ID(必须)
+//     */
+//    private String makeJsonText_Menu() {
+//        JSONObject json = new JSONObject();
+//        try {
+//            json.put("menu_id", menu_id);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return json.toString();
+//    }
 
     /** 新浪回调监听*/
     private class SinaPlatformActionListener implements PlatformActionListener {
