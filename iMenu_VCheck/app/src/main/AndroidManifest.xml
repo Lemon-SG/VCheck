@@ -61,6 +61,7 @@
         <activity android:name=".activity.EditAccountActivity"/>
         <activity android:name=".activity.OrderWriteActivity"/>
         <activity android:name=".activity.FeedbackActivity"/>
+        <activity android:name=".activity.MenuBigImgViewPagerActivity"/>
         <activity android:name=".activity.Launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

@@ -10,11 +10,18 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.tsz.afinal.FinalBitmap;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
@@ -22,6 +29,7 @@ import net.tsz.afinal.http.AjaxParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +37,15 @@ import java.util.List;
 import cc.siyo.iMenu.VCheck.MyApplication;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.adapter.DetailFragmentViewPagerAdapter;
+import cc.siyo.iMenu.VCheck.adapter.ViewPagerAdapter;
 import cc.siyo.iMenu.VCheck.fragment.DetailLightSpotFragment;
 import cc.siyo.iMenu.VCheck.fragment.DetailMenuFragment;
 import cc.siyo.iMenu.VCheck.fragment.NoticeFragment;
 import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Article;
+import cc.siyo.iMenu.VCheck.model.ArticleImage;
 import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.model.Image;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Share;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
@@ -94,12 +105,30 @@ public class DetailActivity extends FragmentActivity{
     /** 产品价格单位及人数单位显示*/
     private TextView tv_detail_price_menu_unit;
 
+    /** viewPager*/
+    private ViewPager viewpager_detail_imgList;
+    /** viewPager小圆点*/
+    private LinearLayout ll_viewpager_dian_detail_imgList;
+    /** viewPage适配器 */
+    private ViewPagerAdapter mViewPagerAdapter;
+    /** 小圆点的ImageView */
+    private ImageView[] imageViews;
+    /** 文章内图片集合*/
+    private List<ArticleImage> articleImageList;
+    /** A FINAL 框架的HTTP请求工具*/
+    private FinalBitmap finalBitmap;
+    /** 记录当前viewpager position*/
+    private int index = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
         context = getApplicationContext();
+        finalBitmap = FinalBitmap.create(context);
+        finalBitmap.configLoadingImage(R.drawable.test_menu_img);
+        finalBitmap.configLoadfailImage(R.drawable.test_menu_img);
         initView();
         initData();
     }
@@ -112,6 +141,8 @@ public class DetailActivity extends FragmentActivity{
         tv_detail_original_price = (TextView) findViewById(R.id.tv_detail_original_price);
         tv_detail_special_price = (TextView) findViewById(R.id.tv_detail_special_price);
         tv_detail_price_menu_unit = (TextView) findViewById(R.id.tv_detail_price_menu_unit);
+        viewpager_detail_imgList = (ViewPager) findViewById(R.id.viewpager_detail_imgList);
+        ll_viewpager_dian_detail_imgList = (LinearLayout) findViewById(R.id.ll_viewpager_dian_detail_imgList);
 
         topbar = (TopBar) findViewById(R.id.topbar);
         topbar.settitleViewText("礼遇详情");
@@ -149,6 +180,7 @@ public class DetailActivity extends FragmentActivity{
 
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
+        mPager.setOnPageChangeListener(new FragmentPageChangeListener());
 //        /** 只留一个分类*/
         indicator = (TabPageIndicator)findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
@@ -156,9 +188,12 @@ public class DetailActivity extends FragmentActivity{
 
     /** 加载FragmentViewPager*/
     private void initViewPager(){
-        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content));
-        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu));
-        fragmentsList.add(new NoticeFragment().newInstance(article.article_tips));
+//        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content));
+//        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu));
+//        fragmentsList.add(new NoticeFragment().newInstance(article.article_tips));
+        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content_list));
+        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu_list, article.article_image_list));
+        fragmentsList.add(new NoticeFragment().newInstance(article.store_info));
         mAdapter.notifyDataSetChanged();
         indicator.notifyDataSetChanged();
 
@@ -183,9 +218,30 @@ public class DetailActivity extends FragmentActivity{
 //        if(article.menu_info.stock != null){
 //            tv_detail_stockAndTime.setText("剩余" + article.menu_info.stock.menu_count + "   剩余" + article.article_date);
 //        }
+        if(article.article_image_list != null && article.article_image_list.size() > 0) {
+            List<View> mViewList = new ArrayList<>();
+            articleImageList = article.article_image_list;
 
-
-
+            for (int i = 0; i < articleImageList.size(); i++) {
+                LayoutInflater inflater = getLayoutInflater();
+                View view = inflater.inflate(R.layout.layout_detail_viewpager_item, null);
+                ImageView iv_viewpager_img = (ImageView) view.findViewById(R.id.iv_viewpager_img);
+                finalBitmap.display(iv_viewpager_img, articleImageList.get(i).image.source);
+                index = i;
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        switchBigViewPager(viewpager_detail_imgList.getCurrentItem());
+                    }
+                });
+                mViewList.add(view);
+            }
+            setImageDian(mViewList);
+            mViewPagerAdapter = new ViewPagerAdapter(context, mViewList);
+            viewpager_detail_imgList.setAdapter(mViewPagerAdapter);
+            viewpager_detail_imgList.getParent().requestDisallowInterceptTouchEvent(true);
+            viewpager_detail_imgList.setOnPageChangeListener(new PageChangeListener());
+        }
     }
 
     private void initData(){
@@ -297,6 +353,83 @@ public class DetailActivity extends FragmentActivity{
             e.printStackTrace();
         }
         return json.toString();
+    }
+
+    /** 指引页面更改事件监听器 */
+    class PageChangeListener implements ViewPager.OnPageChangeListener {
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+
+        @Override
+        public void onPageSelected(int arg0) {
+            // 遍历数组让当前选中图片下的小圆点设置颜色
+            for (int i = 0; i < imageViews.length; i++) {
+                imageViews[arg0]
+                        .setBackgroundResource(R.drawable.page_indicator_focused);
+                if (arg0 != i) {
+                    imageViews[i]
+                            .setBackgroundResource(R.drawable.page_indicator_unfocused);
+                }
+            }
+        }
+    }
+
+    /** 指引页面更改事件监听器 */
+    class FragmentPageChangeListener implements ViewPager.OnPageChangeListener {
+
+        @Override
+        public void onPageScrollStateChanged(int arg0) {
+        }
+
+        @Override
+        public void onPageScrolled(int arg0, float arg1, int arg2) {
+        }
+
+        @Override
+        public void onPageSelected(int arg0) {
+//            mPager.setCurrentItem(arg0, false);
+        }
+    }
+
+    /** 设置图片下方的小圆点 */
+    private void setImageDian(List<View> mViewsList) {
+        ll_viewpager_dian_detail_imgList.removeAllViews();
+        imageViews = new ImageView[mViewsList.size()];
+        System.out.println("mViewsList:" + mViewsList.size());
+        for (int i = 0; i < mViewsList.size(); i++) {
+            LinearLayout.LayoutParams margin = new LinearLayout.LayoutParams(20,20);
+            // 设置每个小圆点距离左边的间距
+            margin.setMargins(5, 0, 5, 0);
+            ImageView imageView = new ImageView(this);
+            imageViews[i] = imageView;
+            if (i == 0) {
+                // 默认选中第一张图片
+                imageViews[i].setBackgroundResource(R.drawable.page_indicator_focused);
+            } else {
+                // 其他图片都设置未选中状态
+                imageViews[i].setBackgroundResource(R.drawable.page_indicator_unfocused);
+            }
+            ll_viewpager_dian_detail_imgList.setGravity(Gravity.CENTER_VERTICAL
+                    | Gravity.CENTER_HORIZONTAL);
+            ll_viewpager_dian_detail_imgList.addView(imageViews[i], margin);
+        }
+    }
+
+    /** 跳转大图模式*/
+    private void switchBigViewPager(int index) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("articleImageList", (Serializable) articleImageList);
+        bundle.putInt("index", index);
+        intent.putExtra("bundle", bundle);
+        intent.setClass(context, MenuBigImgViewPagerActivity.class);
+        startActivity(intent);
     }
 
 //    /** 获取菜品详情请求*/

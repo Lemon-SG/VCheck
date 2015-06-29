@@ -2,6 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/activity/Launch.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/activity/MenuBigImgViewPagerActivity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/adapter/DetailLightSpotAdapter.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/adapter/DetailMenuAdapter.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/adapter/RegionAdapter.java" charset="UTF-8" />
@@ -20,6 +21,7 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Stock.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Store.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/model/Tips.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/util/DataCleanManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/cc/siyo/iMenu/VCheck/view/MyViewPager.java" charset="UTF-8" />
   </component>
 </project>

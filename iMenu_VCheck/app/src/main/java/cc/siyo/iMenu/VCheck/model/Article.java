@@ -40,12 +40,12 @@ public class Article extends BaseModel<Article>{
     public List<ArticleImage> article_image_list;
     /** 收藏实体类*/
     public Collection collection_info;
-//    /** 分享实体类*/
-//    public Share share_info;
-//    /** 文章亮点实体类*/
-//    public List<ArticleContent> article_content_list;
-//    /** 文章菜单列表*/
-//    public List<ArticleMenu> article_menu_list;
+    /** 分享实体类*/
+    public Share share_info;
+    /** 文章亮点实体类*/
+    public List<ArticleContent> article_content_list;
+    /** 文章菜单列表*/
+    public List<ArticleMenu> article_menu_list;
     /** 文章日期*/
     public String article_date;
     /** 文章亮点*/
@@ -94,20 +94,20 @@ public class Article extends BaseModel<Article>{
 //            if(jsonObject.optJSONObject("share_info") != null && jsonObject.optJSONObject("share_info").length() > 0){
 //                share_info = new Share().parse(jsonObject.optJSONObject("share_info"));
 //            }
-//            if(jsonObject.optJSONArray("article_content_list") != null && jsonObject.optJSONArray("article_content_list").length() > 0){
-//                article_content_list = new ArrayList<>();
-//                for (int i = 0; i < jsonObject.optJSONArray("article_content_list").length(); i++) {
-//                    ArticleContent articleContent = new ArticleContent().parse(jsonObject.optJSONArray("article_content_list").optJSONObject(i));
-//                    article_content_list.add(articleContent);
-//                }
-//            }
-//            if(jsonObject.optJSONArray("article_menu_list") != null && jsonObject.optJSONArray("article_menu_list").length() > 0){
-//                article_menu_list = new ArrayList<>();
-//                for (int i = 0; i < jsonObject.optJSONArray("article_menu_list").length(); i++) {
-//                    ArticleMenu articleMenu = new ArticleMenu().parse(jsonObject.optJSONArray("article_menu_list").optJSONObject(i));
-//                    article_menu_list.add(articleMenu);
-//                }
-//            }
+            if(jsonObject.optJSONArray("article_content_list") != null && jsonObject.optJSONArray("article_content_list").length() > 0){
+                article_content_list = new ArrayList<>();
+                for (int i = 0; i < jsonObject.optJSONArray("article_content_list").length(); i++) {
+                    ArticleContent articleContent = new ArticleContent().parse(jsonObject.optJSONArray("article_content_list").optJSONObject(i));
+                    article_content_list.add(articleContent);
+                }
+            }
+            if(jsonObject.optJSONArray("article_menu_list") != null && jsonObject.optJSONArray("article_menu_list").length() > 0){
+                article_menu_list = new ArrayList<>();
+                for (int i = 0; i < jsonObject.optJSONArray("article_menu_list").length(); i++) {
+                    ArticleMenu articleMenu = new ArticleMenu().parse(jsonObject.optJSONArray("article_menu_list").optJSONObject(i));
+                    article_menu_list.add(articleMenu);
+                }
+            }
             article_date = jsonObject.optString("article_date");
             article_content = jsonObject.optString("article_content");
             article_menu = jsonObject.optString("article_menu");

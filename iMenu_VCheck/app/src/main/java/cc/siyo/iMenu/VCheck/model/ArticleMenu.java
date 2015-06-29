@@ -16,7 +16,7 @@ public class ArticleMenu extends BaseModel<ArticleMenu> {
     /** 菜单标题*/
     public String title;
     /** 菜单内容*/
-    public String content;
+    public String[] content;
 
     @Override
     public ArticleMenu parse(JSONObject jsonObject) {
@@ -24,7 +24,13 @@ public class ArticleMenu extends BaseModel<ArticleMenu> {
             Log.e(TAG, "开始解析");
             article_menu_id = jsonObject.optString("article_menu_id");
             title = jsonObject.optString("title");
-            content = jsonObject.optString("content");
+            if(jsonObject.optJSONArray("content") != null && jsonObject.optJSONArray("content").length() > 0) {
+                content = new String[jsonObject.optJSONArray("content").length()];
+                for (int i = 0; i < jsonObject.optJSONArray("content").length(); i++) {
+                    content[i] = jsonObject.optJSONArray("content").optString(i);
+                }
+            }
+
             return this;
         }
         return null;

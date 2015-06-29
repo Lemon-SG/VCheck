@@ -85,7 +85,6 @@ public class MainAdapter extends AbsAdapter<Article> {
             tv_title.setText(article.title);
             tv_sub_title.setText(article.sub_title);
             tv_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit.menu_unit);
-            //TODO 待测试优惠价格的展示方式
             //判断是否有优惠价格：如果有优惠价格，显示优惠价格并显示原价添加删除线；如果没有优惠价格，显示原价，隐藏原价view
             if(!StringUtils.isBlank(article.menu_info.price.special_price)){
                 //有优惠价格

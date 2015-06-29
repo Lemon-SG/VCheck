@@ -82,13 +82,14 @@ public class MainActivity extends FragmentActivity {
     private static final int GET_CITY_LIST_FALSE = 2000;
     /** 城市列表*/
     private List<Region> regionList;
+    private FinalDb db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
+        db = FinalDb.create(MainActivity.this, true);
         if(fragmentsList == null)
             fragmentsList = new ArrayList<Fragment>();
         fragmentsList.add(new MainFragment());
@@ -151,7 +152,6 @@ public class MainActivity extends FragmentActivity {
                         if(data != null){
                             JSONArray jsonArray = data.optJSONArray("region_list");
                             if(jsonArray != null && jsonArray.length() > 0){
-                                FinalDb db = FinalDb.create(MainActivity.this, true);
                                 for (int i = 0; i < jsonArray.length(); i++) {
                                     Region region = new Region().parse(jsonArray.optJSONObject(i));
                                     if(db.findById(region.region_id, Region.class) != null){
@@ -171,7 +171,6 @@ public class MainActivity extends FragmentActivity {
                     break;
                 case GET_CITY_LIST_FALSE:
                     if(msg.obj != null){
-                        FinalDb db = FinalDb.create(getApplicationContext());
                         regionList = db.findAll(Region.class);
                     }
                     break;
@@ -240,7 +239,6 @@ public class MainActivity extends FragmentActivity {
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.request_time_out), Toast.LENGTH_SHORT).show();
-                FinalDb db = FinalDb.create(getApplicationContext());
                 regionList = db.findAll(Region.class);
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }

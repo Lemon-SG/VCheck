@@ -7,7 +7,7 @@ import android.view.View;
 
 /**
  * Created by Lemon on 2015/5/6.
- * Desc:
+ * Desc:自定义viewpager
  */
 public class MyViewPager extends ViewPager{
     private static final String TAG = "MyViewPager";

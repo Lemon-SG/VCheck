@@ -39,7 +39,15 @@ public class DetailMenuAdapter extends AbsAdapter<ArticleMenu> {
         @Override
         public void updateData(ArticleMenu articleMenu, int position) {
             tv_menu_title.setText(articleMenu.title);
-            tv_menu_content.setText(articleMenu.content);
+            if(articleMenu.content != null && articleMenu.content.length > 0) {
+                StringBuffer buffer = new StringBuffer();
+                for (int i = 0; i < articleMenu.content.length; i++) {
+                    buffer.append(articleMenu.content[i]);
+                    buffer.append("\n");
+                }
+                tv_menu_content.setText(buffer);
+            }
+
         }
 
         @Override

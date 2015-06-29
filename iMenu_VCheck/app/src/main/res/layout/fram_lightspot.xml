@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<ListView-->
-        <!--android:id="@+id/list_lightSpot"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"/>-->
-
-    <WebView
-        android:id="@+id/web_lightSpot"
+    <ListView
+        android:id="@+id/list_lightSpot"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"/>
+        android:layout_height="wrap_content"/>
+
+    <!--<WebView-->
+        <!--android:id="@+id/web_lightSpot"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="20dp"/>-->
 </LinearLayout>

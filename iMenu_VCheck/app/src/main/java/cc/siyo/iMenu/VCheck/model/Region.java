@@ -7,7 +7,6 @@ import org.json.JSONObject;
 @Table(name = "region_list")
 public class Region extends BaseModel<Region> {
 
-    private static final String TAG = "Region";
     @Id(column = "region_id")
     public String region_id;
     public String parent_id;

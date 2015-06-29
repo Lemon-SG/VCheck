@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import net.tsz.afinal.FinalBitmap;
+
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.ArticleContent;
 
@@ -17,9 +19,13 @@ public class DetailLightSpotAdapter extends AbsAdapter<ArticleContent> {
 
     private static final String TAG = "LightSpotListAdapter";
     private Context mContext;
+    FinalBitmap finalBitmap;
 
     public DetailLightSpotAdapter(Activity context, int layout) {
         super(context, layout);
+        finalBitmap = FinalBitmap.create(context);
+        finalBitmap.configLoadingImage(R.drawable.test_menu_img);
+        finalBitmap.configLoadfailImage(R.drawable.test_menu_img);
     }
 
     @Override
@@ -47,7 +53,7 @@ public class DetailLightSpotAdapter extends AbsAdapter<ArticleContent> {
         public void updateData(ArticleContent articleContent, int position) {
             tv_lightSpot_title.setText(articleContent.title);
             tv_lightSpot_content.setText(articleContent.content);
-            //TODO 图片展示待完善
+            finalBitmap.display(iv_lightSpot_img, articleContent.image.source);
         }
 
         @Override
