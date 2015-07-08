@@ -5,9 +5,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import net.tsz.afinal.FinalBitmap;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -34,12 +36,14 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     private static final String TAG = "MineActivity";
     /** 头部*/
     @ViewInject(id = R.id.topbar)private TopBar topbar;
-    /** 去登陆按钮*/
-    @ViewInject(id = R.id.ll_login)private LinearLayout ll_login;
     /** 反馈按钮*/
     @ViewInject(id = R.id.ll_feedback)private LinearLayout ll_feedback;
+    /** 我的订单按钮*/
+    @ViewInject(id = R.id.ll_order_list)private LinearLayout ll_order_list;
     /** 昵称显示*/
     @ViewInject(id = R.id.tv_mine_nickName)private TextView tv_mine_nickName;
+    /** 头像*/
+    @ViewInject(id = R.id.iv_user_headImg)private ImageView iv_user_headImg;
     /** A FINAL框架的HTTP请求工具 */
     private FinalHttp finalHttp;
     /** 封装参数的键值对 */
@@ -49,17 +53,23 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     /** 登出失败标石*/
     private static final int GET_MEMBER_DETAIL_FALSE = 200;
     private Member member;
+    /** A FINAL 框架的HTTP请求工具*/
+    private FinalBitmap finalBitmap;
 
     @Override
     public int getContentView() {
+        finalBitmap = FinalBitmap.create(this);
+        finalBitmap.configLoadingImage(R.drawable.ic_member);
+        finalBitmap.configLoadfailImage(R.drawable.ic_member);
         return R.layout.activity_mine;
     }
 
     @Override
     public void initView() {
-        ll_login = (LinearLayout) findViewById(R.id.ll_login);
-        ll_login.setOnClickListener(this);
+        iv_user_headImg.setOnClickListener(this);
+        tv_mine_nickName.setOnClickListener(this);
         ll_feedback.setOnClickListener(this);
+        ll_order_list.setOnClickListener(this);
         topbar = (TopBar)findViewById(R.id.topbar);
         topbar.settitleViewText("我的账户");
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
@@ -74,6 +84,14 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     @Override
     public void initData() {
         finalHttp = new FinalHttp();
+        if(StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))
+            || PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN).equals("null")){
+            //未登录状态
+            tv_mine_nickName.setText("立即登录赢礼券");
+        }else{
+            //已登录状态
+            UploadAdapter();
+        }
     }
 
     Handler handler = new Handler() {
@@ -90,6 +108,8 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                                 //个人详情
                                 member = new Member().parse(data.optJSONObject("member_info"));
                                 tv_mine_nickName.setText(member.member_name);
+                                Log.e(TAG, member.icon_image.thumb);
+                                finalBitmap.display(iv_user_headImg, member.icon_image.thumb);
                             }
                             if(data.optJSONObject("order_info") != null){
                                 //订单详情
@@ -190,7 +210,8 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.ll_login:
+            case R.id.iv_user_headImg:
+            case R.id.tv_mine_nickName:
                 //跳转登录界面,if 登录成功点击跳转至账户设置 AccountSettingActivity
                 if(StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))
                         || PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN).equals("null")){
@@ -213,6 +234,15 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                     prompt("请先登录");
                 }
                 break;
+            case R.id.ll_order_list:
+                //我的订单
+                if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
+                    Intent intent_order = new Intent(MineActivity.this, OrderListActivity.class);
+                    startActivity(intent_order);
+                }else{
+                    prompt("请先登录");
+                }
+                break;
         }
     }
 
@@ -224,25 +254,19 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                 case Constant.RESULT_CODE_LOGIN:
                     //登陆成功
                     Log.e(TAG, "登陆成功，稍后去请求个人信息接口");
+                    UploadAdapter();
                     break;
                 case Constant.RESULT_CODE_EDIT_ACCOUNT:
                     //登陆成功
                     Log.e(TAG, "修改账户信息返回，在本地更新昵称等");
+                    UploadAdapter();
+                    break;
+                case Constant.RESULT_CODE_LOGOUT:
+                    //退出登录
+                    tv_mine_nickName.setText("立即登录赢礼券");
+                    iv_user_headImg.setImageResource(R.drawable.ic_member);
                     break;
             }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))
-                || PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN).equals("null")){
-            //未登录状态
-            tv_mine_nickName.setText("立即登录赢礼券");
-        }else{
-            //已登录状态
-            UploadAdapter();
         }
     }
 }

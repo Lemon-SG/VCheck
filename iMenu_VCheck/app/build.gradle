@@ -25,5 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile files('libs/afinal_0.5_bin.jar')
     compile files('libs/Xg_sdk_v2.37.jar')
+    compile files('libs/alipaySDK-20150610.jar')
+    compile files('libs/libammsdk.jar')
 }
 

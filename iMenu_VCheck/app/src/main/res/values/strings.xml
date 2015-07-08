@@ -13,4 +13,8 @@
     <string name="no_network" translatable="false">网络出现问题了，请设置</string>
     <string name="found_newVersion" translatable="false">发现新版本，请更新</string>
     <string name="down_downing" translatable="false">正在下载</string>
+    <!--这个界面用于显示微信支付的结果-->
+    <string name="pay_result_tip" translatable="false">微信支付结果：%s</string>
+    <!--微信支付结果：%s-->
+    <string name="pay_result_callback_msg" formatted="false" translatable="false">这个界面用于显示微信支付的结果-></string>
 </resources>

@@ -6,7 +6,6 @@ package cc.siyo.iMenu.VCheck.model;
  */
 public class API {
 
-    private static final String TAG = "API";
     public static final String server = "http://218.244.158.175/imenu_test/app_interface_vcheck/index.php";
 
     /** 基本-获取配置信息 */
@@ -43,4 +42,20 @@ public class API {
     public static final String GET_STORE_DETAIL = "store/store/getStoreDetail";
     /** 获取菜品详情*/
     public static final String GET_MENU_DETAIL = "store/menu/getMenuDetail";
+    /** 编辑收藏产品*/
+    public static final String EDIT_COLLECTION_PRODUCT = "member/collection/editCollectionProduct";
+    /** 编辑头像*/
+    public static final String EDIT_MEMBER_ICON = "member/member/editMemberIcon";
+    /** 编辑购物车*/
+    public static final String EDIT_CART = "sale/order/editCart";
+    /** 提交订单*/
+    public static final String ADD_ORDER = "sale/order/addOrder";
+    /** 编辑结算信息*/
+    public static final String CHECKOUT = "sale/order/checkout";
+    /** 生成支付数据*/
+    public static final String GENERATE_PAY_DATA = "sale/order/generatePayData";
+    /** 提交支付订单*/
+    public static final String SUBMIT_PAY_ORDER = "sale/order/submitPayOrder";
+    /** 获取订单列表*/
+    public static final String GET_ORDER_LIST = "sale/order/getOrderList";
 }

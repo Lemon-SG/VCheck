@@ -23,6 +23,7 @@ import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.util.MD5;
+import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 import cn.sharesdk.framework.Platform;
@@ -59,7 +60,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private static final int LOGIN_SUCCESS = 100;
     /** 登录失败标石*/
     private static final int LOGIN_FALSE = 200;
-    /** 输入的用户名是什么类型*/
+    /** 输入的用户名是什么类型->1-手机号码/2-用户名*/
     private String loginType;
 
     @Override
@@ -113,6 +114,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         String member_id = data.optString(Constant.KEY_MEMBER_ID);
                         String token = data.optString(Constant.KEY_TOKEN);
                         savePreferences(member_id, token);
+                        if(loginType.equals("1")) {
+                            PreferencesUtils.putString(LoginActivity.this, Constant.KEY_MOBILE, et_login_name.getText().toString());
+                        }
                         setResult(Constant.RESULT_CODE_LOGIN);
                         finish();
 //                        UploadGetSellerDetail(seller_id);

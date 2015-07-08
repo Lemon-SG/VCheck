@@ -33,6 +33,34 @@ public class Constant {
     public static final int SHARE_TYPE_WECHAT = 3;
     /** 分享种类标石:微信朋友圈分享*/
     public static final int SHARE_TYPE_WECHAT_MOMENT = 4;
+    /** 编辑收藏操作标石:1-添加*/
+    public static final int COLLECT_TYPE_OPERATOR_ADD = 1;
+    /** 编辑收藏操作标石:2-删除*/
+    public static final int COLLECT_TYPE_OPERATOR_DELETE = 2;
+    /** 编辑收藏操作标石:3-清空)*/
+    public static final int COLLECT_TYPE_OPERATOR_CLEAN = 3;
+    /** 购物车操作类型标石:1-编辑*/
+    public static final int OPERATOR_TYPE_EDIT = 1;
+    /** 购物车操作类型标石:2-清空*/
+    public static final int OPERATOR_TYPE_CLEAN = 2;
+
+    /****************************        拍照     **********************************/
+    /** 作用: SD卡根目录 */
+    public static final String PATH = Environment.getExternalStorageDirectory().getPath();
+    /** 作用: 数据文件夹 */
+    public static final String PATH_ROOT = PATH + "/VCheck";
+    /** 作用: 头像文件夹 */
+    public static final String PATH_HEADPHOTO_IMG = PATH_ROOT + "/HeadPhoto/";
+    /** 作用: 用户选择头像 图片请求码 */
+    public static final int USERINFO_IAMGELIB_REQUEST = 108;
+    /** 作用: 用户拍照请求码 */
+    public static final int USERINFO_CAMERA_REQUEST = 109;
+    /** 作用: 剪贴图片页面请求码 */
+    public static final int USERINFO_CLIP_REQUEST = 110;
+    /** 作用: 用户头像 */
+    public static final String USERINFO_HEADIMG = 0 + "";
+    /** 作用: 存储路径追加字符串*/
+    public static final String  MEMBERICON = "MEMBERICON";
 
     /*****************************   INTENT CODE   *********************************/
     /** INTENT RESQUEST_CODE*/
@@ -49,6 +77,8 @@ public class Constant {
     public static final String KEY_MEMBER_ID = "member_id";
     /** token*/
     public static final String KEY_TOKEN = "token";
+    /** 手机号*/
+    public static final String KEY_MOBILE = "mobile";
 
     /******************************   版本更新   *********************************/
     /** 版本更新APK保存路径*/
@@ -87,4 +117,17 @@ public class Constant {
     public static final int ERROR_CODE_MOBILE_HERE = 2013;
     /** 错误码:该邮箱已存在*/
     public static final int ERROR_CODE_EMAIL_HERE = 2016;
+
+    /**************************      支付      ****************************/
+    /** paymentCode:支付宝支付*/
+    public static final String PAMENT_CODE_ALIPAY = "alipay";
+    /** paymentCode:微信支付*/
+    public static final String PAMENT_CODE_WECHAT = "weixin_pay";
+    /********** 微信支付参数 **********/
+    /** appid 请同时修改  androidmanifest.xml里面，.PayActivityd里的属性<data android:scheme="wxb4ba3c02aa476ea1"/>为新设置的appid*/
+    public static final String APP_ID = "wx79252ca0921c523d";
+    /** 商户号*/
+    public static final String MCH_ID = "1233848001";
+    /** API密钥，在商户平台设置*/
+    public static final  String API_KEY="412fde4e9c2e2bb619514ecea142e449";
 }

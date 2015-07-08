@@ -62,6 +62,18 @@
         <activity android:name=".activity.OrderWriteActivity"/>
         <activity android:name=".activity.FeedbackActivity"/>
         <activity android:name=".activity.MenuBigImgViewPagerActivity"/>
+        <activity android:name=".activity.OrderListActivity"/>
+        <activity android:name=".activity.OrderConfirmActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="wx79252ca0921c523d"/><!-- 微信demo：wxf2f565574a968187-->
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="cc.siyo.iMenu.VCheck.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
         <activity android:name=".activity.Launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -77,6 +89,21 @@
                 <!--scheme不能大写-->
             </intent-filter>
         </activity>
+
+        /**************************** 支付宝↓ ***************************/
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+        /**************************** 支付宝↑ ***************************/
 
         <activity
             android:name="com.mob.tools.MobUIShell"

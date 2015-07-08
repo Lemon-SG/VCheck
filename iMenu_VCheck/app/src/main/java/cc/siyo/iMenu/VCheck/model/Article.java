@@ -54,6 +54,8 @@ public class Article extends BaseModel<Article>{
     public String article_menu;
     /** 文章提示*/
     public String article_tips;
+    /** 订单实体*/
+    public OrderInfo orderInfo;
 
     @Override
     public Article parse(JSONObject jsonObject) {
@@ -90,6 +92,9 @@ public class Article extends BaseModel<Article>{
             }
             if(jsonObject.optJSONObject("collection_info") != null && jsonObject.optJSONObject("collection_info").length() > 0){
                 collection_info = new Collection().parse(jsonObject.optJSONObject("collection_info"));
+            }
+            if(jsonObject.optJSONObject("order_info") != null && jsonObject.optJSONObject("order_info").length() > 0){
+                orderInfo = new OrderInfo().parse(jsonObject.optJSONObject("order_info"));
             }
 //            if(jsonObject.optJSONObject("share_info") != null && jsonObject.optJSONObject("share_info").length() > 0){
 //                share_info = new Share().parse(jsonObject.optJSONObject("share_info"));

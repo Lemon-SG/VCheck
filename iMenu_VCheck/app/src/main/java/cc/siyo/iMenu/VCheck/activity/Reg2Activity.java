@@ -21,6 +21,7 @@ import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.MyCookieStore;
 import cc.siyo.iMenu.VCheck.util.MD5;
+import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
@@ -100,6 +101,7 @@ public class Reg2Activity extends BaseActivity{
                         String member_id = data.optString(Constant.KEY_MEMBER_ID);
                         String token = data.optString(Constant.KEY_TOKEN);
                         savePreferences(member_id, token);
+                        PreferencesUtils.putString(Reg2Activity.this, Constant.KEY_MOBILE, mobile);
                         finish();
                     }
                     break;

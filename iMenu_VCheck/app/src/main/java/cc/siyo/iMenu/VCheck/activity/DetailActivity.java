@@ -8,16 +8,13 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +23,7 @@ import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,7 +43,6 @@ import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Article;
 import cc.siyo.iMenu.VCheck.model.ArticleImage;
 import cc.siyo.iMenu.VCheck.model.Constant;
-import cc.siyo.iMenu.VCheck.model.Image;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Share;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
@@ -58,7 +55,6 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
-
 /**
  * Created by Lemon on 2015/5/6.
  * Desc:详情页面
@@ -85,6 +81,10 @@ public class DetailActivity extends FragmentActivity{
     private static final int GET_DETAIL_SUCCESS = 100;
     /** 获取产品详情失败标石*/
     private static final int GET_DETAIL_FALSE = 200;
+    /** 获取产品详情成功标石*/
+    private static final int EDIT_COLLECTION_PRODUCT_SUCCESS = 300;
+    /** 获取产品详情失败标石*/
+    private static final int EDIT_COLLECTION_PRODUCT_FALSE = 400;
     /** 加载圈*/
     private LoadingDialog loadingDialog;
     private Context context;
@@ -104,6 +104,10 @@ public class DetailActivity extends FragmentActivity{
     private TextView tv_detail_special_price;
     /** 产品价格单位及人数单位显示*/
     private TextView tv_detail_price_menu_unit;
+    /** 分享获取现金礼券按钮*/
+    private TextView tv_share_get_gift;
+    /** 收藏按钮*/
+    private TextView tv_detail_collect;
 
     /** viewPager*/
     private ViewPager viewpager_detail_imgList;
@@ -117,8 +121,10 @@ public class DetailActivity extends FragmentActivity{
     private List<ArticleImage> articleImageList;
     /** A FINAL 框架的HTTP请求工具*/
     private FinalBitmap finalBitmap;
-    /** 记录当前viewpager position*/
-    private int index = 0;
+    /** 收藏标石：true->已收藏 | false->未收藏*/
+    private boolean isCollect = false;
+    /** 收藏数量*/
+    private int collectCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +149,8 @@ public class DetailActivity extends FragmentActivity{
         tv_detail_price_menu_unit = (TextView) findViewById(R.id.tv_detail_price_menu_unit);
         viewpager_detail_imgList = (ViewPager) findViewById(R.id.viewpager_detail_imgList);
         ll_viewpager_dian_detail_imgList = (LinearLayout) findViewById(R.id.ll_viewpager_dian_detail_imgList);
+        tv_detail_collect = (TextView) findViewById(R.id.tv_detail_collect);
+        tv_share_get_gift = (TextView) findViewById(R.id.tv_share_get_gift);
 
         topbar = (TopBar) findViewById(R.id.topbar);
         topbar.settitleViewText("礼遇详情");
@@ -188,46 +196,14 @@ public class DetailActivity extends FragmentActivity{
 
     /** 加载FragmentViewPager*/
     private void initViewPager(){
-//        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content));
-//        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu));
-//        fragmentsList.add(new NoticeFragment().newInstance(article.article_tips));
-        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content_list));
-        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu_list, article.article_image_list));
-        fragmentsList.add(new NoticeFragment().newInstance(article.store_info));
-        mAdapter.notifyDataSetChanged();
-        indicator.notifyDataSetChanged();
-
-        tv_detail_title.setText(article.title);
-        tv_detail_summary.setText(article.summary);
-        tv_detail_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit.menu_unit);
-        //判断是否有优惠价格：如果有优惠价格，显示优惠价格并显示原价添加删除线；如果没有优惠价格，显示原价，隐藏原价view
-        if(!StringUtils.isBlank(article.menu_info.price.special_price)){
-            //有优惠价格
-            Log.e(TAG, "有优惠价格");
-            tv_detail_special_price.setText(article.menu_info.price.special_price);
-            tv_detail_original_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
-            Util.PaintTvAddStrike(tv_detail_original_price);
-            tv_detail_original_price.setVisibility(View.VISIBLE);
-        }else{
-            //无优惠价格
-            Log.e(TAG, "无优惠价格");
-            tv_detail_special_price.setText(article.menu_info.price.original_price);
-            tv_detail_original_price.setVisibility(View.GONE);
-        }
-        //TODO 分别用ID去调用菜品详情，商家详情，会员详情
-//        if(article.menu_info.stock != null){
-//            tv_detail_stockAndTime.setText("剩余" + article.menu_info.stock.menu_count + "   剩余" + article.article_date);
-//        }
         if(article.article_image_list != null && article.article_image_list.size() > 0) {
             List<View> mViewList = new ArrayList<>();
             articleImageList = article.article_image_list;
-
             for (int i = 0; i < articleImageList.size(); i++) {
                 LayoutInflater inflater = getLayoutInflater();
                 View view = inflater.inflate(R.layout.layout_detail_viewpager_item, null);
                 ImageView iv_viewpager_img = (ImageView) view.findViewById(R.id.iv_viewpager_img);
                 finalBitmap.display(iv_viewpager_img, articleImageList.get(i).image.source);
-                index = i;
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -242,6 +218,52 @@ public class DetailActivity extends FragmentActivity{
             viewpager_detail_imgList.getParent().requestDisallowInterceptTouchEvent(true);
             viewpager_detail_imgList.setOnPageChangeListener(new PageChangeListener());
         }
+        fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content_list));
+        fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu_list, article.article_image_list));
+        fragmentsList.add(new NoticeFragment().newInstance(article.store_info));
+        mAdapter.notifyDataSetChanged();
+        indicator.notifyDataSetChanged();
+
+        /******************************  加载内容 ******************************/
+        tv_detail_title.setText(article.title);
+        tv_detail_summary.setText(article.summary);
+        //TODO 根据不同订单状态来显示，稍后完善
+        if(article.orderInfo != null) {
+            tv_detail_submit.setText("立即支付");
+        }else {
+            tv_detail_submit.setText("CHECK NOW");
+        }
+
+        tv_detail_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit.menu_unit);
+        if(!StringUtils.isBlank(article.menu_info.price.special_price)){
+            //有优惠价格
+            Log.e(TAG, "有优惠价格");
+            tv_detail_special_price.setText(article.menu_info.price.special_price);
+            tv_detail_original_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
+            Util.PaintTvAddStrike(tv_detail_original_price);
+            tv_detail_original_price.setVisibility(View.VISIBLE);
+        }else{
+            //无优惠价格
+            Log.e(TAG, "无优惠价格");
+            tv_detail_special_price.setText(article.menu_info.price.original_price);
+            tv_detail_original_price.setVisibility(View.GONE);
+        }
+        collectCount = Integer.parseInt(article.collection_info.collection_count);
+        tv_detail_collect.setText(collectCount + "");
+        if(article.collection_info.is_collected.equals("0")) {
+            //未收藏
+            isCollect = false;
+            Util.ChangeTextImage(context, tv_detail_collect, R.drawable.ic_collect_black);
+        }else {
+            //已收藏
+            isCollect = true;
+            Util.ChangeTextImage(context, tv_detail_collect, R.drawable.ic_collect_red);
+        }
+
+        //TODO 分别用ID去调用菜品详情，商家详情，会员详情
+//        if(article.menu_info.stock != null){
+//            tv_detail_stockAndTime.setText("剩余" + article.menu_info.stock.menu_count + "   剩余" + article.article_date);
+//        }
     }
 
     private void initData(){
@@ -249,13 +271,36 @@ public class DetailActivity extends FragmentActivity{
             article_id = getIntent().getExtras().getString("article_id");
         }
         finalHttp = new FinalHttp();
-        UploadAdapter_Articel();
+        UploadAdapter_Article();
         tv_detail_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //提交购买信息
-                Intent intent = new Intent(getApplicationContext(), OrderWriteActivity.class);
-                startActivity(intent);
+                if(article.orderInfo != null) {
+                    //跳转确认订单
+                    Intent intent = new Intent(getApplicationContext(), OrderConfirmActivity.class);
+                    intent.putExtra("orderInfo", article.orderInfo);
+                    startActivity(intent);
+                }else {
+                    //跳转填写订单
+                    Intent intent = new Intent(getApplicationContext(), OrderWriteActivity.class);
+                    intent.putExtra("article", article);
+                    startActivity(intent);
+                }
+
+            }
+        });
+        tv_detail_collect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //收藏产品或取消收藏
+                if(!isCollect) {
+                    //收藏产品
+                    UploadAdapter_EditCollect(Constant.COLLECT_TYPE_OPERATOR_ADD);
+                }else {
+                    //取消收藏
+                    UploadAdapter_EditCollect(Constant.COLLECT_TYPE_OPERATOR_DELETE);
+                }
             }
         });
     }
@@ -291,12 +336,46 @@ public class DetailActivity extends FragmentActivity{
                         }
                     }
                     break;
+                case EDIT_COLLECTION_PRODUCT_SUCCESS:
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        if(jsonStatus.isSuccess){
+                            if(!isCollect) {
+                                //收藏成功
+                                isCollect = true;
+                                collectCount++;
+                                tv_detail_collect.setText(collectCount + "");
+                                Util.ChangeTextImage(context, tv_detail_collect, R.drawable.ic_collect_red);
+                            }else {
+                                //取消收藏成功
+                                isCollect = false;
+                                collectCount--;
+                                tv_detail_collect.setText(collectCount + "");
+                                Util.ChangeTextImage(context, tv_detail_collect, R.drawable.ic_collect_black);
+                            }
+                        }
+                    }
+                    break;
+                case EDIT_COLLECTION_PRODUCT_FALSE:
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        if(!StringUtils.isBlank(jsonStatus.error_desc)){
+                            prompt(jsonStatus.error_desc);
+                        }else{
+                            if(!StringUtils.isBlank(jsonStatus.error_code)){
+                                prompt(getResources().getString(R.string.request_erro) + MyApplication.findErroDesc(jsonStatus.error_code));
+                            }else{
+                                prompt(getResources().getString(R.string.request_erro));
+                            }
+                        }
+                    }
+                    break;
             }
         }
     };
 
     /** 获取产品详情请求*/
-    private void UploadAdapter_Articel() {
+    private void UploadAdapter_Article() {
         ajaxParams = new AjaxParams();
         ajaxParams.put("route", API.GET_PRODUCT_DETAIL);
         ajaxParams.put("token", PreferencesUtils.getString(getApplicationContext(), Constant.KEY_TOKEN));
@@ -337,6 +416,82 @@ public class DetailActivity extends FragmentActivity{
                 }
             }
         });
+    }
+
+    /** 编辑收藏请求*/
+    private void UploadAdapter_EditCollect(int operatorType) {
+       // finalHttp = new FinalHttp();
+        ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.EDIT_COLLECTION_PRODUCT);
+        ajaxParams.put("token", PreferencesUtils.getString(getApplicationContext(), Constant.KEY_TOKEN));
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonText_EditCollect(operatorType));
+        Log.e(TAG, Constant.REQUEST + API.EDIT_COLLECTION_PRODUCT + "\n" + ajaxParams.toString());
+        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                prompt(getResources().getString(R.string.request_time_out));
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if (!StringUtils.isBlank(t)) {
+                    Log.e(TAG, Constant.RESULT + API.EDIT_COLLECTION_PRODUCT + "\n" + t.toString());
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if (jsonStatus.isSuccess) {
+                        handler.sendMessage(handler.obtainMessage(EDIT_COLLECTION_PRODUCT_SUCCESS, BaseJSONData(t)));
+                    } else {
+                        handler.sendMessage(handler.obtainMessage(EDIT_COLLECTION_PRODUCT_FALSE, BaseJSONData(t)));
+                    }
+                } else {
+                    prompt(getResources().getString(R.string.request_no_data));
+                }
+            }
+        });
+    }
+
+    /***
+     * 请求数据封装
+     * member_id	会员ID(可选)
+     * operator_type	操作类型(1-添加/2-删除/3-清空)
+     */
+    private String makeJsonText_EditCollect(int operatorType) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
+            json.put("operator_type", operatorType);
+            json.put("article_list", getArticleList());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+    /***
+     * 请求数据封装
+     * article_id	文章ID
+     */
+    private JSONObject getArticleList() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("article_id", article_id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject;
     }
 
     /***
@@ -431,64 +586,6 @@ public class DetailActivity extends FragmentActivity{
         intent.setClass(context, MenuBigImgViewPagerActivity.class);
         startActivity(intent);
     }
-
-//    /** 获取菜品详情请求*/
-//    private void UploadAdapter_Menu() {
-//        ajaxParams = new AjaxParams();
-//        ajaxParams.put("route", API.GET_MENU_DETAIL);
-//        ajaxParams.put("token", PreferencesUtils.getString(getApplicationContext(), Constant.KEY_TOKEN));
-//        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
-//        ajaxParams.put("jsonText", makeJsonText_Menu());
-//        Log.e(TAG, Constant.REQUEST + API.GET_MENU_DETAIL + "\n" + ajaxParams.toString());
-//        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
-//            @Override
-//            public void onFailure(Throwable t, int errorNo, String strMsg) {
-//                super.onFailure(t, errorNo, strMsg);
-//                prompt(getResources().getString(R.string.request_time_out));
-//                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
-//            }
-//
-//            @Override
-//            public void onStart() {
-//                super.onStart();
-//            }
-//
-//            @Override
-//            public void onLoading(long count, long current) {
-//                super.onLoading(count, current);
-//            }
-//
-//            @Override
-//            public void onSuccess(String t) {
-//                super.onSuccess(t);
-//                if (!StringUtils.isBlank(t)) {
-//                    Log.e(TAG, Constant.RESULT + API.GET_MENU_DETAIL + "\n" + t.toString());
-//                    JSONStatus jsonStatus = BaseJSONData(t);
-//                    if (jsonStatus.isSuccess) {
-//                        handler.sendMessage(handler.obtainMessage(GET_MENU_DETAIL_SUCCESS, BaseJSONData(t)));
-//                    } else {
-//                        handler.sendMessage(handler.obtainMessage(GET_DETAIL_FALSE, BaseJSONData(t)));
-//                    }
-//                } else {
-//                    prompt(getResources().getString(R.string.request_no_data));
-//                }
-//            }
-//        });
-//    }
-
-//    /***
-//     * 请求数据封装
-//     * menu_id	菜品ID(必须)
-//     */
-//    private String makeJsonText_Menu() {
-//        JSONObject json = new JSONObject();
-//        try {
-//            json.put("menu_id", menu_id);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        return json.toString();
-//    }
 
     /** 新浪回调监听*/
     private class SinaPlatformActionListener implements PlatformActionListener {

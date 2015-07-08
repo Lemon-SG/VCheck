@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import net.tsz.afinal.FinalBitmap;
 
@@ -54,6 +55,8 @@ public class DetailMenuFragment extends BaseFragment {
     private List<ArticleImage> articleImageList;
     /** A FINAL 框架的HTTP请求工具*/
     private FinalBitmap finalBitmap;
+    /** 菜品图片数量显示*/
+    private TextView tv_menu_image_count;
 
 //    public static final DetailMenuFragment newInstance(String article_menu){
 //        DetailMenuFragment detailMenuFragment = new DetailMenuFragment();
@@ -85,6 +88,7 @@ public class DetailMenuFragment extends BaseFragment {
     public void initView(View v) {
         list_menu = (ListView) v.findViewById(R.id.list_menu);
         iv_menu_img = (ImageView) v.findViewById(R.id.iv_menu_img);
+        tv_menu_image_count = (TextView) v.findViewById(R.id.tv_menu_image_count);
     }
 
     @Override
@@ -98,6 +102,7 @@ public class DetailMenuFragment extends BaseFragment {
             articleImageList = (List<ArticleImage>) getArguments().getSerializable("articleImageList");
             if(articleImageList != null && articleImageList.size() > 0){
                 finalBitmap.display(iv_menu_img, articleImageList.get(0).image.source);
+                tv_menu_image_count.setText(articleImageList.size() + "");
             }
             if(articleMenuList != null && articleMenuList.size() > 0){
                 detailMenuAdapter.getDataList().clear();

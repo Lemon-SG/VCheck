@@ -58,12 +58,15 @@ public class MainAdapter extends AbsAdapter<Article> {
         private TextView tv_original_price;
         /** 菜品库存数量显示*/
         private TextView tv_menu_stock;
+        /** 商家地址*/
+        private TextView tv_store_address;
 
         @Override
         public void initViews(View v, int position) {
             iv_menu_img_item = (ImageView) v.findViewById(R.id.iv_menu_img_item);
             driver = (LinearLayout) v.findViewById(R.id.driver);
             tv_title = (TextView) v.findViewById(R.id.tv_title);
+            tv_store_address = (TextView) v.findViewById(R.id.tv_store_address);
             tv_sub_title = (TextView) v.findViewById(R.id.tv_sub_title);
             tv_special_price = (TextView) v.findViewById(R.id.tv_special_price);
             tv_price_menu_unit = (TextView) v.findViewById(R.id.tv_price_menu_unit);
@@ -77,25 +80,23 @@ public class MainAdapter extends AbsAdapter<Article> {
             finalBitmap.display(iv_menu_img_item, article.article_image.source);
             finalBitmap.display(iv_member_img_item, article.member_info.icon_image.thumb);
             driver.setVisibility(View.VISIBLE);
-            Log.e(TAG, "position = " + position + "|size = " + getDataList().size());
             if(position + 1 == getDataList().size()){
                 //不是末尾->分割线隐藏
                 driver.setVisibility(View.GONE);
             }
             tv_title.setText(article.title);
+            tv_store_address.setText(article.store_info.address.substring(0, 4));
             tv_sub_title.setText(article.sub_title);
             tv_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit.menu_unit);
             //判断是否有优惠价格：如果有优惠价格，显示优惠价格并显示原价添加删除线；如果没有优惠价格，显示原价，隐藏原价view
             if(!StringUtils.isBlank(article.menu_info.price.special_price)){
                 //有优惠价格
-                Log.e(TAG, "有优惠价格");
                 tv_special_price.setText(article.menu_info.price.special_price);
                 tv_original_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
                 Util.PaintTvAddStrike(tv_original_price);
                 tv_original_price.setVisibility(View.VISIBLE);
             }else{
                 //无优惠价格
-                Log.e(TAG, "无优惠价格");
                 tv_special_price.setText(article.menu_info.price.original_price);
                 tv_original_price.setVisibility(View.GONE);
             }

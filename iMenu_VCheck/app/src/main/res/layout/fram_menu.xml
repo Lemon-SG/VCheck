@@ -4,13 +4,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iv_menu_img"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:scaleType="centerCrop"/>
+        android:layout_marginLeft="20dp">
+
+        <ImageView
+            android:id="@+id/iv_menu_img"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/tv_menu_image_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"/>
+    </RelativeLayout>
+
 
     <ListView
         android:id="@+id/list_menu"

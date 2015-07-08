@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_buy_now"
+        android:padding="5dp"
+        android:scrollbars="none"
+        android:layout_below="@+id/topbar">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_order_confirm_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:textSize="18sp"
+                android:textColor="@color/top_black"
+                android:text="The Orchid 双人 Brunch"/>
+
+            <LinearLayout
+                android:id="@+id/order_confirm_driver1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.5dp"
+                    android:background="@color/black"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@color/black"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:textColor="@color/top_black"
+                    android:textSize="14sp"
+                    android:text="单价"/>
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/top_black"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:text="140/份"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_ddd"/>
+
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:textColor="@color/top_black"
+                    android:textSize="14sp"
+                    android:text="数量"/>
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/top_black"
+                    android:text="1"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_ddd"/>
+
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:textColor="@color/top_black"
+                    android:textSize="14sp"
+                    android:text="合计"/>
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_total_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="14sp"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/top_black"
+                    android:text="140元"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_ddd"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_order_confirm_gift"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_order_confirm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="15dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/top_black"
+                    android:text="使用礼券"/>
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_gift_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_order_confirm"
+                    android:textSize="14sp"
+                    android:textColor="@color/orange_red"
+                    android:text="0张可用"/>
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_gift_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="14sp"
+                    android:layout_marginRight="25dp"
+                    android:textColor="@color/gray_87"
+                    android:layout_alignParentRight="true"
+                    android:text="未使用"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_go_next_black"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_ddd"/>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/top_black"
+                    android:text="还需支付"/>
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_need_pay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/top_black"
+                    android:layout_alignParentRight="true"
+                    android:text="140元"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_ddd"/>
+
+            <TextView
+                android:id="@+id/tv_order_write_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp"
+                android:textSize="18sp"
+                android:textColor="@color/top_black"
+                android:text="选择支付方式"/>
+
+            <LinearLayout
+                android:id="@+id/order_confirm_driver2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="1.5dp"
+                    android:background="@color/black"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="1.5dp"
+                    android:background="@color/black"/>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_payment_Alipay"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_pay_mode_Alipay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_payment_alipay"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/iv_pay_mode_Alipay"
+                    android:padding="15dp"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/top_black"
+                    android:text="支付宝"/>
+
+                <ImageView
+                    android:id="@+id/iv_payment_Alipay_choose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_collect_black"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_ddd"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_payment_weChat"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_pay_mode_weChat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_payment_wechat"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/iv_pay_mode_weChat"
+                    android:padding="15dp"
+                    android:textColor="@color/top_black"
+                    android:layout_centerVertical="true"
+                    android:text="微信支付"/>
+
+                <ImageView
+                    android:id="@+id/iv_payment_weChat_choose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_collect_red"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_ddd"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/ll_buy_now"
+        android:background="@color/gray_ddd"/>
+
+    <LinearLayout
+        android:id="@+id/ll_buy_now"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_confirm_price_tiShi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="还需支付:"
+                android:layout_marginRight="3dp"
+                android:layout_alignBottom="@+id/tv_order_confirm_needPay_price"
+                android:textColor="@color/orange_red"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/tv_order_confirm_needPay_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="88"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/tv_confirm_price_tiShi"
+                android:layout_centerVertical="true"
+                android:textSize="20sp"
+                android:textColor="@color/orange_red"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="元"
+                android:layout_toRightOf="@+id/tv_order_confirm_needPay_price"
+                android:layout_alignBottom="@+id/tv_order_confirm_needPay_price"
+                android:textSize="16sp"
+                android:layout_marginLeft="3dp"
+                android:textColor="@color/orange_red"/>
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_orderConfirm_nowPay"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:padding="5dp"
+            android:layout_gravity="center_vertical"
+            android:text="立即支付"
+            android:background="@color/orange_red"/>
+    </LinearLayout>
+</RelativeLayout>

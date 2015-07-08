@@ -23,8 +23,14 @@ public class Menu extends BaseModel<Menu>{
     public MenuUnit menu_unit;
     /** 菜品状态*/
     public MenuStatus menu_status;
-    /** 结束时间*/
+    /** 开始时间:2015-06-22 09:53:36*/
+    public String begin_date;
+    /** 结束时间:2015-07-31 09:53:41*/
     public String end_date;
+    /** 剩余时间:毫秒*/
+    public String remainder_time;
+    /** 菜品数量*/
+    public String count = "1";
 
     @Override
     public Menu parse(JSONObject jsonObject) {
@@ -45,6 +51,9 @@ public class Menu extends BaseModel<Menu>{
                 menu_status = new MenuStatus().parse(jsonObject.optJSONObject("menu_status"));
             }
             end_date = jsonObject.optString("end_date");
+            begin_date = jsonObject.optString("begin_date");
+            remainder_time = jsonObject.optString("remainder_time");
+            count = jsonObject.optString("count");
             return this;
         }
         return null;
