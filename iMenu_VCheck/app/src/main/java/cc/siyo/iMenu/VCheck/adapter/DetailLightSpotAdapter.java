@@ -18,7 +18,6 @@ import cc.siyo.iMenu.VCheck.model.ArticleContent;
 public class DetailLightSpotAdapter extends AbsAdapter<ArticleContent> {
 
     private static final String TAG = "LightSpotListAdapter";
-    private Context mContext;
     FinalBitmap finalBitmap;
 
     public DetailLightSpotAdapter(Activity context, int layout) {

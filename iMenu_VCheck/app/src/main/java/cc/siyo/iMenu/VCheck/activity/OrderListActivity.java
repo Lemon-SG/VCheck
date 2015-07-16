@@ -30,6 +30,8 @@ import cc.siyo.iMenu.VCheck.model.MemberOrder;
 import cc.siyo.iMenu.VCheck.model.OrderInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
+import cc.siyo.iMenu.VCheck.view.PromptDialog;
+import cc.siyo.iMenu.VCheck.view.RefreshListView;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
 /**
@@ -43,7 +45,7 @@ public class OrderListActivity extends BaseActivity {
     /** 头部*/
     @ViewInject(id = R.id.topbar)private TopBar topbar;
     /** 列表*/
-    @ViewInject(id = R.id.list_order)private ListView list_order;
+    @ViewInject(id = R.id.list_order)private RefreshListView list_order;
     /** 数据源*/
     private List<MemberOrder> memberOrderList;
     /** 适配器*/
@@ -54,8 +56,22 @@ public class OrderListActivity extends BaseActivity {
     private AjaxParams ajaxParams;
     /** 获取订单成功标石*/
     private static final int GET_ORDER_LIST_SUCCESS = 100;
+    private static final int EDIT_ORDER_SUCCESS = 300;
     /** 获取订单失败标石*/
     private static final int GET_ORDER_LIST_FALSE = 200;
+    /**提示对话框*/
+    private PromptDialog promptDialog;
+    /** 当前需要删除的订单IID*/
+    private String orderId = "";
+
+    /** 是否到最后一页*/
+    boolean doNotOver = true;
+    /** 是否已经提醒过一遍*/
+    boolean isTip = false;
+    /** 是否是下拉刷新，清空数据*/
+    private boolean isPull = false;
+    private int page = Constant.PAGE;
+    private int pageSize = Constant.PAGE_SIZE;
 
     @Override
     public int getContentView() {
@@ -78,18 +94,44 @@ public class OrderListActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        finalHttp = new FinalHttp();
         orderAdapter = new OrderAdapter(OrderListActivity.this, R.layout.list_item_order);
         list_order.setAdapter(orderAdapter);
-        UploadAdapter();
-        list_order.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                Intent intent = new Intent(context, OrderDetailActivity.class);
-                intent.putExtra("orderId", orderAdapter.getDataList().get(position).order_info.order_id);
-                startActivity(intent);
+
+        list_order.setOnLoadMoreListenter(new RefreshListView.OnLoadMoreListener() {
+
+            public void onLoadMore() {
+                Log.e(TAG, "setOnLoadMoreListenter");
+                isPull = false;
+                if (doNotOver) {
+                    page++;
+                    UploadAdapter();
+                } else {
+                    list_order.onLoadMoreComplete();
+                    if (!isTip) {
+                        isTip = true;
+                        prompt("已经到底了");
+                    }
+                }
             }
         });
+        list_order.setOnRefreshListener(new RefreshListView.OnRefreshListener() {
+
+            public void onRefresh() {
+                Log.e(TAG, "setOnRefreshListener");
+                page = Constant.PAGE;
+                isPull = true;
+                UploadAdapter();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        page = Constant.PAGE;
+        finalHttp = new FinalHttp();
+        isPull = true;
+        UploadAdapter();
     }
 
     Handler handler = new Handler() {
@@ -98,7 +140,9 @@ public class OrderListActivity extends BaseActivity {
             super.handleMessage(msg);
             switch (msg.what){
                 case GET_ORDER_LIST_SUCCESS:
-                    closeProgressDialog();
+//                    closeProgressDialog();
+                    list_order.onRefreshComplete();
+                    list_order.onLoadMoreComplete();
                     if(msg.obj != null) {
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         JSONObject data = jsonStatus.data;
@@ -110,13 +154,44 @@ public class OrderListActivity extends BaseActivity {
                                 memberOrderList.add(memberOrder);
                             }
                         }
-                        orderAdapter.getDataList().clear();
+                        if(isPull) {
+                            orderAdapter.getDataList().clear();
+                        }
                         orderAdapter.getDataList().addAll(memberOrderList);
                         orderAdapter.notifyDataSetChanged();
+                        if(jsonStatus.pageInfo != null) {
+                            String more = jsonStatus.pageInfo.more;
+                            if(more.equals("1")) {
+                                //有下一页
+                                doNotOver = true;
+                            } else {
+                                //最后一页
+                                doNotOver = false;
+                            }
+                        }
+                    }
+                    break;
+                case EDIT_ORDER_SUCCESS:
+                    closeProgressDialog();
+                    if(msg.obj != null) {
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        if(jsonStatus.isSuccess) {
+                            if(orderAdapter.getDataList() != null && orderAdapter.getDataList().size() > 0) {
+                                for (int i = 0; i < orderAdapter.getDataList().size(); i++) {
+                                    if(orderAdapter.getDataList().get(i).order_info.order_id.equals(orderId)) {
+                                        orderAdapter.getDataList().remove(i);
+                                    }
+
+                                }
+                            }
+                            orderAdapter.notifyDataSetChanged();
+                        }
                     }
                     break;
                 case GET_ORDER_LIST_FALSE:
                     closeProgressDialog();
+                    list_order.onRefreshComplete();
+                    list_order.onLoadMoreComplete();
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(!StringUtils.isBlank(jsonStatus.error_desc)){
@@ -146,13 +221,16 @@ public class OrderListActivity extends BaseActivity {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
+                list_order.onRefreshComplete();
+                list_order.onLoadMoreComplete();
+                prompt("无网络");
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }
 
             @Override
             public void onStart() {
                 super.onStart();
-                showProgressDialog(getResources().getString(R.string.loading));
+//                showProgressDialog(getResources().getString(R.string.loading));
             }
 
             @Override
@@ -178,6 +256,55 @@ public class OrderListActivity extends BaseActivity {
         });
     }
 
+    /** 编辑订单请求
+     * */
+    public void UploadAdapter(String orderId) {
+        this.orderId = orderId;
+        ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.EDIT_ORDER);
+        ajaxParams.put("token", PreferencesUtils.getString(OrderListActivity.this, Constant.KEY_TOKEN));
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonText(orderId));
+        Log.e(TAG, Constant.REQUEST + API.EDIT_ORDER + "\n" + ajaxParams.toString());
+        finalHttp.post(API.server,  ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                list_order.onRefreshComplete();
+                list_order.onLoadMoreComplete();
+                prompt("无网络");
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                showProgressDialog(getResources().getString(R.string.loading));
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if(!StringUtils.isBlank(t)){
+                    Log.e(TAG, Constant.RESULT + API.EDIT_ORDER + "\n" +  t.toString());
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if(jsonStatus.isSuccess){
+                        handler.sendMessage(handler.obtainMessage(EDIT_ORDER_SUCCESS, BaseJSONData(t)));
+                    }else{
+                        handler.sendMessage(handler.obtainMessage(GET_ORDER_LIST_FALSE, BaseJSONData(t)));
+                    }
+                }else{
+                    prompt(getResources().getString(R.string.request_no_data));
+                }
+            }
+        });
+    }
+
     /***
      * member_id	会员ID
      * order_type	订单类型
@@ -188,10 +315,73 @@ public class OrderListActivity extends BaseActivity {
         try {
             json.put("member_id", PreferencesUtils.getString(mContext, Constant.KEY_MEMBER_ID));
 //            json.put("order_type", "");
-            json.put("pagination", makeJsonPageText(Constant.PAGE, Constant.PAGE_SIZE));
+            json.put("pagination", makeJsonPageText(page, pageSize));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return json.toString();
     }
+
+    /***
+     * member_id	会员ID
+     * order_id	订单ID
+     * operator_type	操作类型(1-删除订单)
+     * @return json
+     */
+    private String makeJsonText(String orderId) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("member_id", PreferencesUtils.getString(mContext, Constant.KEY_MEMBER_ID));
+            json.put("operator_type", "1");
+            json.put("order_id", orderId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+    //        list_order.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+//                Intent intent = new Intent(context, OrderDetailActivity.class);
+//                intent.putExtra("orderId", orderAdapter.getDataList().get(position - 1).order_info.order_id);
+//                startActivity(intent);
+//            }
+//        });
+//        list_order.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_NO_PAY)) {
+//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
+//                }
+//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_RETURN_OVER)) {
+//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
+//                }
+//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_NO_PAY_TIMEOUT)) {
+//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
+//                }
+//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_PAY_SPEND)) {
+//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
+//                }
+//                if(!StringUtils.isBlank(orderId)) {
+//                    //长安删除订单
+//                    promptDialog = new PromptDialog(mContext, "提示", "确定要删除此订单？", "确定", "取消", new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            //删除订单
+//                            UploadAdapter(orderId);
+//                            promptDialog.dismiss();
+//                        }
+//                    }, new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            promptDialog.dismiss();
+//                        }
+//                    });
+//                    promptDialog.show();
+//                }
+//                return false;
+//            }
+//        });
 }

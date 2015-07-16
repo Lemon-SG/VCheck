@@ -34,8 +34,8 @@ public class Article extends BaseModel<Article>{
     public Member member_info;
     /** 图片实体类*/
     public Image article_image;
-//    /** 提示实体类*/
-//    public Tips tips_info;
+    /** 提示实体类*/
+    public Tips tips_info;
     /** 文章内图片集合*/
     public List<ArticleImage> article_image_list;
     /** 收藏实体类*/
@@ -80,9 +80,9 @@ public class Article extends BaseModel<Article>{
             if(jsonObject.optJSONObject("article_image") != null && jsonObject.optJSONObject("article_image").length() > 0){
                 article_image = new Image().parse(jsonObject.optJSONObject("article_image"));
             }
-//            if(jsonObject.optJSONObject("tips_info") != null && jsonObject.optJSONObject("tips_info").length() > 0){
-//                tips_info = new Tips().parse(jsonObject.optJSONObject("tips_info"));
-//            }
+            if(jsonObject.optJSONObject("article_tips_info") != null && jsonObject.optJSONObject("article_tips_info").length() > 0){
+                tips_info = new Tips().parse(jsonObject.optJSONObject("article_tips_info"));
+            }
             if(jsonObject.optJSONArray("article_image_list") != null && jsonObject.optJSONArray("article_image_list").length() > 0){
                 article_image_list = new ArrayList<>();
                 for (int i = 0; i < jsonObject.optJSONArray("article_image_list").length(); i++) {

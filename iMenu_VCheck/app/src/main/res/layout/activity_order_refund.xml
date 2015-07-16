@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- 申请退款界面 -->
+
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topbar" >
+
+        <LinearLayout
+            android:id="@+id/refund_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="退款内容："
+                android:layout_marginLeft="10dp"
+                android:textColor="#555555"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp" >
+
+                <TextView
+                    android:id="@+id/refund_menu_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/tishi"
+                    android:singleLine="true"
+                    android:text="松和日本料理"
+                    android:textColor="#777777"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tishi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/refund_money"
+                    android:text="退款金额"
+                    android:textColor="#666666"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/refund_money"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="350.00"
+                    android:textColor="@color/orange"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="现金退还方式："
+                android:textColor="#555555"
+                android:layout_marginLeft="10dp"
+                android:textSize="16sp" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp" >
+
+                <TextView
+                    android:id="@+id/refund_action"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="原路退回"
+                    android:textSize="14sp"
+                    android:textColor="#666666" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/refund_action"
+                    android:text="(3-10个工作日内退款到原支付账户)"
+                    android:textSize="14sp"
+                    android:textColor="#999999" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="退款原因："
+                android:textColor="#555555"
+                android:layout_marginLeft="10dp"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:text="为了帮我们做的更好，请提交退款原因"
+                android:textColor="#555555"
+                android:textSize="14sp" />
+
+            <ListView
+                android:id="@+id/return_reason_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp" />
+
+            <TextView
+                android:id="@+id/submit"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/orange_red"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="申请退款"
+                android:textSize="16sp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

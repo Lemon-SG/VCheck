@@ -14,6 +14,7 @@ import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.adapter.DetailLightSpotAdapter;
 import cc.siyo.iMenu.VCheck.model.ArticleContent;
 import cc.siyo.iMenu.VCheck.util.Utility;
+import cc.siyo.iMenu.VCheck.view.MyListView;
 
 /**
  * Created by Lemon on 2015/5/6.
@@ -23,7 +24,7 @@ public class DetailLightSpotFragment extends BaseFragment{
 
     private static final String TAG = "DetailLightSpotFragment";
     /** 亮点ListView*/
-    private ListView list_lightSpot;
+    private MyListView list_lightSpot;
     /** 列表适配器*/
     private DetailLightSpotAdapter detailLightSpotAdapter;
     /** 数据源*/
@@ -55,8 +56,7 @@ public class DetailLightSpotFragment extends BaseFragment{
 
     @Override
     public void initView(View v) {
-        list_lightSpot = (ListView) v.findViewById(R.id.list_lightSpot);
-//        web_lightSpot = (WebView) v.findViewById(R.id.web_lightSpot);
+        list_lightSpot = (MyListView) v.findViewById(R.id.list_lightSpot);
     }
 
     @Override
@@ -71,8 +71,8 @@ public class DetailLightSpotFragment extends BaseFragment{
                 public void run() {
                     detailLightSpotAdapter.getDataList().clear();
                     detailLightSpotAdapter.getDataList().addAll(articleContentList);
-                    Utility.setListViewHeightBasedOnChildren(list_lightSpot);
                     detailLightSpotAdapter.notifyDataSetChanged();
+                    Utility.setListViewHeightBasedOnChildren(list_lightSpot);
                 }
             });
         }

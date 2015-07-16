@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import junit.framework.Assert;
 import org.apache.http.HttpResponse;
@@ -78,6 +79,80 @@ public class Util {
         Drawable drawable = context.getResources().getDrawable(drawableId);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         textView.setCompoundDrawables(drawable, null, null, null);
+    }
+
+    /** 返回当前订单状态，用于显示给用户*/
+    public static String ShowOrderStatus(String orderType) {
+        String msg = "";
+        if(orderType.equals(Constant.ORDER_TYPE_NO_PAY)) {
+            //未付款订单,可取消，可删除，可支付订单，列表显示：等待付款
+            msg = "等待付款";
+        }
+        if(orderType.equals(Constant.ORDER_TYPE_PAY_NO_SPEND)) {
+            //已支付未消费订单，只能申请退款，且不可删除，列表实现：等待消费
+            msg = "等待消费";
+        }
+        if(orderType.equals(Constant.ORDER_TYPE_PAY_SPEND)) {
+            //已支付已消费订单，只能删除，列表显示：已消费
+            msg = "已消费";
+        }
+        if(orderType.equals(Constant.ORDER_TYPE_RETURN_IN)) {
+            //退款中订单，无操作，且不可删除，列表显示：退款中
+            msg = "退款中";
+        }
+        if(orderType.equals(Constant.ORDER_TYPE_RETURN_OVER)) {
+            //退款完成订单，只能删除，列表显示：已退款
+            msg = "已退款";
+        }
+        if(orderType.equals(Constant.ORDER_TYPE_NO_PAY_TIMEOUT)) {
+            //待付款过期订单，只能删除，列表显示：交易关闭
+            msg = "交易关闭";
+        }
+        if(orderType.equals(Constant.ORDER_TYPE_PAY_TIMEOUT)) {
+            //已付款过期订单，只能申请退款，且不能删除，列表显示：订单已过期，请申请退款
+            msg = "订单已过期，请申请退款";
+        }
+        return msg;
+    }
+
+    /** 返回剩余时间*/
+    public static String GetRemainTime(long time) {
+        String msg = "";
+        long sevenTime = 7 * 24 * 60 * 60;
+        Log.e(TAG, "time->" + time);
+        if(time > sevenTime) {
+            //一周以上
+            msg = "剩余一周以上";
+        } else {
+            //一周以内
+            int s = (int) (time % 60);
+            int m = (int) (time / 60 % 60);
+            int h = (int) (time / 3600);
+            int d = (int) ((time / 3600) % 24);
+            Log.e("时间->", d + "天" + h + "时" + m + "分" + s + "秒");
+            if(d > 0) {
+                Log.e("天数->", ">" + d);
+                msg = d + "天" + h + "小时" + m + "分" + s +"秒";
+                return msg;
+            }
+            if(h > 0) {
+                msg = h + "小时" + m + "分" + s +"秒";
+                return msg;
+            }
+            if(m > 0) {
+                msg = m + "分" + s +"秒";
+                return msg;
+            }
+            if(s > 0) {
+                msg = s +"秒";
+                return msg;
+            }else {
+                msg = "";
+                return msg;
+            }
+        }
+        Log.e("时间->", "msg->" + msg);
+        return msg;
     }
 
     /**

@@ -423,7 +423,7 @@ public class OrderWriteActivity extends BaseActivity implements View.OnClickList
             JSONObject articleInfoJson = new JSONObject();
             articleInfoJson.put("article_id", article.article_id);
             menuInfoJson.put("menu_id", article.menu_info.menu_id);
-            menuInfoJson.put("count", productCount);
+            menuInfoJson.put("count", productCount + "");
             cartInfoJson.put("menu_info", menuInfoJson);
             cartInfoJson.put("article_info", articleInfoJson);
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));

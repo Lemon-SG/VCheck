@@ -9,11 +9,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"/>
 
-    <ListView
+    <cc.siyo.iMenu.VCheck.view.RefreshListView
         android:id="@+id/list_order"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
         android:scrollbars="none"/>
 </LinearLayout>

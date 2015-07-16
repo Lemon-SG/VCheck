@@ -8,6 +8,9 @@ import android.os.Environment;
  */
 public class Constant {
 
+    /** 用于判断微信支付返回结果:true->是微信支付返回，false->不是*/
+    public static boolean isWeChetPay = false;
+
     /*****************************   标石类   *********************************/
     /** 匹配手机号码*/
     public static final int MATCHER_MOBILE = 1;
@@ -71,6 +74,10 @@ public class Constant {
     public static final int RESULT_CODE_EDIT_ACCOUNT = 3000;
     /** INTENT 退出登录返回code*/
     public static final int RESULT_CODE_LOGOUT = 4000;
+    /** INTENT 申请退款返回code*/
+    public static final int RESULT_CODE_RETURN = 5000;
+    /** INTENT 订单详情返回code*/
+    public static final int RESULT_CODE_ORDER_DETAIL = 6000;
 
     /*******************************   本地存储 KEY   *************************************/
     /** 用户ID：member_id*/
@@ -124,10 +131,26 @@ public class Constant {
     /** paymentCode:微信支付*/
     public static final String PAMENT_CODE_WECHAT = "weixin_pay";
     /********** 微信支付参数 **********/
-    /** appid 请同时修改  androidmanifest.xml里面，.PayActivityd里的属性<data android:scheme="wxb4ba3c02aa476ea1"/>为新设置的appid*/
+    /** appid 请同时修改  androidmanifest.xml里面，.PayActivity里的属性<data android:scheme="wxb4ba3c02aa476ea1"/>为新设置的appid*/
     public static final String APP_ID = "wx79252ca0921c523d";
     /** 商户号*/
     public static final String MCH_ID = "1233848001";
     /** API密钥，在商户平台设置*/
     public static final  String API_KEY="412fde4e9c2e2bb619514ecea142e449";
+
+    /************************      订单类型    **************************/
+    /** 待付款订单-->可取消，可删除，可支付订单，列表显示：等待付款*/
+    public static final String ORDER_TYPE_NO_PAY = "10";
+    /** 待付款过期订单-->只能删除，列表显示：交易关闭*/
+    public static final String ORDER_TYPE_NO_PAY_TIMEOUT = "51";
+    /** 已付款未消费订单-->只能申请退款，且不可删除，列表实现：等待消费*/
+    public static final String ORDER_TYPE_PAY_NO_SPEND = "21";
+    /** 已付款已消费订单-->只能删除，列表显示：已消费*/
+    public static final String ORDER_TYPE_PAY_SPEND = "22";
+    /** 已付款未消费过期订单-->只能申请退款，且不能删除，列表显示：订单已过期，请申请退款*/
+    public static final String ORDER_TYPE_PAY_TIMEOUT = "52";
+    /** 退款中订单-->无操作，且不可删除，列表显示：退款中*/
+    public static final String ORDER_TYPE_RETURN_IN = "31";
+    /** 已退款订单-->只能删除，列表显示：已退款*/
+    public static final String ORDER_TYPE_RETURN_OVER = "32";
 }

@@ -63,6 +63,10 @@
         <activity android:name=".activity.FeedbackActivity"/>
         <activity android:name=".activity.MenuBigImgViewPagerActivity"/>
         <activity android:name=".activity.OrderListActivity"/>
+        <activity android:name=".activity.PayResultActivity"/>
+        <activity android:name=".activity.OrderDetailActivity"/>
+        <activity android:name=".activity.SubmitReturnActivity"/>
+        <activity android:name=".activity.CollectListActivity"/>
         <activity android:name=".activity.OrderConfirmActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -73,7 +77,8 @@
         <activity
             android:name="cc.siyo.iMenu.VCheck.wxapi.WXPayEntryActivity"
             android:exported="true"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Translucent"/>
         <activity android:name=".activity.Launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

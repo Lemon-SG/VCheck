@@ -13,6 +13,7 @@ import java.util.List;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.ArticleContent;
 import cc.siyo.iMenu.VCheck.model.Store;
+import cc.siyo.iMenu.VCheck.model.Tips;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 /**
  * Created by Lemon on 2015/5/6.
@@ -30,6 +31,10 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
     private RelativeLayout rl_notice_address;
     /** 商家地址*/
     private TextView tv_notice_address;
+    /** 须知标题*/
+    private TextView tv_notice_title;
+    /** 须知内容*/
+    private TextView tv_notice1;
     /** 商家电话layout*/
     private RelativeLayout rl_notice_tel;
     /** 商家电话*/
@@ -38,6 +43,8 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
     private TextView tv_notice_weChat;
     /** 商家实体数据*/
     private Store store;
+    /** 提示实体数据*/
+    private Tips tips;
 
     @Override
     public int getContentView() {
@@ -50,6 +57,8 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
         iv_notice_icon = (ImageView) v.findViewById(R.id.iv_notice_icon);
         tv_notice_store_name = (TextView) v.findViewById(R.id.tv_notice_store_name);
         tv_notice_address = (TextView) v.findViewById(R.id.tv_notice_address);
+        tv_notice_title = (TextView) v.findViewById(R.id.tv_notice_title);
+        tv_notice1 = (TextView) v.findViewById(R.id.tv_notice1);
         tv_notice_tel = (TextView) v.findViewById(R.id.tv_notice_tel);
         tv_notice_weChat = (TextView) v.findViewById(R.id.tv_notice_weChat);
         tv_notice_weChat.setOnClickListener(this);
@@ -63,28 +72,32 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
     public void initData() {
         if(getArguments() != null){
             store = (Store) getArguments().getSerializable("store");
+            tips = (Tips) getArguments().getSerializable("tips");
             tv_notice_store_name.setText(store.store_name);
             tv_notice_address.setText(store.address);
+            tv_notice_title.setText(tips.title);
             if(!StringUtils.isBlank(store.tel_1)){
                 tv_notice_tel.setText(store.tel_1);
             }else{
                 tv_notice_tel.setText(store.tel_2);
             }
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int i = 0; i < tips.content.length; i++) {
+                if(i + 1 == tips.content.length) {
+                    stringBuffer.append(" · " + tips.content[i]);
+                } else {
+                    stringBuffer.append(" · " + tips.content[i] + "\n");
+                }
+            }
+            tv_notice1.setText(stringBuffer);
         }
     }
 
-//    public static final NoticeFragment newInstance(String article_tips){
-//        NoticeFragment noticeFragment = new NoticeFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putString("article_tips", article_tips);
-//        noticeFragment.setArguments(bundle);
-//        return noticeFragment;
-//    }
-
-    public static final NoticeFragment newInstance(Store store){
+    public static final NoticeFragment newInstance(Store store, Tips tips){
         NoticeFragment noticeFragment = new NoticeFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("store", store);
+        bundle.putSerializable("tips", tips);
         noticeFragment.setArguments(bundle);
         return noticeFragment;
     }

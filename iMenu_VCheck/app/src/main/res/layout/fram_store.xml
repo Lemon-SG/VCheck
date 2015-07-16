@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ListView
+    <cc.siyo.iMenu.VCheck.view.RefreshListView
         android:id="@+id/store_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

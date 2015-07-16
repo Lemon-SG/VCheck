@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -47,6 +48,7 @@ import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Share;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
+import cc.siyo.iMenu.VCheck.util.TimeUtil;
 import cc.siyo.iMenu.VCheck.util.Util;
 import cc.siyo.iMenu.VCheck.view.LoadingDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
@@ -185,19 +187,25 @@ public class DetailActivity extends FragmentActivity{
             fragmentsList = new ArrayList<Fragment>();
         /** 只留一个分类,如需多个，需重新增加新的Fragment，FragmentViewPagerAdapter进行加入标题数组即可*/
         mAdapter = new DetailFragmentViewPagerAdapter(getApplicationContext(), this.getSupportFragmentManager(), fragmentsList);
-
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         mPager.setOnPageChangeListener(new FragmentPageChangeListener());
 //        /** 只留一个分类*/
         indicator = (TabPageIndicator)findViewById(R.id.indicator);
         indicator.setViewPager(mPager);
-    }
 
+        /** 顶部viewpager组件配置*/
+        mViewPagerAdapter = new ViewPagerAdapter(context, mViewList);
+        viewpager_detail_imgList.setAdapter(mViewPagerAdapter);
+        viewpager_detail_imgList.getParent().requestDisallowInterceptTouchEvent(true);
+        viewpager_detail_imgList.setOnPageChangeListener(new PageChangeListener());
+
+    }
+    List<View> mViewList = new ArrayList<>();
     /** 加载FragmentViewPager*/
     private void initViewPager(){
+        mViewList.clear();
         if(article.article_image_list != null && article.article_image_list.size() > 0) {
-            List<View> mViewList = new ArrayList<>();
             articleImageList = article.article_image_list;
             for (int i = 0; i < articleImageList.size(); i++) {
                 LayoutInflater inflater = getLayoutInflater();
@@ -212,29 +220,39 @@ public class DetailActivity extends FragmentActivity{
                 });
                 mViewList.add(view);
             }
+            mViewPagerAdapter.notifyDataSetChanged();
             setImageDian(mViewList);
-            mViewPagerAdapter = new ViewPagerAdapter(context, mViewList);
-            viewpager_detail_imgList.setAdapter(mViewPagerAdapter);
-            viewpager_detail_imgList.getParent().requestDisallowInterceptTouchEvent(true);
-            viewpager_detail_imgList.setOnPageChangeListener(new PageChangeListener());
         }
+        fragmentsList.clear();
         fragmentsList.add(new DetailLightSpotFragment().newInstance(article.article_content_list));
         fragmentsList.add(new DetailMenuFragment().newInstance(article.article_menu_list, article.article_image_list));
-        fragmentsList.add(new NoticeFragment().newInstance(article.store_info));
+        fragmentsList.add(new NoticeFragment().newInstance(article.store_info, article.tips_info));
         mAdapter.notifyDataSetChanged();
         indicator.notifyDataSetChanged();
 
         /******************************  加载内容 ******************************/
         tv_detail_title.setText(article.title);
         tv_detail_summary.setText(article.summary);
-        //TODO 根据不同订单状态来显示，稍后完善
         if(article.orderInfo != null) {
             tv_detail_submit.setText("立即支付");
         }else {
-            tv_detail_submit.setText("CHECK NOW");
+            if(Integer.parseInt(article.menu_info.stock.menu_count) > 0) {
+                tv_detail_submit.setText("CHECK NOW");
+            } else {
+                //已售罄了
+                tv_detail_submit.setText(article.menu_info.stock.out_of_stock_info);
+                tv_detail_submit.setBackgroundColor(getResources().getColor(R.color.gray_9c));
+            }
+        }
+        if(!StringUtils.isBlank(Util.GetRemainTime(Long.parseLong(article.menu_info.remainder_time)))){
+            time = Long.parseLong(article.menu_info.remainder_time) * 1000;
+            setTimeText();
+//            startReckonTime();
+        }else {
+            tv_detail_stockAndTime.setText("已结束");
         }
 
-        tv_detail_price_menu_unit.setText(article.menu_info.price.price_unit + "/" +article.menu_info.menu_unit.menu_unit);
+        tv_detail_price_menu_unit.setText(article.menu_info.price.price_unit + "/" + article.menu_info.menu_unit.menu_unit);
         if(!StringUtils.isBlank(article.menu_info.price.special_price)){
             //有优惠价格
             Log.e(TAG, "有优惠价格");
@@ -259,19 +277,50 @@ public class DetailActivity extends FragmentActivity{
             isCollect = true;
             Util.ChangeTextImage(context, tv_detail_collect, R.drawable.ic_collect_red);
         }
-
-        //TODO 分别用ID去调用菜品详情，商家详情，会员详情
-//        if(article.menu_info.stock != null){
-//            tv_detail_stockAndTime.setText("剩余" + article.menu_info.stock.menu_count + "   剩余" + article.article_date);
-//        }
     }
 
-    private void initData(){
+    private void setTimeText() {
+        timeMsg = TimeUtil.formatDuring(time);
+        if(Integer.parseInt(article.menu_info.stock.menu_count) <= 0) {
+            tv_detail_stockAndTime.setText("剩余0" + article.menu_info.stock.menu_unit + "   " + timeMsg);
+        }else {
+            tv_detail_stockAndTime.setText("剩余" + article.menu_info.stock.menu_count + article.menu_info.stock.menu_unit + "   " + timeMsg);
+        }
+    }
+
+    private Runnable mTicker;
+    long time;
+    String timeMsg;
+
+    /***
+     *  启动计时器
+     * @param
+     */
+    private void startReckonTime () {
+        mTicker = new Runnable() {
+            public void run() {
+                time -= 1000;
+                timeMsg = TimeUtil.formatDuring(time);
+                setTimeText();
+                handler.postAtTime(mTicker, 1000);
+            }
+        };
+        //启动计时线程，定时更新
+        mTicker.run();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(getIntent().getExtras() != null){
             article_id = getIntent().getExtras().getString("article_id");
         }
         finalHttp = new FinalHttp();
         UploadAdapter_Article();
+    }
+
+    private void initData(){
+
         tv_detail_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -282,10 +331,14 @@ public class DetailActivity extends FragmentActivity{
                     intent.putExtra("orderInfo", article.orderInfo);
                     startActivity(intent);
                 }else {
-                    //跳转填写订单
-                    Intent intent = new Intent(getApplicationContext(), OrderWriteActivity.class);
-                    intent.putExtra("article", article);
-                    startActivity(intent);
+                    if(Integer.parseInt(article.menu_info.stock.menu_count) > 0) {
+                        //跳转填写订单
+                        Intent intent = new Intent(getApplicationContext(), OrderWriteActivity.class);
+                        intent.putExtra("article", article);
+                        startActivity(intent);
+                    }else {
+                        //已售罄了
+                    }
                 }
 
             }
@@ -294,10 +347,10 @@ public class DetailActivity extends FragmentActivity{
             @Override
             public void onClick(View v) {
                 //收藏产品或取消收藏
-                if(!isCollect) {
+                if (!isCollect) {
                     //收藏产品
                     UploadAdapter_EditCollect(Constant.COLLECT_TYPE_OPERATOR_ADD);
-                }else {
+                } else {
                     //取消收藏
                     UploadAdapter_EditCollect(Constant.COLLECT_TYPE_OPERATOR_DELETE);
                 }

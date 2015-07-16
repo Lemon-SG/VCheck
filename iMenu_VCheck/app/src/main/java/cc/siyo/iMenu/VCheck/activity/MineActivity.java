@@ -40,6 +40,8 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     @ViewInject(id = R.id.ll_feedback)private LinearLayout ll_feedback;
     /** 我的订单按钮*/
     @ViewInject(id = R.id.ll_order_list)private LinearLayout ll_order_list;
+    /** 我收藏的按钮*/
+    @ViewInject(id = R.id.ll_collect_list)private LinearLayout ll_collect_list;
     /** 昵称显示*/
     @ViewInject(id = R.id.tv_mine_nickName)private TextView tv_mine_nickName;
     /** 头像*/
@@ -70,6 +72,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
         tv_mine_nickName.setOnClickListener(this);
         ll_feedback.setOnClickListener(this);
         ll_order_list.setOnClickListener(this);
+        ll_collect_list.setOnClickListener(this);
         topbar = (TopBar)findViewById(R.id.topbar);
         topbar.settitleViewText("我的账户");
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
@@ -239,6 +242,15 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                 if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
                     Intent intent_order = new Intent(MineActivity.this, OrderListActivity.class);
                     startActivity(intent_order);
+                }else{
+                    prompt("请先登录");
+                }
+                break;
+            case R.id.ll_collect_list:
+                //CollectListActivity
+                if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
+                    Intent intent_collect = new Intent(MineActivity.this, CollectListActivity.class);
+                    startActivity(intent_collect);
                 }else{
                     prompt("请先登录");
                 }

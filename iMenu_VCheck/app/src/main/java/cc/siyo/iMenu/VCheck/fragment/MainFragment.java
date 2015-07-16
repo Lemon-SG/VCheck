@@ -29,6 +29,8 @@ import cc.siyo.iMenu.VCheck.model.Article;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
+import cc.siyo.iMenu.VCheck.view.RefreshListView;
+
 /**
  * Created by Lemon on 2015/4/29.
  * Desc:主页界面
@@ -36,10 +38,8 @@ import cc.siyo.iMenu.VCheck.util.StringUtils;
 public class MainFragment extends BaseFragment{
 
     private static final String TAG = "MainFragment";
-    private int page = Constant.PAGE;
-    private int count = Constant.PAGE_SIZE;
     /** LIST VIEW*/
-    private ListView store_list;
+    private RefreshListView store_list;
     /** Adapter*/
     private MainAdapter mainAdapter;
     /** Context*/
@@ -51,6 +51,15 @@ public class MainFragment extends BaseFragment{
     /** 封装参数的键值对 */
     private AjaxParams ajaxParams;
 
+    /** 是否到最后一页*/
+    boolean doNotOver = true;
+    /** 是否已经提醒过一遍*/
+    boolean isTip = false;
+    /** 是否是下拉刷新，清空数据*/
+    private boolean isPull = false;
+    private int page = Constant.PAGE;
+    private int pageSize = Constant.PAGE_SIZE;
+
     @Override
     public int getContentView() {
         mContext = getActivity();
@@ -59,14 +68,16 @@ public class MainFragment extends BaseFragment{
 
     @Override
     public void initView(View v) {
-        store_list = (ListView) v.findViewById(R.id.store_list);
+        store_list = (RefreshListView) v.findViewById(R.id.store_list);
         store_list.addFooterView((LayoutInflater.from(mContext)).inflate(R.layout.list_item_footview, null));
         store_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("article_id", mainAdapter.getDataList().get(position).article_id);
-                getActivity().startActivity(intent);
+                if(mainAdapter.getDataList().size() > (position -1)) {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra("article_id", mainAdapter.getDataList().get(position - 1).article_id);
+                    getActivity().startActivity(intent);
+                }
             }
         });
     }
@@ -74,9 +85,37 @@ public class MainFragment extends BaseFragment{
     @Override
     public void initData() {
         finalHttp = new FinalHttp();
+        isPull = true;
         UploadAdapter();
         mainAdapter = new MainAdapter(getActivity(), R.layout.list_item_main);
         store_list.setAdapter(mainAdapter);
+
+        store_list.setOnLoadMoreListenter(new RefreshListView.OnLoadMoreListener() {
+
+            public void onLoadMore() {
+                Log.e(TAG, "setOnLoadMoreListenter");
+                isPull = false;
+                if (doNotOver) {
+                    page++;
+                    UploadAdapter();
+                } else {
+                    store_list.onLoadMoreComplete();
+                    if (!isTip) {
+                        isTip = true;
+                        prompt("已经到底了");
+                    }
+                }
+            }
+        });
+        store_list.setOnRefreshListener(new RefreshListView.OnRefreshListener() {
+
+            public void onRefresh() {
+                Log.e(TAG, "setOnRefreshListener");
+                page = Constant.PAGE;
+                isPull = true;
+                UploadAdapter();
+            }
+        });
     }
 
     Handler handler = new Handler() {
@@ -85,6 +124,8 @@ public class MainFragment extends BaseFragment{
             switch (msg.what) {
                 case SUCCESS:
                     closeProgressDialog();
+                    store_list.onRefreshComplete();
+                    store_list.onLoadMoreComplete();
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         JSONObject data = jsonStatus.data;
@@ -95,9 +136,21 @@ public class MainFragment extends BaseFragment{
                                 Log.e(TAG, "TITLE ->" + article.title);
                                 articleList.add(article);
                             }
-                            mainAdapter.getDataList().clear();
+                            if(isPull) {
+                                mainAdapter.getDataList().clear();
+                            }
                             mainAdapter.getDataList().addAll(articleList);
                             mainAdapter.notifyDataSetChanged();
+                            if(jsonStatus.pageInfo != null) {
+                                String more = jsonStatus.pageInfo.more;
+                                if(more.equals("1")) {
+                                    //有下一页
+                                    doNotOver = true;
+                                } else {
+                                    //最后一页
+                                    doNotOver = false;
+                                }
+                            }
                         }else{
                             prompt(getResources().getString(R.string.request_no_data));
                         }
@@ -105,6 +158,8 @@ public class MainFragment extends BaseFragment{
                     break;
                 case FAILURE:
                     closeProgressDialog();
+                    store_list.onRefreshComplete();
+                    store_list.onLoadMoreComplete();
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(!StringUtils.isBlank(jsonStatus.error_desc)){
@@ -135,6 +190,8 @@ public class MainFragment extends BaseFragment{
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 closeProgressDialog();
+                store_list.onRefreshComplete();
+                store_list.onLoadMoreComplete();
                 prompt(getResources().getString(R.string.request_time_out));
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }
@@ -203,7 +260,7 @@ public class MainFragment extends BaseFragment{
         JSONObject json = new JSONObject();
         try {
             json.put("page", page + "");
-            json.put("count", count + "");
+            json.put("count", pageSize + "");
         } catch (JSONException e) {
             e.printStackTrace();
         }

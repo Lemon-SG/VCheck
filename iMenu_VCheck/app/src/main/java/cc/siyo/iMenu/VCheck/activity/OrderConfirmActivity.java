@@ -1,6 +1,6 @@
 package cc.siyo.iMenu.VCheck.activity;
 
-
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -36,11 +36,10 @@ import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.OrderInfo;
-import cc.siyo.iMenu.VCheck.util.MD5;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
-import cc.siyo.iMenu.VCheck.util.Util;
 import cc.siyo.iMenu.VCheck.view.TopBar;
+
 /**
  * Created by Lemon on 2015/7/3 9:31.
  * Desc:确认订单页面
@@ -93,8 +92,10 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     private static final int SUBMIT_PAY_ORDER_SUCCESS = 3000;
     /** 失败标石*/
     private static final int ALL_FALSE = 4000;
-
+    /** 支付宝返回结果标石*/
     private static final int SDK_PAY_FLAG = 1;
+    /** 微信支付 */
+    private IWXAPI api;
 
     @Override
     public int getContentView() {
@@ -196,7 +197,6 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                         }
                     }
                     break;
@@ -205,7 +205,20 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         JSONObject data = jsonStatus.data;
-
+                        if(jsonStatus.isSuccess && data != null && data.length() > 0) {
+                            if(data.optJSONObject("order_info") != null && data.optJSONObject("order_info").length() > 0) {
+                                OrderInfo orderInfo = new OrderInfo().parse(data.optJSONObject("order_info"));
+                                Intent intent = new Intent(OrderConfirmActivity.this, PayResultActivity.class);
+                                intent.putExtra("orderInfo", orderInfo);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }else {
+                            Intent intent = new Intent(OrderConfirmActivity.this, PayResultActivity.class);
+                            intent.putExtra("orderInfo", orderInfo);
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                     break;
                 case ALL_FALSE:
@@ -227,25 +240,22 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
                     PayResult payResult = new PayResult((String) msg.obj);
                     // 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
                     String resultInfo = payResult.getResult();
-                    Log.e(TAG, "resultInfo->" + resultInfo);
                     String resultStatus = payResult.getResultStatus();
-                    Log.e(TAG, "payResult.getMemo()->" + payResult.getMemo());
-                    Log.e(TAG, "resultStatus->" + resultStatus);
                     // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
-                        Toast.makeText(OrderConfirmActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(OrderConfirmActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                        Upload(BaseAjaxParams(API.SUBMIT_PAY_ORDER, makeJsonTextSubmitOrder(resultInfo)), SUBMIT_PAY_ORDER_SUCCESS);
                     } else {
                         // 判断resultStatus 为非“9000”则代表可能支付失败
                         // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
                         if (TextUtils.equals(resultStatus, "8000")) {
                             Toast.makeText(OrderConfirmActivity.this, "支付结果确认中", Toast.LENGTH_SHORT).show();
+                            Upload(BaseAjaxParams(API.SUBMIT_PAY_ORDER, makeJsonTextSubmitOrder(resultInfo)), SUBMIT_PAY_ORDER_SUCCESS);
                         } else {
                             // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
                             Toast.makeText(OrderConfirmActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
                         }
                     }
-                    Upload(BaseAjaxParams(API.SUBMIT_PAY_ORDER, makeJsonTextSubmitOrder(resultInfo)), SUBMIT_PAY_ORDER_SUCCESS);
-                    //TODO 进行跳转页面操作
                     break;
             }
         }
@@ -397,29 +407,20 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
         Log.e(TAG, Constant.REQUEST + API + "\n" + ajaxParams.toString());
         return ajaxParams;
     }
-    /** 微信支付 */
-    private IWXAPI api;
-    //"payment_order_param":"{
-    // "appId":"wx79252ca0921c523d",
-    // "partnerId":"1251239301",
-    // "prepayId":"wx2015070811020307047410a00918125536",
-    // "nonceStr":"2m2l3i3k6xko00m9ruyeh3bs5r9sg4pm",
-    // "timeStamp":"1436324523",
-    // "package":"Sign=WXPay",
-    // "paySign":"CB800A86BB7F9CC01B51A8DE3CF8A6C1"}"}}
+
     private void sendPayReq(JSONObject obj) {
-        api = WXAPIFactory.createWXAPI(context, obj.optString("appId"));
+        api = WXAPIFactory.createWXAPI(context, obj.optString("appid"));
         if(!isWXAppInstalledAndSupported(api)){
             closeProgressDialog();
             prompt("微信客户端未安装，请确认");
         }else{
             PayReq req = new PayReq();
-            req.appId = obj.optString("appId");
-            req.partnerId = obj.optString("partnerId");
-            req.prepayId = obj.optString("prepayId");
+            req.appId = obj.optString("appid");
+            req.partnerId = obj.optString("partnerid");
+            req.prepayId = obj.optString("prepayid");
             req.packageValue = "Sign=WXPay";
-            req.nonceStr = obj.optString("nonceStr");
-            req.timeStamp = obj.optString("timeStamp");
+            req.nonceStr = obj.optString("noncestr");
+            req.timeStamp = obj.optString("timestamp");
             List<NameValuePair> signParams = new LinkedList<NameValuePair>();
             signParams.add(new BasicNameValuePair("appid", req.appId));
             signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
@@ -427,8 +428,6 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
             signParams.add(new BasicNameValuePair("partnerid", req.partnerId));
             signParams.add(new BasicNameValuePair("prepayid", req.prepayId));
             signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));
-            // signParams.add(new BasicNameValuePair("package", "Sign=WXPay"));
-//            req.sign = genAppSign(signParams);
             req.sign = obj.optString("paySign");
             Log.e(TAG, "orion->" + signParams.toString());
             // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
@@ -445,5 +444,15 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
             Log.w("TAG", "~~~~~~~~~~~~~~微信客户端未安装，请确认");
         }
         return sIsWXAppInstalledAndSupported;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(Constant.isWeChetPay) {
+            Constant.isWeChetPay = false;
+            //微信支付返回
+            Upload(BaseAjaxParams(API.SUBMIT_PAY_ORDER, makeJsonTextSubmitOrder("")), SUBMIT_PAY_ORDER_SUCCESS);
+        }
     }
 }

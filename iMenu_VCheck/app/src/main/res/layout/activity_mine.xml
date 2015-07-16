@@ -132,6 +132,7 @@
                 android:background="@color/gray_ddd"/>
 
             <LinearLayout
+                android:id="@+id/ll_collect_list"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"

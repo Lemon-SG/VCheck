@@ -15,7 +15,9 @@
     <color name="green">#92b478</color>
     <color name="dark_red">#C00000</color>
     <color name="transparent_black20">#a0000000</color>
-    
+
+    <color name="deep_gray_text_color">#474747</color>
+    <color name="light_gray_text_color">#A9A9A9</color>
     <color name="num1">#111</color>
     <color name="num2">#222</color>
     <color name="num3">#333</color>
