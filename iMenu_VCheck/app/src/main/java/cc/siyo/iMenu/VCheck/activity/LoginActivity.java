@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tencent.android.tpush.XGPushConfig;
+
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -56,6 +59,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private FinalHttp finalHttp;
     /** 封装参数的键值对 */
     private AjaxParams ajaxParams;
+    /** 提交成功标石*/
+    private static final int EDIT_PUSH_DEVICE_SUCCESS = 300;
     /** 登录成功标石*/
     private static final int LOGIN_SUCCESS = 100;
     /** 登录失败标石*/
@@ -106,6 +111,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case EDIT_PUSH_DEVICE_SUCCESS:
+                    closeProgressDialog();
+                    if(msg.obj != null) {
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        if(jsonStatus.isSuccess) {
+                            setResult(Constant.RESULT_CODE_LOGIN);
+                            finish();
+                        }
+                    }
+                    break;
                 case LOGIN_SUCCESS:
                     closeProgressDialog();
                     if(msg.obj != null){
@@ -117,9 +132,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         if(loginType.equals("1")) {
                             PreferencesUtils.putString(LoginActivity.this, Constant.KEY_MOBILE, et_login_name.getText().toString());
                         }
-                        setResult(Constant.RESULT_CODE_LOGIN);
-                        finish();
-//                        UploadGetSellerDetail(seller_id);
+                        UploadAdapter_Submit();
                     }
                     break;
                 case LOGIN_FALSE:
@@ -149,6 +162,52 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         ajaxParams.put("device_type", Constant.DEVICE_TYPE);
         ajaxParams.put("jsonText", makeJsonText());
         Log.e(TAG, Constant.REQUEST + API.LOGIN + "\n" + ajaxParams.toString());
+        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                closeProgressDialog();
+                prompt(getResources().getString(R.string.request_time_out));
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                showProgressDialog(getResources().getString(R.string.loading));
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if (!StringUtils.isBlank(t)) {
+                    Log.e(TAG, Constant.RESULT + API.LOGIN + "\n" + t.toString());
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if (jsonStatus.isSuccess) {
+                        handler.sendMessage(handler.obtainMessage(LOGIN_SUCCESS, BaseJSONData(t)));
+                    } else {
+                        handler.sendMessage(handler.obtainMessage(LOGIN_FALSE, BaseJSONData(t)));
+                    }
+                } else {
+                    prompt(getResources().getString(R.string.request_no_data));
+                }
+            }
+        });
+    }
+
+    /** 提交推送设备信息*/
+    private void UploadAdapter_Submit() {
+        ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.EDIT_PUSH_DEVICE);
+        ajaxParams.put("token", PreferencesUtils.getString(context, Constant.KEY_TOKEN));
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonText_Submit());
+        Log.e(TAG, Constant.REQUEST + API.EDIT_PUSH_DEVICE + "\n" + ajaxParams.toString());
         finalHttp.post(API.server,  ajaxParams, new AjaxCallBack<String>() {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
@@ -173,10 +232,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             public void onSuccess(String t) {
                 super.onSuccess(t);
                 if(!StringUtils.isBlank(t)){
-                    Log.e(TAG, Constant.RESULT + API.LOGIN + "\n" + t.toString());
+                    Log.e(TAG, Constant.RESULT + API.EDIT_PUSH_DEVICE + "\n" + t.toString());
                     JSONStatus jsonStatus = BaseJSONData(t);
                     if(jsonStatus.isSuccess){
-                        handler.sendMessage(handler.obtainMessage(LOGIN_SUCCESS, BaseJSONData(t)));
+                        handler.sendMessage(handler.obtainMessage(EDIT_PUSH_DEVICE_SUCCESS, BaseJSONData(t)));
                     }else{
                         handler.sendMessage(handler.obtainMessage(LOGIN_FALSE, BaseJSONData(t)));
                     }
@@ -185,6 +244,24 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 }
             }
         });
+    }
+
+    /***
+     * member_id	会员ID
+     * device_token	设备推送号码
+     * operator_type	1-添加/2-删除/3-清空(默认为1)
+     * @return json
+     */
+    private String makeJsonText_Submit() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
+            json.put("device_token", XGPushConfig.getToken(context));
+            json.put("operator_type", Constant.OPERATOR_TYPE_ADD);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
     }
 
     /***

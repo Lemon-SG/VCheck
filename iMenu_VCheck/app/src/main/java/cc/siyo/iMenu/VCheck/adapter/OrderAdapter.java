@@ -136,6 +136,7 @@ public class OrderAdapter extends AbsAdapter<MemberOrder>{
                 public void onClick(View v) {
                     Intent intent = new Intent(context, OrderDetailActivity.class);
                     intent.putExtra("orderId", memberOrder.order_info.order_id);
+                    intent.putExtra("orderType", memberOrder.order_info.order_type);
                     context.startActivityForResult(intent, Constant.RESQUEST_CODE);
                 }
             });

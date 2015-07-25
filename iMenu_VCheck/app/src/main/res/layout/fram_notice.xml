@@ -167,7 +167,7 @@
         android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:textColor="@color/gray_87"
+        android:textColor="@color/top_black"
         android:layout_toRightOf="@+id/tv_notice1_"
         android:textSize="16sp"/>
 

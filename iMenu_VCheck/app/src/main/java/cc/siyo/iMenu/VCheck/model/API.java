@@ -12,6 +12,8 @@ public class API {
     public static final String GET_CLIENT_CONFIG = "base/client_config/getClientConfig";
     /** 登录*/
     public static final String LOGIN = "member/member/login";
+    /** 获取首页广告图片*/
+    public static final String GET_INDEX_IMAGE = "base/info/getIndexImage";
     /** 记住登录状态*/
     public static final String LOGIN_WITH_TOKEN = "member/member/loginWithToken";
     /** 登出*/
@@ -64,8 +66,12 @@ public class API {
     public static final String EDIT_ORDER = "sale/order/editOrder";
     /** 提交退款申请*/
     public static final String SUBMIT_RETURN = "sale/return/submitReturn";
-    /** 提交退款申请*/
+    /** 获取退款原因*/
     public static final String GET_RETURN_REASON_LIST = "base/return/getReturnReasonList";
     /** 获取收藏列表申请*/
     public static final String GET_COLLECTION_PRODUCT_LIST = "member/collection/getCollectionProductList";
+    /** 提交推送设备信息*/
+    public static final String EDIT_PUSH_DEVICE = "device/push/editPushDevice";
+    /** 获取退款订单详情*/
+    public static final String GET_RETURN_DETAIL = "sale/return/getReturnDetail";
 }

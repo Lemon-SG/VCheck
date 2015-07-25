@@ -313,7 +313,7 @@ public class DetailActivity extends FragmentActivity{
     protected void onResume() {
         super.onResume();
         if(getIntent().getExtras() != null){
-            article_id = getIntent().getExtras().getString("article_id");
+            article_id = getIntent().getExtras().getString(Constant.INTENT_ARTICLE_ID);
         }
         finalHttp = new FinalHttp();
         UploadAdapter_Article();
@@ -325,22 +325,23 @@ public class DetailActivity extends FragmentActivity{
             @Override
             public void onClick(View v) {
                 //提交购买信息
-                if(article.orderInfo != null) {
-                    //跳转确认订单
-                    Intent intent = new Intent(getApplicationContext(), OrderConfirmActivity.class);
-                    intent.putExtra("orderInfo", article.orderInfo);
-                    startActivity(intent);
-                }else {
-                    if(Integer.parseInt(article.menu_info.stock.menu_count) > 0) {
-                        //跳转填写订单
-                        Intent intent = new Intent(getApplicationContext(), OrderWriteActivity.class);
-                        intent.putExtra("article", article);
+                if(article != null) {
+                    if(article.orderInfo != null) {
+                        //跳转确认订单
+                        Intent intent = new Intent(getApplicationContext(), OrderConfirmActivity.class);
+                        intent.putExtra("orderInfo", article.orderInfo);
                         startActivity(intent);
                     }else {
-                        //已售罄了
+                        if(Integer.parseInt(article.menu_info.stock.menu_count) > 0) {
+                            //跳转填写订单
+                            Intent intent = new Intent(getApplicationContext(), OrderWriteActivity.class);
+                            intent.putExtra("article", article);
+                            startActivity(intent);
+                        }else {
+                            //已售罄了
+                        }
                     }
                 }
-
             }
         });
         tv_detail_collect.setOnClickListener(new View.OnClickListener() {

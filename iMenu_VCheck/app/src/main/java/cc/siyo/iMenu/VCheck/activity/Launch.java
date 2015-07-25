@@ -11,8 +11,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushConfig;
+import com.tencent.android.tpush.XGPushManager;
+
+import net.tsz.afinal.FinalBitmap;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -29,7 +36,9 @@ import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.ClientConfig;
 import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.model.Image;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
+import cc.siyo.iMenu.VCheck.model.WebLinkParams;
 import cc.siyo.iMenu.VCheck.util.CheckNetWorkUtil;
 import cc.siyo.iMenu.VCheck.util.PackageUtils;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
@@ -45,6 +54,7 @@ public class Launch extends BaseActivity{
 
     private static final String TAG = "Launch";
     private FinalHttp finalHttp;
+    private static final int GET_INDEX_IMAGE_SUCCESS = 300;
     private static final int GET_CLIENT_CONFIG_SUCCESS = 100;
     private static final int GET_CLIENT_CONFIG_FALSE = 200;
     private Context mContext;
@@ -52,7 +62,9 @@ public class Launch extends BaseActivity{
     private List<ClientConfig> clientConfigsList;
     private String versionUrl;
     @ViewInject(id = R.id.tv_version)private TextView tv_version;
+    @ViewInject(id = R.id.ivLaunch)private ImageView ivLaunch;
     Dialog dialog;
+    private FinalBitmap finalBitmap;
     /** because onResume have send http one and second,so...
      *  this is isHTTP holdup send http,
      *  if http(ing) -> not send http
@@ -63,6 +75,16 @@ public class Launch extends BaseActivity{
     public int getContentView() {
         // open LOGCAT output , provide debug ,release is close
         XGPushConfig.enableDebug(this, true);
+
+        // 开启logcat输出，方便debug，发布时请关闭
+        // XGPushConfig.enableDebug(this, true);
+        // 如果需要知道注册是否成功，请使用registerPush(getApplicationContext(), XGIOperateCallback)带callback版本
+        // 如果需要绑定账号，请使用registerPush(getApplicationContext(),account)版本
+        // 具体可参考详细的开发指南
+        // 传递的参数为ApplicationContext
+        Context context = getApplicationContext();
+        XGPushManager.registerPush(context);
+
         return R.layout.activity_launch;
     }
 
@@ -72,6 +94,9 @@ public class Launch extends BaseActivity{
     @Override
     public void initData() {
         finalHttp = new FinalHttp();
+        finalBitmap = FinalBitmap.create(context);
+        finalBitmap.configLoadingImage(R.drawable.ic_member);
+        finalBitmap.configLoadfailImage(R.drawable.ic_member);
         dialog  = showDialog(Launch.this, getResources().getString(R.string.no_network),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -88,23 +113,42 @@ public class Launch extends BaseActivity{
 
         if(getIntent() != null && getIntent().getDataString() != null) {
             Intent intent = getIntent();
-            String data = intent.getDataString();
+            String data = intent.getDataString();//vcheck://product?id=7
             Log.e(TAG, data);
+            doSwitchPage(data);
         }
         tv_version.setText("version" + PackageUtils.getAppVersionName(mContext));
         finalHttp = new FinalHttp();
         if (checkNetwork()) {
             if (!isHttp) {
-                System.out.println("UploadBaseClientConfig");
-                UploadAdapter(getVersionCode());
+                UploadAdapter(Constant.LAUNACH_IMG_TYPE_H);
             }
         }
+
+		XGPushClickedResult click = XGPushManager.onActivityStarted(this);
+		Log.d("TPush", "onResumeXGPushClickedResult:" + click);
+		if (click != null) { // 判断是否来自信鸽的打开方式
+			Toast.makeText(this, "通知被点击:" + click.toString(), Toast.LENGTH_SHORT).show();
+		}
     }
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case GET_INDEX_IMAGE_SUCCESS:
+                    //获取广告图片成功
+                    closeProgressDialog();
+                    if(msg.obj != null) {
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        JSONObject data = jsonStatus.data;
+                        JSONObject banner_info = data.optJSONObject("banner_info");
+                        Image image = new Image().parse(banner_info.optJSONObject("image"));
+                        finalBitmap.display(ivLaunch, image.source);
+                        System.out.println("UploadBaseClientConfig");
+                        UploadAdapter(getVersionCode());
+                    }
+                    break;
                 case GET_CLIENT_CONFIG_SUCCESS:
                     closeProgressDialog();
                     if(msg.obj != null){
@@ -187,6 +231,67 @@ public class Launch extends BaseActivity{
                 }
             }
         });
+    }
+
+    private void UploadAdapter(int type) {
+        isHttp = true;
+        AjaxParams ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.GET_INDEX_IMAGE);
+        ajaxParams.put("token", "");
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonText(type));
+        Log.e(TAG, Constant.REQUEST + API.GET_INDEX_IMAGE + '\n' + ajaxParams.toString());
+        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                showNetWorkDialog();
+                isHttp = false;
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if (!StringUtils.isBlank(t)) {
+                    Log.e(TAG, Constant.RESULT + API.GET_INDEX_IMAGE + '\n' + t);
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if (jsonStatus.isSuccess) {
+                        handler.sendMessage(handler.obtainMessage(GET_INDEX_IMAGE_SUCCESS, BaseJSONData(t)));
+                    } else {
+                        handler.sendMessage(handler.obtainMessage(GET_CLIENT_CONFIG_FALSE, BaseJSONData(t)));
+                    }
+                    isHttp = false;
+                } else {
+                    prompt(getResources().getString(R.string.request_no_data));
+                    isHttp = false;
+                }
+            }
+        });
+    }
+
+    /***
+     * image_type	图片尺寸类型：Android:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi
+     * @return json
+     */
+    private String makeJsonText(int type) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("image_type", type + "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
     }
 
     /***
@@ -378,6 +483,44 @@ public class Launch extends BaseActivity{
     private void showNetWorkDialog(){
         if(!dialog.isShowing()){
             dialog.show();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);// 必须要调用这句
+    }
+
+    /** 执行网页进入跳转相应页面
+     *  首页	route=home	vcheck://?route=home
+     *  产品详情	route=article&article_id=[文章ID]	vcheck://?route=article&article_id=2
+     * */
+    private void doSwitchPage(String data) {
+        String paramsStr = data.substring(9, data.length());
+        String[] params = paramsStr.split("&");
+        JSONObject jsonObject = new JSONObject();
+        for (int i = 0; i < params.length; i++) {
+            try {
+                jsonObject.put(params[i].substring(0, params[i].indexOf("=")),
+                        params[i].substring(params[i].indexOf("=") + 1, params[i].length()));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        WebLinkParams webLinkParams = new WebLinkParams().parse(jsonObject);
+        if(webLinkParams != null) {
+            if(webLinkParams.route.equals(Constant.INTENT_HOME)) {
+                //跳至首页
+
+            }
+            if(webLinkParams.route.equals(Constant.INTENT_ARTICLE)) {
+                //跳至文章详情
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(Constant.INTENT_ARTICLE_ID, webLinkParams.article_id);
+                startActivity(intent);
+            }
+
         }
     }
 }

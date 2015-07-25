@@ -213,6 +213,7 @@ public class CollectListActivity extends BaseActivity {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
+                closeProgressDialog();
                 list_collect.onRefreshComplete();
                 list_collect.onLoadMoreComplete();
                 prompt("无网络");

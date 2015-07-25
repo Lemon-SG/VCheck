@@ -179,6 +179,7 @@ public class SubmitReturnActivity extends BaseActivity {
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 prompt("无网络");
+                closeProgressDialog();
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }
 

@@ -17,6 +17,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    android {
+        packagingOptions {
+            exclude 'lib/arm64-v8a/libtpnsSecurity.so'
+        }
+    }
 }
 
 
@@ -24,8 +36,9 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile files('libs/afinal_0.5_bin.jar')
-    compile files('libs/Xg_sdk_v2.37.jar')
     compile files('libs/alipaySDK-20150610.jar')
     compile files('libs/libammsdk.jar')
+    compile files('libs/Xg_sdk_v2.38_20150616_1057.jar')
+    compile files('libs/mid-sdk-2.20.jar')
 }
 

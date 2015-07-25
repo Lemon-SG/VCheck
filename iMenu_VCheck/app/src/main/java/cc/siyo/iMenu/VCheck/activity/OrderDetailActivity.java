@@ -26,6 +26,7 @@ import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.MemberOrder;
 import cc.siyo.iMenu.VCheck.model.OrderInfo;
+import cc.siyo.iMenu.VCheck.model.ReturnInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.view.PromptDialog;
@@ -40,6 +41,10 @@ public class OrderDetailActivity extends BaseActivity {
     @ViewInject(id = R.id.topbar)private TopBar topbar;
     /** 菜品layout*/
     @ViewInject(id = R.id.rl_orderDetail_menu)private RelativeLayout rl_orderDetail_menu;
+    /** 底部整体layout*/
+    @ViewInject(id = R.id.rl_bottom)private RelativeLayout rl_bottom;
+    /** 退款底部layout*/
+    @ViewInject(id = R.id.rl_orderDetail_return_bottom)private RelativeLayout rl_orderDetail_return_bottom;
     /** 菜品图片显示*/
     @ViewInject(id = R.id.iv_orderDetail_menu)private ImageView iv_orderDetail_menu;
     /** 菜品名称显示*/
@@ -78,22 +83,34 @@ public class OrderDetailActivity extends BaseActivity {
     @ViewInject(id = R.id.tv_orderDetail_bottom_price)private TextView tv_orderDetail_bottom_price;
     /** 立即支付按钮*/
     @ViewInject(id = R.id.tv_orderDetail_submitOrder)private TextView tv_orderDetail_submitOrder;
+    /** 退款状态显示*/
+    @ViewInject(id = R.id.tv_order_type_description)private TextView tv_order_type_description;
+    /** 申请退款的时间显示*/
+    @ViewInject(id = R.id.tv_date_added)private TextView tv_date_added;
+    /** 订单详情使用须知显示*/
+    @ViewInject(id = R.id.tv_order_detail_notice)private TextView tv_order_detail_notice;
+    /** 退款方式显示*/
+    @ViewInject(id = R.id.tv_return_action_description)private TextView tv_return_action_description;
+    /** 退款进度描述显示*/
+    @ViewInject(id = R.id.tv_description)private TextView tv_description;
     private static final String TAG = "OrderDetailActivity";
     /** A FINAL框架的HTTP请求工具 */
     private FinalHttp finalHttp;
     /** 封装参数的键值对 */
     private AjaxParams ajaxParams;
-    /** 登出成功标石*/
     private static final int GET_ORDER_DETAIL_SUCCESS = 100;
-    /** 登出失败标石*/
     private static final int GET_ORDER_DETAIL_FALSE = 200;
     private static final int EDIT_ORDER_SUCCESS = 300;
-    private static final int SUBMIT_RETURN_SUCCESS = 400;
+    private static final int GET_RETURN_ORDER_DETAIL_SUCCESS = 500;
     /** 订单ID*/
     private String orderId;
     private FinalBitmap finalBitmap;
     private PromptDialog promptDialog;
     private MemberOrder memberOrder;
+    /** 当前订单类型*/
+    private String orderType;
+    /** 当页面关闭的时候标石订单状态是否被改变，取决于申请退款，用于返回到列表去重新加载列表*/
+    private boolean changeOrderStatus= false;
 
     @Override
     public int getContentView() {
@@ -107,6 +124,10 @@ public class OrderDetailActivity extends BaseActivity {
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
             @Override
             public void onClick(View view) {
+                if(changeOrderStatus) {
+                    //订单状态更改，返回需重新加载
+                    setResult(Constant.RESULT_CODE_ORDER_DETAIL);
+                }
                 finish();
             }
         });
@@ -119,56 +140,50 @@ public class OrderDetailActivity extends BaseActivity {
         finalBitmap.configLoadfailImage(R.drawable.test_menu_img);
         finalHttp = new FinalHttp();
         orderId = getIntent().getExtras().getString("orderId");
+
         UploadAdapter();
+        orderType = getIntent().getExtras().getString("orderType");
+        if(orderType.equals(Constant.ORDER_TYPE_RETURN_OVER) || orderType.equals(Constant.ORDER_TYPE_RETURN_IN)) {
+            //已退款 | 退款中
+            UploadAdapter_ReturnDetail();
+        }
     }
 
     /** 显示数据*/
     private void showData(final MemberOrder memberOrder){
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_NO_PAY)) {
             //未付款订单,可取消，可删除，可支付订单，列表显示：等待付款
-            ll_orderDetail_buy_now.setVisibility(View.VISIBLE);//显示支付底部
-            tv_orderDetail_bottom_driver.setVisibility(View.VISIBLE);//显示支付底部分割线
-            tv_orderDetail_cancel.setText("取消订单");
-            tv_orderDetail_cancel.setVisibility(View.VISIBLE);//显示
+            showBottom(true, false, "取消订单");
             tv_orderDetail_cancel.setOnClickListener(new OnCancelOrderClickListener());
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_PAY_NO_SPEND)) {
             //已支付未消费订单，只能申请退款，且不可删除，列表实现：等待消费
-            ll_orderDetail_buy_now.setVisibility(View.GONE);//隐藏支付底部
-            tv_orderDetail_bottom_driver.setVisibility(View.GONE);//显示支付底部分割线
-            tv_orderDetail_cancel.setText("申请退款");
-            tv_orderDetail_cancel.setVisibility(View.VISIBLE);//显示
+            showBottom(false, false, "申请退款");
             tv_orderDetail_cancel.setOnClickListener(new OnSubmitReturnClickListener());
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_PAY_SPEND)) {
             //已支付已消费订单，只能删除，列表显示：已消费
-            ll_orderDetail_buy_now.setVisibility(View.GONE);//隐藏支付底部
-            tv_orderDetail_bottom_driver.setVisibility(View.GONE);//显示支付底部分割线
-            tv_orderDetail_cancel.setVisibility(View.GONE);//隐藏
+            showBottom(false, false, "");
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_RETURN_IN)) {
             //退款中订单，无操作，且不可删除，列表显示：退款中
-            ll_orderDetail_buy_now.setVisibility(View.GONE);//隐藏支付底部
-            tv_orderDetail_bottom_driver.setVisibility(View.GONE);//显示支付底部分割线
-            tv_orderDetail_cancel.setVisibility(View.GONE);//隐藏
+            showBottom(false, true, "");
+            tv_order_type_description.setTextColor(getResources().getColor(R.color.orange_red));
+            tv_order_type_description.setText(memberOrder.order_info.order_type_description);
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_RETURN_OVER)) {
             //退款完成订单，只能删除，列表显示：已退款
-            ll_orderDetail_buy_now.setVisibility(View.GONE);//隐藏支付底部
-            tv_orderDetail_cancel.setVisibility(View.GONE);//隐藏
+            showBottom(false, true, "");
+            tv_order_type_description.setTextColor(getResources().getColor(R.color.green));
+            tv_order_type_description.setText(memberOrder.order_info.order_type_description);
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_NO_PAY_TIMEOUT)) {
             //待付款过期订单，只能删除，列表显示：交易关闭
-            ll_orderDetail_buy_now.setVisibility(View.GONE);//隐藏支付底部
-            tv_orderDetail_bottom_driver.setVisibility(View.GONE);//显示支付底部分割线
-            tv_orderDetail_cancel.setVisibility(View.GONE);//隐藏
+            showBottom(false, false, "");
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_PAY_TIMEOUT)) {
             //已付款过期订单，只能申请退款，且不能删除，列表显示：订单已过期，请申请退款
-            ll_orderDetail_buy_now.setVisibility(View.GONE);//隐藏支付底部
-            tv_orderDetail_bottom_driver.setVisibility(View.GONE);//显示支付底部分割线
-            tv_orderDetail_cancel.setText("申请退款");
-            tv_orderDetail_cancel.setVisibility(View.VISIBLE);//显示
+            showBottom(false, false, "申请退款");
             tv_orderDetail_cancel.setOnClickListener(new OnSubmitReturnClickListener());
         }
         rl_orderDetail_menu.setOnClickListener(new View.OnClickListener() {
@@ -216,12 +231,81 @@ public class OrderDetailActivity extends BaseActivity {
             tv_orderDetail_order_totprice.setText(memberOrder.order_info.totalPrice.original_price + memberOrder.order_info.totalPrice.price_unit);
             tv_orderDetail_bottom_price.setText(memberOrder.order_info.totalPrice.original_price);
         }
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int i = 0; i < memberOrder.article_info.tips_info.content.length; i++) {
+            if(i + 1 == memberOrder.article_info.tips_info.content.length) {
+                stringBuffer.append(" · " + memberOrder.article_info.tips_info.content[i]);
+            } else {
+                stringBuffer.append(" · " + memberOrder.article_info.tips_info.content[i] + "\n");
+            }
+        }
+        tv_order_detail_notice.setText(stringBuffer);
+    }
+
+    /** 显示退款底部*/
+    private void showReturnBottom(ReturnInfo returnInfo) {
+        showBottom(false, true, "");
+        tv_date_added.setText("申请:" + returnInfo.date_added);
+        tv_return_action_description.setText(returnInfo.return_action_description.trim());
+        if(orderType.equals(Constant.ORDER_TYPE_RETURN_OVER)) {
+            tv_description.setText("您的款项已退回");
+        }
+        if(orderType.equals(Constant.ORDER_TYPE_RETURN_IN)) {
+            tv_description.setText("预计两个工作日内完成");
+        }
+    }
+
+    /***
+     * 底部显示
+     * @param isShowPayBottom 是否显示支付底部
+     * @param isShowReturnBottom 是否显示退款底部
+     * @param bottomText 最底部的操作按钮的文本内容，如为空，则不显示
+     */
+    private void showBottom(boolean isShowPayBottom, boolean isShowReturnBottom, String bottomText) {
+        if(isShowPayBottom) {
+            //显示支付底部
+            rl_bottom.setVisibility(View.VISIBLE);
+            ll_orderDetail_buy_now.setVisibility(View.VISIBLE);//显示支付底部
+            tv_orderDetail_bottom_driver.setVisibility(View.VISIBLE);//显示支付底部分割线
+            rl_orderDetail_return_bottom.setVisibility(View.GONE);//隐藏退款底部
+        }
+        if(isShowReturnBottom) {
+            //显示退款底部
+            rl_bottom.setVisibility(View.VISIBLE);
+            ll_orderDetail_buy_now.setVisibility(View.GONE);//隐藏支付底部
+            tv_orderDetail_bottom_driver.setVisibility(View.VISIBLE);//隐藏支付底部分割线
+            rl_orderDetail_return_bottom.setVisibility(View.VISIBLE);//显示退款底部
+        }
+        if(!isShowPayBottom && !isShowReturnBottom) {
+            //去掉整体底部
+            rl_bottom.setVisibility(View.GONE);
+            tv_orderDetail_bottom_driver.setVisibility(View.GONE);//隐藏支付底部分割线
+        }
+        if(!StringUtils.isBlank(bottomText)) {
+            //显示底部按钮文本
+            tv_orderDetail_cancel.setText(bottomText);
+            tv_orderDetail_cancel.setVisibility(View.VISIBLE);
+        } else {
+            //去掉底部按钮
+            tv_orderDetail_cancel.setVisibility(View.GONE);
+        }
     }
 
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
+                case GET_RETURN_ORDER_DETAIL_SUCCESS:
+                    closeProgressDialog();
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        JSONObject data = jsonStatus.data;
+                        if(jsonStatus.isSuccess && data != null){
+                            ReturnInfo returnInfo = new ReturnInfo().parse(data.optJSONObject("return_info"));
+                            showReturnBottom(returnInfo);
+                        }
+                    }
+                    break;
                 case GET_ORDER_DETAIL_SUCCESS:
                     closeProgressDialog();
                     if(msg.obj != null){
@@ -238,15 +322,7 @@ public class OrderDetailActivity extends BaseActivity {
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(jsonStatus.isSuccess) {
-                            finish();
-                        }
-                    }
-                    break;
-                case SUBMIT_RETURN_SUCCESS:
-                    closeProgressDialog();
-                    if(msg.obj != null){
-                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
-                        if(jsonStatus.isSuccess) {
+                            setResult(Constant.RESULT_CODE_ORDER_DETAIL);
                             finish();
                         }
                     }
@@ -282,6 +358,7 @@ public class OrderDetailActivity extends BaseActivity {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
+                closeProgressDialog();
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }
 
@@ -314,8 +391,7 @@ public class OrderDetailActivity extends BaseActivity {
         });
     }
 
-    /** 编辑订单请求
-     * */
+    /** 编辑订单请求*/
     public void UploadAdapter_Edit() {
         ajaxParams = new AjaxParams();
         ajaxParams.put("route", API.EDIT_ORDER);
@@ -328,6 +404,7 @@ public class OrderDetailActivity extends BaseActivity {
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
                 prompt("无网络");
+                closeProgressDialog();
                 System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
             }
 
@@ -350,6 +427,52 @@ public class OrderDetailActivity extends BaseActivity {
                     JSONStatus jsonStatus = BaseJSONData(t);
                     if(jsonStatus.isSuccess){
                         handler.sendMessage(handler.obtainMessage(EDIT_ORDER_SUCCESS, BaseJSONData(t)));
+                    }else{
+                        handler.sendMessage(handler.obtainMessage(GET_ORDER_DETAIL_FALSE, BaseJSONData(t)));
+                    }
+                }else{
+                    prompt(getResources().getString(R.string.request_no_data));
+                }
+            }
+        });
+    }
+
+    /** 退款订单详细请求*/
+    public void UploadAdapter_ReturnDetail() {
+        ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.GET_RETURN_DETAIL);
+        ajaxParams.put("token", PreferencesUtils.getString(OrderDetailActivity.this, Constant.KEY_TOKEN));
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonText());
+        Log.e(TAG, Constant.REQUEST + API.GET_RETURN_DETAIL + "\n" + ajaxParams.toString());
+        finalHttp.post(API.server,  ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                prompt("无网络");
+                closeProgressDialog();
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                showProgressDialog(getResources().getString(R.string.loading));
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if(!StringUtils.isBlank(t)){
+                    Log.e(TAG, Constant.RESULT + API.GET_RETURN_DETAIL + "\n" +  t.toString());
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if(jsonStatus.isSuccess){
+                        handler.sendMessage(handler.obtainMessage(GET_RETURN_ORDER_DETAIL_SUCCESS, BaseJSONData(t)));
                     }else{
                         handler.sendMessage(handler.obtainMessage(GET_ORDER_DETAIL_FALSE, BaseJSONData(t)));
                     }
@@ -437,7 +560,8 @@ public class OrderDetailActivity extends BaseActivity {
             switch (resultCode) {
                 case Constant.RESULT_CODE_RETURN:
                     //申请退款返回
-                    UploadAdapter();
+                    changeOrderStatus = true;
+                    UploadAdapter_ReturnDetail();
                     break;
             }
         }

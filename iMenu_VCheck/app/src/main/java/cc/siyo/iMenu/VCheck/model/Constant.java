@@ -42,10 +42,24 @@ public class Constant {
     public static final int COLLECT_TYPE_OPERATOR_DELETE = 2;
     /** 编辑收藏操作标石:3-清空)*/
     public static final int COLLECT_TYPE_OPERATOR_CLEAN = 3;
-    /** 购物车操作类型标石:1-编辑*/
+    /** 提交推送设备信息操作类型标石:1-添加/2-删除/3-清空(默认为1)*/
+    public static final int OPERATOR_TYPE_ADD = 1;
+    /** 提交推送设备信息操作类型标石:2-删除*/
+    public static final int OPERATOR_TYPE_DEL = 2;
+    /** 提交推送设备信息操作类型标石:3-清空*/
+    public static final int OPERATOR_TYPE_CELEAR = 3;
+    /** 购物车操作类型标石:3-清空*/
     public static final int OPERATOR_TYPE_EDIT = 1;
     /** 购物车操作类型标石:2-清空*/
     public static final int OPERATOR_TYPE_CLEAN = 2;
+    /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
+    public static final int LAUNACH_IMG_TYPE_H = 1;
+    /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
+    public static final int LAUNACH_IMG_TYPE_M = 2;
+    /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
+    public static final int LAUNACH_IMG_TYPE_XH = 3;
+    /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
+    public static final int LAUNACH_IMG_TYPE_XXH = 4;
 
     /****************************        拍照     **********************************/
     /** 作用: SD卡根目录 */
@@ -76,8 +90,17 @@ public class Constant {
     public static final int RESULT_CODE_LOGOUT = 4000;
     /** INTENT 申请退款返回code*/
     public static final int RESULT_CODE_RETURN = 5000;
-    /** INTENT 订单详情返回code*/
+    /** INTENT 订单详情返回需要加载列表code*/
     public static final int RESULT_CODE_ORDER_DETAIL = 6000;
+    /** INTENT 跳入详情传递参数*/
+    public static final String INTENT_ARTICLE_ID = "article_id";
+    /** INTENT 跳入邀请好友传递参数*/
+    public static final String INTENT_INVITE_CODE = "invite_code";
+
+    /** INTENT web跳转路径为 首页*/
+    public static final String INTENT_HOME = "home";
+    /** INTENT web跳转路径为 文章详情*/
+    public static final String INTENT_ARTICLE = "article";
 
     /*******************************   本地存储 KEY   *************************************/
     /** 用户ID：member_id*/

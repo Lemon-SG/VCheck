@@ -65,6 +65,7 @@ public class PayResultActivity extends BaseActivity {
                 //查看订单
                 Intent intent = new Intent(context, OrderDetailActivity.class);
                 intent.putExtra("orderId", orderInfo.order_id);
+                intent.putExtra("orderType", orderInfo.order_type);
                 startActivity(intent);
                 finish();
             }

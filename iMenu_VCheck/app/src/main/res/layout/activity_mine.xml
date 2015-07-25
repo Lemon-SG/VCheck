@@ -54,6 +54,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tv_message_center"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
@@ -64,6 +65,7 @@
                         android:text="我的消息"/>
 
                     <TextView
+                        android:id="@+id/tv_share"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
@@ -86,15 +88,29 @@
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_froget_pass"/>
 
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="我的订单"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="0.2"
                     android:textSize="14sp"
                     android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/tv_order_count"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:visibility="invisible"
+                    android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 
             <TextView
@@ -113,15 +129,29 @@
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_froget_pass"/>
 
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="我的礼券"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="0.2"
                     android:textSize="14sp"
                     android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/tv_coupon_count"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:visibility="invisible"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 
             <TextView
@@ -141,7 +171,9 @@
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_froget_pass"/>
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -149,34 +181,19 @@
                     android:text="我喜欢的礼遇"
                     android:layout_weight="0.2"
                     android:textSize="14sp"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"/>
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@color/gray_ddd"/>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
 
                 <TextView
+                    android:id="@+id/tv_collect_count"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="分享获取礼券"
-                    android:layout_weight="0.2"
+                    android:text="0"
+                    android:gravity="center"
+                    android:layout_weight="1"
                     android:textSize="14sp"
-                    android:textColor="@color/black"/>
+                    android:visibility="invisible"
+                    android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 
             <TextView
@@ -195,6 +212,7 @@
                 android:background="@color/gray_ddd"/>
 
             <LinearLayout
+                android:id="@+id/ll_app_set"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
@@ -203,7 +221,9 @@
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_froget_pass"/>
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -211,7 +231,16 @@
                     android:text="应用设置"
                     android:layout_weight="0.2"
                     android:textSize="14sp"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 
             <TextView
@@ -231,15 +260,26 @@
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_froget_pass"/>
 
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:text="反馈"
                     android:layout_weight="0.2"
+                    android:layout_gravity="center_vertical"
                     android:textSize="14sp"
                     android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 
             <TextView
@@ -250,6 +290,7 @@
                 android:background="@color/gray_ddd"/>
 
             <LinearLayout
+                android:id="@+id/ll_contention_server"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
@@ -258,7 +299,9 @@
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_froget_pass"/>
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -266,7 +309,16 @@
                     android:text="联系客服"
                     android:layout_weight="0.2"
                     android:textSize="14sp"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 
             <TextView
@@ -277,6 +329,7 @@
                 android:background="@color/gray_ddd"/>
 
             <LinearLayout
+                android:id="@+id/ll_about"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
@@ -285,7 +338,9 @@
                 <ImageView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_froget_pass"/>
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -293,7 +348,16 @@
                     android:text="关于"
                     android:layout_weight="0.2"
                     android:textSize="14sp"
+                    android:layout_gravity="center_vertical"
                     android:textColor="@color/black"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 
             <TextView
@@ -306,6 +370,8 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="100dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -316,6 +382,7 @@
                     android:background="@color/gray_b3"/>
 
                 <TextView
+                    android:id="@+id/tv_open_launch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/gray_b3"

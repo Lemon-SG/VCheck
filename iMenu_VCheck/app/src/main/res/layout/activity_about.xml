@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_below="@+id/topBar"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="精 选 限 量 美 食"
+            android:textColor="@color/top_black"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="V C h e c k"
+            android:textColor="@color/top_black"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:padding="10dp"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvVer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ver.1.0"
+            android:textColor="@color/top_black"
+            android:textSize="16sp"
+            android:padding="20dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="imenu.so"
+            android:textColor="@color/light_gray_text_color"
+            android:textSize="13sp"
+            android:padding="5dp"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Copyright(c)2015 Serious Tech All Rights Reserved."
+            android:textColor="@color/light_gray_text_color"
+            android:textSize="13sp"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+</RelativeLayout>

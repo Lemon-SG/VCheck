@@ -8,6 +8,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/driver_bottom"
+        android:overScrollMode="never"
+        android:fadingEdge="none"
         android:background="@color/white">
 
         <LinearLayout
@@ -54,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:text="可以一次尝到4种口味的拼盘Pizza RAMO餐吧双人菜单"/>
+                    android:text=""/>
 
                 <TextView
                     android:id="@+id/tv_detail_stockAndTime"
@@ -63,7 +65,7 @@
                     android:textColor="@color/gray_ddd"
                     android:textSize="14sp"
                     android:layout_marginTop="10dp"
-                    android:text="剩余22份   剩余一周以上"/>
+                    android:text=""/>
 
                 <TextView
                     android:layout_width="fill_parent"
@@ -80,7 +82,7 @@
                     android:textColor="@color/top_black"
                     android:textSize="16sp"
                     android:layout_marginTop="10dp"
-                    android:text="方家胡同种的小店 RAMO 本次带来双人满足一餐，食宿自选4种口味的12寸足量披萨，搭配一份夏日特供双扣沙拉，一份焦琳着香喷喷热牛肉汁的加拿大薯条。独享68折。"/>
+                    android:text=""/>
 
                 <RelativeLayout
                     android:layout_width="fill_parent"
@@ -93,10 +95,10 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_share"
                         android:drawablePadding="5dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:textSize="16sp"
                         android:textColor="@color/transparent_black20"
                         android:background="@drawable/detail_share_btn_bg_shape"
@@ -110,10 +112,10 @@
                         android:layout_toRightOf="@+id/tv_share_get_gift"
                         android:drawableLeft="@drawable/ic_collect_black"
                         android:drawablePadding="5dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp"
                         android:textSize="16sp"
                         android:textColor="@color/transparent_black20"
                         android:background="@drawable/detail_share_btn_bg_shape"/>
@@ -185,7 +187,7 @@
                 android:id="@+id/tv_detail_original_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="247元"
+                android:text=""
                 android:textSize="14sp"
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/gray_9c"/>
@@ -200,7 +202,7 @@
                     android:id="@+id/tv_detail_special_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="168"
+                    android:text=""
                     android:layout_centerVertical="true"
                     android:textColor="@color/orange_red"
                     android:textSize="18sp"/>
@@ -209,7 +211,7 @@
                     android:id="@+id/tv_detail_price_menu_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="元/2位"
+                    android:text=""
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@+id/tv_detail_special_price"
                     android:textSize="14sp"

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import net.tsz.afinal.FinalHttp;
@@ -59,8 +60,6 @@ public class OrderListActivity extends BaseActivity {
     private static final int EDIT_ORDER_SUCCESS = 300;
     /** 获取订单失败标石*/
     private static final int GET_ORDER_LIST_FALSE = 200;
-    /**提示对话框*/
-    private PromptDialog promptDialog;
     /** 当前需要删除的订单IID*/
     private String orderId = "";
 
@@ -86,21 +85,23 @@ public class OrderListActivity extends BaseActivity {
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
             @Override
             public void onClick(View view) {
-                //返回
-                finish();
+                finish();//返回
             }
         });
     }
 
     @Override
     public void initData() {
+        page = Constant.PAGE;
+        finalHttp = new FinalHttp();
+        isPull = true;
+        UploadAdapter();
+
         orderAdapter = new OrderAdapter(OrderListActivity.this, R.layout.list_item_order);
         list_order.setAdapter(orderAdapter);
-
         list_order.setOnLoadMoreListenter(new RefreshListView.OnLoadMoreListener() {
 
             public void onLoadMore() {
-                Log.e(TAG, "setOnLoadMoreListenter");
                 isPull = false;
                 if (doNotOver) {
                     page++;
@@ -117,7 +118,6 @@ public class OrderListActivity extends BaseActivity {
         list_order.setOnRefreshListener(new RefreshListView.OnRefreshListener() {
 
             public void onRefresh() {
-                Log.e(TAG, "setOnRefreshListener");
                 page = Constant.PAGE;
                 isPull = true;
                 UploadAdapter();
@@ -125,14 +125,7 @@ public class OrderListActivity extends BaseActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        page = Constant.PAGE;
-        finalHttp = new FinalHttp();
-        isPull = true;
-        UploadAdapter();
-    }
+
 
     Handler handler = new Handler() {
         @Override
@@ -340,48 +333,19 @@ public class OrderListActivity extends BaseActivity {
         return json.toString();
     }
 
-    //        list_order.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-//                Intent intent = new Intent(context, OrderDetailActivity.class);
-//                intent.putExtra("orderId", orderAdapter.getDataList().get(position - 1).order_info.order_id);
-//                startActivity(intent);
-//            }
-//        });
-//        list_order.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_NO_PAY)) {
-//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
-//                }
-//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_RETURN_OVER)) {
-//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
-//                }
-//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_NO_PAY_TIMEOUT)) {
-//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
-//                }
-//                if(orderAdapter.getDataList().get(position - 1).order_info.order_type.equals(Constant.ORDER_TYPE_PAY_SPEND)) {
-//                    orderId = orderAdapter.getDataList().get(position - 1).order_info.order_id;
-//                }
-//                if(!StringUtils.isBlank(orderId)) {
-//                    //长安删除订单
-//                    promptDialog = new PromptDialog(mContext, "提示", "确定要删除此订单？", "确定", "取消", new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            //删除订单
-//                            UploadAdapter(orderId);
-//                            promptDialog.dismiss();
-//                        }
-//                    }, new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            promptDialog.dismiss();
-//                        }
-//                    });
-//                    promptDialog.show();
-//                }
-//                return false;
-//            }
-//        });
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e(TAG, "resultCode ->" + Constant.RESULT_CODE_ORDER_DETAIL);
+        if(requestCode == Constant.RESQUEST_CODE) {
+            switch (resultCode) {
+                case Constant.RESULT_CODE_ORDER_DETAIL:
+                    Log.e(TAG, "resultCode ->" + Constant.RESULT_CODE_ORDER_DETAIL);
+                    //返回当前页面，需要加载标石
+                    UploadAdapter();
+                    break;
+            }
+
+        }
+    }
 }
