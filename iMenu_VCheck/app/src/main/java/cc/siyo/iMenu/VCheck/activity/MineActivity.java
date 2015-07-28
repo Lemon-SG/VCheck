@@ -1,6 +1,7 @@
 package cc.siyo.iMenu.VCheck.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -30,8 +31,12 @@ import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Member;
 import cc.siyo.iMenu.VCheck.model.OrderInfo;
+import cc.siyo.iMenu.VCheck.model.ShareInvite;
+import cc.siyo.iMenu.VCheck.model.VoucherInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
+import cc.siyo.iMenu.VCheck.util.Util;
+import cc.siyo.iMenu.VCheck.view.PromptDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
 /**
@@ -49,6 +54,8 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     @ViewInject(id = R.id.ll_order_list)private LinearLayout ll_order_list;
     /** 我收藏的按钮*/
     @ViewInject(id = R.id.ll_collect_list)private LinearLayout ll_collect_list;
+    /** 我的礼券按钮*/
+    @ViewInject(id = R.id.llVoucherList)private LinearLayout llVoucherList;
     /** 联系客服按钮*/
     @ViewInject(id = R.id.ll_contention_server)private LinearLayout ll_contention_server;
     /** 关于按钮*/
@@ -82,8 +89,8 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     private Member member;
     /** A FINAL 框架的HTTP请求工具*/
     private FinalBitmap finalBitmap;
-    /** 邀请码*/
-    private String invite_code;
+    /** 分享邀请实体*/
+    private ShareInvite shareInvite;
 
     @Override
     public int getContentView() {
@@ -103,6 +110,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
         ll_contention_server.setOnClickListener(this);
         ll_about.setOnClickListener(this);
         ll_app_set.setOnClickListener(this);
+        llVoucherList.setOnClickListener(this);
         tv_open_launch.setOnClickListener(this);
         tv_message_center.setOnClickListener(this);
         tv_share.setOnClickListener(this);
@@ -148,21 +156,26 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                             if(data.optJSONObject("order_info") != null){//订单
                                 String pendingOrderCount = data.optJSONObject("order_info").optString("order_pending_count");
                                 if(!pendingOrderCount.equals("0")) {
-                                    tv_order_count.setText(pendingOrderCount);
+                                    tv_order_count.setText(pendingOrderCount + "个未付款订单");
                                     tv_order_count.setVisibility(View.VISIBLE);
                                 }
                             }
-                            if(data.optJSONObject("collection_info") != null){//收藏//TODO 接口有误
+                            if(data.optJSONObject("collection_info") != null){//收藏
                                 String couponTotalCount = data.optJSONObject("collection_info").optString("coupon_total_count");
                                 if(!couponTotalCount.equals("0")) {
                                     tv_collect_count.setText(couponTotalCount);
                                     tv_collect_count.setVisibility(View.VISIBLE);
                                 }
                             }
-                            if(data.optJSONObject("coupon_info") != null){//礼券详情
+                            if(data.optJSONObject("voucher_info") != null){//礼券详情
+                                String voucherCount = data.optJSONObject("voucher_info").optString("voucher_total_count");
+                                if(!voucherCount.equals("0")) {
+                                    tv_coupon_count.setText(voucherCount);
+                                    tv_coupon_count.setVisibility(View.VISIBLE);
+                                }
                             }
                             if(data.optJSONObject("share_info") != null){//分享详情：邀请码
-                                invite_code = data.optJSONObject("share_info").optString("invite_code");
+                                shareInvite = new ShareInvite().parse(data.optJSONObject("share_info"));
                             }
                         }
                     }
@@ -279,13 +292,13 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                 }else{prompt("请先登录");}
                 break;
             case R.id.ll_contention_server://联系客服
-
+                Util.ShowTelDialog(context, "400-836-9917", "4008369917");
                 break;
             case R.id.ll_about://关于我们
                 startActivity(new Intent(MineActivity.this, AboutUsActivity.class));
                 break;
             case R.id.tv_open_launch://启动画面进入
-
+//                startActivity(new Intent(MineActivity.this, Launch.class));
                 break;
             case R.id.ll_app_set://应用设置
                 startActivity(new Intent(MineActivity.this, AppSetActivity.class));
@@ -299,8 +312,14 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
             case R.id.tv_share://邀请好友
                 if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
                     Intent intent = new Intent(MineActivity.this, InviteFriendsActivity.class);
-                    intent.putExtra(Constant.INTENT_INVITE_CODE, invite_code);
+                    intent.putExtra(Constant.INTENT_INVITE, shareInvite);
                     startActivity(intent);
+                }else{prompt("请先登录");}
+                break;
+            case R.id.llVoucherList:
+                //我的礼券
+                if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
+                    startActivity(new Intent(MineActivity.this, VoucherListActivity.class));
                 }else{prompt("请先登录");}
                 break;
         }
@@ -313,12 +332,10 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
             switch (resultCode){
                 case Constant.RESULT_CODE_LOGIN:
                     //登陆成功
-                    Log.e(TAG, "登陆成功，稍后去请求个人信息接口");
                     UploadAdapter();
                     break;
                 case Constant.RESULT_CODE_EDIT_ACCOUNT:
                     //登陆成功
-                    Log.e(TAG, "修改账户信息返回，在本地更新昵称等");
                     UploadAdapter();
                     break;
                 case Constant.RESULT_CODE_LOGOUT:

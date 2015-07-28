@@ -1,6 +1,7 @@
 package cc.siyo.iMenu.VCheck.util;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,9 +9,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 import junit.framework.Assert;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -51,6 +54,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.view.PromptDialog;
 
 /**
  * Created by Lemon on 2015/5/6.
@@ -72,6 +76,39 @@ public class Util {
     /** 文本添加下划线*/
     public static void PaintTvAddUnderline(TextView textView){
         textView.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+    }
+
+    static PromptDialog promptDialog = null;
+    /** 拨打电话提示*/
+    public static void ShowTelDialog(final Context context, String showTel, final String sendTel) {
+        promptDialog = new PromptDialog(context, "提示", showTel, "拨打", "取消", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //拨打
+                promptDialog.dismiss();
+                context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + sendTel)));
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptDialog.dismiss();
+            }
+        });
+        promptDialog.show();
+    }
+
+    /** 复制文本到粘贴板*/
+    public static void Copy(Context context, String str, String promptText) {
+        int sdkInt = Build.VERSION.SDK_INT;
+        if (sdkInt > Build.VERSION_CODES.HONEYCOMB) {// api11
+            ClipboardManager copy = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            copy.setText(str);
+            Toast.makeText(context, promptText, Toast.LENGTH_LONG).show();
+        } else if (sdkInt <= Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager copyq = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            copyq.setText(str);
+            Toast.makeText(context, promptText, Toast.LENGTH_LONG).show();
+        }
     }
 
     /** 更换TextView旁图标 */

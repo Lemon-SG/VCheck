@@ -15,6 +15,7 @@
     <color name="green">#92b478</color>
     <color name="dark_red">#C00000</color>
     <color name="transparent_black20">#a0000000</color>
+    <color name="transparent_whiteA0">#a0DDDDDD</color>
 
     <color name="deep_gray_text_color">#474747</color>
     <color name="light_gray_text_color">#A9A9A9</color>
@@ -28,6 +29,10 @@
     <color name="num8">#888</color>
     <color name="num9">#999</color>
     <color name="org_1">#e07e27</color>
+    <color name="voucher_light_org">#7B6A4D</color>
+    <color name="voucher_deep_org">#BCA06F</color>
+    <color name="voucher_light_gray">#C5C7C8</color>
+    <color name="voucher_deep_gray">#B8B8B9</color>
     <color name="org_2">#f48f00</color>
     <color name="green_1">#39977d</color>
     <color name="green_2">#65b9a2</color>

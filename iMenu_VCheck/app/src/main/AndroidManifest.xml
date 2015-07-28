@@ -72,6 +72,7 @@
         <activity android:name=".activity.setting.AppSetActivity"/>
         <activity android:name=".activity.setting.MessageActivity"/>
         <activity android:name=".activity.InviteFriendsActivity"/>
+        <activity android:name=".activity.VoucherListActivity"/>
         <activity android:name=".activity.OrderConfirmActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

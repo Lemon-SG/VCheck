@@ -60,6 +60,12 @@ public class Constant {
     public static final int LAUNACH_IMG_TYPE_XH = 3;
     /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
     public static final int LAUNACH_IMG_TYPE_XXH = 4;
+    /** 优惠券状态(1-未使用)*/
+    public static final int VOUCHER_STATUS_NO_SPEND = 1;
+    /** 优惠券状态(2-已使用)*/
+    public static final int VOUCHER_STATUS_SPENDED = 2;
+    /** 优惠券状态(0-无效)*/
+    public static final int VOUCHER_STATUS_NO = 0;
 
     /****************************        拍照     **********************************/
     /** 作用: SD卡根目录 */
@@ -94,8 +100,8 @@ public class Constant {
     public static final int RESULT_CODE_ORDER_DETAIL = 6000;
     /** INTENT 跳入详情传递参数*/
     public static final String INTENT_ARTICLE_ID = "article_id";
-    /** INTENT 跳入邀请好友传递参数*/
-    public static final String INTENT_INVITE_CODE = "invite_code";
+    /** INTENT 跳入邀请好友传递分享邀请实体参数*/
+    public static final String INTENT_INVITE = "INTENT_INVITE";
 
     /** INTENT web跳转路径为 首页*/
     public static final String INTENT_HOME = "home";

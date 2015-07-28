@@ -42,8 +42,8 @@ import cc.siyo.iMenu.VCheck.model.Member;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.util.Util;
+import cc.siyo.iMenu.VCheck.view.PromptDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
-
 /**
  * Created by Lemon on 2015/5/12.
  * Desc:账户设置界面
@@ -98,6 +98,7 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
     private String headFile;
     /** 上传的图片对象 **/
     private Bitmap bitmap;
+    private PromptDialog promptDialog;
 
     @Override
     public int getContentView() {
@@ -152,7 +153,18 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
                 tv_setting_email.setText("未绑定");
             }
         }
-
+        promptDialog = new PromptDialog(context, "提示", "确定要退出吗？", "确定", "取消", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //退出
+                UploadAdapter();
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptDialog.dismiss();
+            }
+        });
     }
 
     Handler handler = new Handler() {
@@ -343,7 +355,7 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
         switch (v.getId()){
             case R.id.tv_login_out:
                 //退出登录
-                UploadAdapter();
+                promptDialog.show();
                 break;
             case R.id.rl_email:
                 //修改邮箱,需要判断是否已经绑定邮箱，如已绑定不可点击跳转修改

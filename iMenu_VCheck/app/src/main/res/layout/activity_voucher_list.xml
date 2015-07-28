@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:id="@+id/rlVoucherCode"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        android:visibility="invisible"
+        android:layout_below="@+id/topbar">
+
+        <EditText
+            android:id="@+id/etVoucherCode"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="14sp"
+            android:layout_toLeftOf="@+id/tvVoucherExchange"/>
+
+        <TextView
+            android:id="@+id/tvVoucherExchange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textSize="14sp"
+            android:layout_centerVertical="true"
+            android:background="@color/orange_red"
+            android:layout_alignParentRight="true"
+            android:text="兑换"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlVoucherCount"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:visibility="visible"
+        android:layout_below="@+id/topbar">
+
+        <TextView
+            android:id="@+id/tvLeftLine"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tvLeftLinePoint"
+            android:background="@color/gray_9c"/>
+
+        <TextView
+            android:id="@+id/tvLeftLinePoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:layout_toLeftOf="@+id/tvVoucherCount"
+            android:text="•"
+            android:textColor="@color/gray_9c"/>
+
+        <TextView
+            android:id="@+id/tvVoucherCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_b3"
+            android:layout_centerInParent="true"
+            android:text="2张可使用礼券"/>
+
+        <TextView
+            android:id="@+id/tvRightLinePoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="5dp"
+            android:layout_toRightOf="@+id/tvVoucherCount"
+            android:text="•"
+            android:textColor="@color/gray_9c"/>
+
+        <TextView
+            android:id="@+id/tvRightLine"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_marginRight="20dp"
+            android:layout_toRightOf="@+id/tvRightLinePoint"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/gray_9c"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvDiver"
+        android:layout_width="fill_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/rlVoucherCount"
+        android:background="@color/gray_9c"/>
+
+    <cc.siyo.iMenu.VCheck.view.RefreshListView
+        android:id="@+id/list_voucher"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_below="@+id/tvDiver"/>
+
+    <RelativeLayout
+        android:id="@+id/rlVoucherBottom"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent_whiteA0"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/gray_9c"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ 兑换"
+            android:padding="15dp"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"
+            android:textColor="@color/org_1"/>
+    </RelativeLayout>
+</RelativeLayout>

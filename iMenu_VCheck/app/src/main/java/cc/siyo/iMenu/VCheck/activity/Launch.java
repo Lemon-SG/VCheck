@@ -84,7 +84,6 @@ public class Launch extends BaseActivity{
         // 传递的参数为ApplicationContext
         Context context = getApplicationContext();
         XGPushManager.registerPush(context);
-
         return R.layout.activity_launch;
     }
 
@@ -117,7 +116,7 @@ public class Launch extends BaseActivity{
             Log.e(TAG, data);
             doSwitchPage(data);
         }
-        tv_version.setText("version" + PackageUtils.getAppVersionName(mContext));
+//        tv_version.setText("version" + PackageUtils.getAppVersionName(mContext)); TODO 暂隐藏
         finalHttp = new FinalHttp();
         if (checkNetwork()) {
             if (!isHttp) {

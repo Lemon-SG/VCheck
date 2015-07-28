@@ -74,4 +74,8 @@ public class API {
     public static final String EDIT_PUSH_DEVICE = "device/push/editPushDevice";
     /** 获取退款订单详情*/
     public static final String GET_RETURN_DETAIL = "sale/return/getReturnDetail";
+    /** 获取礼券列表*/
+    public static final String GET_VOUCHER_LIST = "member/voucher/getVoucherList";
+    /** 激活礼券*/
+    public static final String EXCHANGE_VOUCHER = "member/voucher/exchangeVoucher";
 }

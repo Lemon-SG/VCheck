@@ -35,8 +35,8 @@ public class OrderAdapter extends AbsAdapter<MemberOrder>{
     public OrderAdapter(Activity context, int layout) {
         super(context, layout);
         finalBitmap = FinalBitmap.create(context);
-        finalBitmap.configLoadingImage(R.drawable.ic_member);
-        finalBitmap.configLoadfailImage(R.drawable.ic_member);
+        finalBitmap.configLoadingImage(R.drawable.test_member_img);
+        finalBitmap.configLoadfailImage(R.drawable.test_member_img);
     }
 
     @Override

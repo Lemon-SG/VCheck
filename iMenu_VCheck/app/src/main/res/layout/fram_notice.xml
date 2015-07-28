@@ -8,21 +8,25 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/iv_notice_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/iv_notice_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/test_member_img"/>
 
-    <TextView
-        android:id="@+id/tv_notice_store_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="@color/black"
-        android:padding="10dp"
-        android:text="渔阜南"/>
+        <TextView
+            android:id="@+id/tv_notice_store_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:padding="5dp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/black"
+            android:text="渔阜南"/>
     </LinearLayout>
 
     <LinearLayout
@@ -67,6 +71,8 @@
             android:layout_toRightOf="@+id/tv_notice_address_"
             android:gravity="right"
             android:textColor="@color/gray_87"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:singleLine="true"
             android:layout_toLeftOf="@+id/iv_notice_address"
             android:text="北京市西城区杨梅竹斜街166号"/>
@@ -105,6 +111,8 @@
             android:layout_marginLeft="20dp"
             android:textColor="@color/gray_87"
             android:layout_centerVertical="true"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:layout_toRightOf="@+id/tv_notice_tel_"
             android:gravity="right"
             android:singleLine="true"
@@ -181,7 +189,8 @@
         android:id="@+id/tv_notice_weChat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="14sp"
+        android:padding="10dp"
         android:textColor="@color/orange_red"
         android:gravity="center_horizontal"
         android:text="─── •  点击这里联系VCheck微信客服  • ───"/>

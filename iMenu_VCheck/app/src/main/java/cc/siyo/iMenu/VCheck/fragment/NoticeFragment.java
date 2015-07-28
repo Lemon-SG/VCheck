@@ -7,6 +7,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import net.tsz.afinal.FinalBitmap;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +17,8 @@ import cc.siyo.iMenu.VCheck.model.ArticleContent;
 import cc.siyo.iMenu.VCheck.model.Store;
 import cc.siyo.iMenu.VCheck.model.Tips;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
+import cc.siyo.iMenu.VCheck.util.Util;
+
 /**
  * Created by Lemon on 2015/5/6.
  * Desc:须知界面
@@ -45,10 +49,14 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
     private Store store;
     /** 提示实体数据*/
     private Tips tips;
+    private FinalBitmap finalBitmap;
 
     @Override
     public int getContentView() {
         context = getActivity();
+        finalBitmap = FinalBitmap.create(context);
+        finalBitmap.configLoadingImage(R.drawable.ic_member);
+        finalBitmap.configLoadfailImage(R.drawable.ic_member);
         return R.layout.fram_notice;
     }
 
@@ -73,6 +81,7 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
         if(getArguments() != null){
             store = (Store) getArguments().getSerializable("store");
             tips = (Tips) getArguments().getSerializable("tips");
+            finalBitmap.display(iv_notice_icon, store.icon_image.thumb);
             tv_notice_store_name.setText(store.store_name);
             tv_notice_address.setText(store.address);
             tv_notice_title.setText(tips.title);
@@ -111,11 +120,11 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
                 break;
             case R.id.rl_notice_tel:
                 //商家电话
-
+                Util.ShowTelDialog(getActivity(), store.tel_1, store.tel_1);
                 break;
             case R.id.tv_notice_weChat:
                 //微信客服复制，并弹出提示框
-
+                Util.Copy(getActivity(), "知味精选限量美食", "已帮您复制微信号，可打开微信添加服务号");
                 break;
         }
     }

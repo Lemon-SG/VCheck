@@ -8,6 +8,7 @@ import android.widget.TextView;
 import net.tsz.afinal.annotation.view.ViewInject;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.model.ShareInvite;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
 /**
@@ -16,14 +17,23 @@ import cc.siyo.iMenu.VCheck.view.TopBar;
  */
 public class InviteFriendsActivity extends BaseActivity {
 
-    private static final String TAG = "InviteFriendsActivity";/** 头部*/
+    private static final String TAG = "InviteFriendsActivity";
+    /** 头部*/
     @ViewInject(id = R.id.topBar)private TopBar topBar;
     /** 邀请码显示*/
     @ViewInject(id = R.id.tvInviteCode)private TextView tvInviteCode;
+    /** 邀请人显示*/
+    @ViewInject(id = R.id.tvInvitePeopleTips)private TextView tvInvitePeopleTips;
+    /** 被邀请人显示*/
+    @ViewInject(id = R.id.tvInviteCodeTips)private TextView tvInviteCodeTips;
+    /** 分享按钮*/
+    @ViewInject(id = R.id.tvShareFriends)private TextView tvShareFriends;
+    /** 已经邀请人数显示*/
+    @ViewInject(id = R.id.tvInviteTotalCount)private TextView tvInviteTotalCount;
     /** 上部邀请layout*/
     @ViewInject(id = R.id.rlInvite)private RelativeLayout rlInvite;
-    /** 邀请码*/
-    private String inviteCode = "";
+    /** 邀请实体*/
+    private ShareInvite shareInvite;
 
     @Override
     public int getContentView() {
@@ -43,8 +53,11 @@ public class InviteFriendsActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        inviteCode = getIntent().getExtras().getString(Constant.INTENT_INVITE_CODE);
-        tvInviteCode.setText(inviteCode);
+        shareInvite = (ShareInvite) getIntent().getExtras().getSerializable(Constant.INTENT_INVITE);
+        tvInviteCode.setText(shareInvite.invite_code);
+        tvInvitePeopleTips.setText(shareInvite.invite_people_tips);
+        tvInviteCodeTips.setText(shareInvite.invite_code_tips);
+        tvInviteTotalCount.setText(shareInvite.invite_total_count);
         rlInvite.setPadding(120, 120, 120, 120);
         rlInvite.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -60,6 +73,13 @@ public class InviteFriendsActivity extends BaseActivity {
                         break;
                 }
                 return true;
+            }
+        });
+        tvShareFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //分享
+
             }
         });
     }

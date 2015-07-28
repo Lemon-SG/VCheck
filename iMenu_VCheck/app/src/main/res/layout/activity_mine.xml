@@ -121,6 +121,7 @@
                 android:background="@color/gray_ddd"/>
 
             <LinearLayout
+                android:id="@+id/llVoucherList"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
@@ -367,37 +368,58 @@
                 android:layout_marginRight="20dp"
                 android:background="@color/gray_ddd"/>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="100dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:orientation="horizontal">
+                android:layout_height="80dp">
 
                 <TextView
-                    android:layout_width="50dp"
+                    android:id="@+id/tvLeftLine"
+                    android:layout_width="100dp"
                     android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/gray_b3"/>
+                    android:layout_marginLeft="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/tvLeftLinePoint"
+                    android:layout_centerVertical="true"
+                    android:background="@color/gray_9c"/>
+
+                <TextView
+                    android:id="@+id/tvLeftLinePoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:padding="5dp"
+                    android:layout_toLeftOf="@+id/tv_open_launch"
+                    android:text="•"
+                    android:textColor="@color/gray_9c"/>
 
                 <TextView
                     android:id="@+id/tv_open_launch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/gray_b3"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_gravity="center_vertical"
+                    android:layout_centerInParent="true"
                     android:text="iMenu the Opening →"/>
 
                 <TextView
-                    android:layout_width="50dp"
+                    android:id="@+id/tvRightLinePoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:padding="5dp"
+                    android:layout_toRightOf="@+id/tv_open_launch"
+                    android:text="•"
+                    android:textColor="@color/gray_9c"/>
+
+                <TextView
+                    android:id="@+id/tvRightLine"
+                    android:layout_width="100dp"
                     android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/gray_b3"/>
-            </LinearLayout>
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@+id/tvRightLinePoint"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@color/gray_9c"/>
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
