@@ -156,7 +156,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                             if(data.optJSONObject("order_info") != null){//订单
                                 String pendingOrderCount = data.optJSONObject("order_info").optString("order_pending_count");
                                 if(!pendingOrderCount.equals("0")) {
-                                    tv_order_count.setText(pendingOrderCount + "个未付款订单");
+                                    tv_order_count.setText(pendingOrderCount);
                                     tv_order_count.setVisibility(View.VISIBLE);
                                 }
                             }
@@ -319,7 +319,9 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
             case R.id.llVoucherList:
                 //我的礼券
                 if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
-                    startActivity(new Intent(MineActivity.this, VoucherListActivity.class));
+                    Intent intent = new Intent(MineActivity.this, VoucherListActivity.class);
+                    intent.putExtra(Constant.INTENT_VOUCHER_TYPE, Constant.INTENT_VOUCHER_SHOW);
+                    startActivity(intent);
                 }else{prompt("请先登录");}
                 break;
         }

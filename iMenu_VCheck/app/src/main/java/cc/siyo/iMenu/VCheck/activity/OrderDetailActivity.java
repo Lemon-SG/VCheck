@@ -199,7 +199,9 @@ public class OrderDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //立即支付
-
+                Intent intent = new Intent(OrderDetailActivity.this, OrderConfirmActivity.class);
+                intent.putExtra("orderInfo", memberOrder.order_info);
+                startActivity(intent);
             }
         });
         finalBitmap.display(iv_orderDetail_menu, memberOrder.article_info.article_image.source);

@@ -107,6 +107,12 @@ public class Constant {
     public static final String INTENT_HOME = "home";
     /** INTENT web跳转路径为 文章详情*/
     public static final String INTENT_ARTICLE = "article";
+    /** INTENT 跳转到礼券列表页面标石*/
+    public static final String INTENT_VOUCHER_TYPE = "INTENT_VOUCHER_TYPE";
+    /** INTENT 跳转到礼券列表页面标石：0->确认订单进入，选择礼券操作*/
+    public static final int INTENT_VOUCHER_CHOOSE = 0;
+    /** INTENT 跳转到礼券列表页面标石：1->我的页面进入，正常展示操作*/
+    public static final int INTENT_VOUCHER_SHOW = 1;
 
     /*******************************   本地存储 KEY   *************************************/
     /** 用户ID：member_id*/

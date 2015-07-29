@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -58,6 +59,8 @@ public class VoucherListActivity extends BaseActivity {
     @ViewInject(id = R.id.rlVoucherCode)private RelativeLayout rlVoucherCode;
     /** 可使用礼券显示layout*/
     @ViewInject(id = R.id.rlVoucherCount)private RelativeLayout rlVoucherCount;
+    /** 不使用礼券按钮*/
+    @ViewInject(id = R.id.tvVoucherNoChoose)private TextView tvVoucherNoChoose;
     /** A FINAL框架的HTTP请求工具 */
     private FinalHttp finalHttp;
     /** 封装参数的键值对 */
@@ -79,6 +82,8 @@ public class VoucherListActivity extends BaseActivity {
     /** 是否是下拉刷新，清空数据*/
     private boolean isPull = false;
     private AnimationController animationController;
+    /** 此页面的操作类型*/
+    private int VoucherDoType = Constant.INTENT_VOUCHER_SHOW;
 
     @Override
     public int getContentView() {
@@ -95,6 +100,17 @@ public class VoucherListActivity extends BaseActivity {
             }
         });
         animationController = new AnimationController();
+        VoucherDoType = getIntent().getExtras().getInt(Constant.INTENT_VOUCHER_TYPE);
+        switch (VoucherDoType) {
+            case Constant.INTENT_VOUCHER_CHOOSE:
+                //选择礼券操作
+                tvVoucherNoChoose.setVisibility(View.VISIBLE);
+                break;
+            case Constant.INTENT_VOUCHER_SHOW:
+                //展示操作
+                tvVoucherNoChoose.setVisibility(View.GONE);
+                break;
+        }
     }
 
     @Override
@@ -109,7 +125,7 @@ public class VoucherListActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //兑换
-                if(!StringUtils.isBlank(etVoucherCode.getText().toString())) {
+                if (!StringUtils.isBlank(etVoucherCode.getText().toString())) {
                     UploadAdapter_exchange();
                 } else {
                     prompt("请输入兑换码");
@@ -128,6 +144,13 @@ public class VoucherListActivity extends BaseActivity {
                     rlVoucherCode.setVisibility(View.VISIBLE);
                     rlVoucherCount.setVisibility(View.INVISIBLE);
                 }
+            }
+        });
+        tvVoucherNoChoose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //不使用礼券
+
             }
         });
 
@@ -153,6 +176,12 @@ public class VoucherListActivity extends BaseActivity {
                 page = Constant.PAGE;
                 isPull = true;
                 UploadAdapter();
+            }
+        });
+        list_voucher.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             }
         });
     }
@@ -318,6 +347,29 @@ public class VoucherListActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 编辑结算信息封装
+     * member_id	会员ID
+     * checkout_info	payment_code	支付方式code
+     *                  coupon_id	优惠ID
+     * order_id	订单ID
+     * @return
+     */
+    private String makeJsonTextCheckOut() {
+        JSONObject json = new JSONObject();
+        JSONObject checkoutInfoJson = new JSONObject();
+        try {
+            checkoutInfoJson.put("payment_code", paymentCode);
+            //TODO 优惠券
+//            checkoutInfoJson.put("coupon_id", "");
+            json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
+            json.put("order_id", orderInfo.order_id);
+            json.put("checkout_info", checkoutInfoJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
     /***
      * member_id	会员ID
      * code_no  礼券吗

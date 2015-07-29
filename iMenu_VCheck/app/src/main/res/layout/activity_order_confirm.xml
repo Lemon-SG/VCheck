@@ -143,10 +143,11 @@
             <RelativeLayout
                 android:id="@+id/rl_order_confirm_gift"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="visible">
 
                 <TextView
-                    android:id="@+id/tv_order_confirm"
+                    android:id="@+id/tv_order_confirm_gift"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingTop="15dp"
@@ -161,7 +162,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_order_confirm"
+                    android:layout_toRightOf="@+id/tv_order_confirm_gift"
                     android:textSize="14sp"
                     android:textColor="@color/orange_red"
                     android:text="0张可用"/>
@@ -183,6 +184,34 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/ic_go_next_black"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_order_confirm_gift_spend"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_voucher_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingBottom="15dp"
+                    android:textSize="14sp"
+                    android:textColor="@color/top_black"
+                    android:text="隔壁老王"/>
+
+                <TextView
+                    android:id="@+id/tv_order_confirm_voucher_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/orange_red"
+                    android:layout_alignParentRight="true"
+                    android:text="-10元"/>
             </RelativeLayout>
 
             <TextView

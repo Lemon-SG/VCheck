@@ -105,11 +105,11 @@
                     android:id="@+id/tv_order_count"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="0"
+                    android:text=""
                     android:gravity="center"
                     android:layout_weight="1"
                     android:textSize="14sp"
-                    android:visibility="invisible"
+                    android:visibility="visible"
                     android:textColor="@color/light_gray_text_color"/>
             </LinearLayout>
 

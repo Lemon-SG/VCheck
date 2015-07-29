@@ -23,6 +23,7 @@ import net.tsz.afinal.http.AjaxParams;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,8 +60,6 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     @ViewInject(id = R.id.tv_order_confirm_total_price)private TextView tv_order_confirm_total_price;
     /** 产品优惠券可用数量显示*/
     @ViewInject(id = R.id.tv_order_confirm_gift_count)private TextView tv_order_confirm_gift_count;
-    /** 产品优惠券使用状态显示*/
-    @ViewInject(id = R.id.tv_order_confirm_gift_status)private TextView tv_order_confirm_gift_status;
     /** 还需支付金额显示*/
     @ViewInject(id = R.id.tv_order_confirm_need_pay)private TextView tv_order_confirm_need_pay;
     /** 微信支付方式选择layout*/
@@ -77,7 +76,12 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     @ViewInject(id= R.id.tv_orderConfirm_nowPay)private TextView tv_orderConfirm_nowPay;
     /** 选择礼券layout*/
     @ViewInject(id= R.id.rl_order_confirm_gift)private RelativeLayout rl_order_confirm_gift;
-
+    /** 礼券使用后显示layout*/
+    @ViewInject(id= R.id.rl_order_confirm_gift_spend)private RelativeLayout rl_order_confirm_gift_spend;
+    /** 使用礼券名称显示*/
+    @ViewInject(id = R.id.tv_order_confirm_voucher_name)private TextView tv_order_confirm_voucher_name;
+    /** 使用礼券金额*/
+    @ViewInject(id = R.id.tv_order_confirm_voucher_discount)private TextView tv_order_confirm_voucher_discount;
     /** A FINAL框架的HTTP请求工具 */
     private FinalHttp finalHttp;
     /** 订单实体*/
@@ -90,6 +94,8 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     private static final int GENERATE_DATA_SUCCESS = 2000;
     /** 提交支付订单成功标石*/
     private static final int SUBMIT_PAY_ORDER_SUCCESS = 3000;
+    /** 获取礼券列表成功标石*/
+    private static final int GET_VOUCHER_LIST_SUCCESS = 5000;
     /** 失败标石*/
     private static final int ALL_FALSE = 4000;
     /** 支付宝返回结果标石*/
@@ -115,12 +121,12 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
             @Override
             public void onClick(View view) {
-                //返回
                 finish();
             }
         });
         paymentCode = Constant.PAMENT_CODE_ALIPAY;
         Upload(BaseAjaxParams(API.CHECKOUT, makeJsonTextCheckOut()), CHECKOUT_SUCCESS);
+        Upload(BaseAjaxParams(API.GET_VOUCHER_LIST, makeJsonText()), GET_VOUCHER_LIST_SUCCESS);
     }
 
     @Override
@@ -162,6 +168,15 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
                         JSONObject data = jsonStatus.data;
                         orderInfo = new OrderInfo().parse(data.optJSONObject("order_info"));
                         initData();
+                    }
+                    break;
+                case GET_VOUCHER_LIST_SUCCESS:
+                    closeProgressDialog();
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        JSONObject data = jsonStatus.data;
+                        JSONArray voucherList = data.optJSONArray("voucher_list");
+                        tv_order_confirm_gift_count.setText(voucherList.length() + "可使用");
                     }
                     break;
                 case GENERATE_DATA_SUCCESS:
@@ -266,7 +281,9 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.rl_order_confirm_gift:
                 //选择礼券
-
+                Intent intent = new Intent(context, VoucherListActivity.class);
+                intent.putExtra(Constant.INTENT_VOUCHER_TYPE, Constant.INTENT_VOUCHER_CHOOSE);
+                startActivityForResult(intent, RESULT_OK);
                 break;
             case R.id.rl_payment_Alipay:
                 //支付宝选择
@@ -353,6 +370,21 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
             json.put("order_id", orderInfo.order_id);
             json.put("checkout_info", checkoutInfoJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
+    /***
+     * member_id	会员ID
+     * @return json
+     */
+    private String makeJsonText() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
+            json.put("pagination", makeJsonPageText(1, Integer.MAX_VALUE));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -453,6 +485,16 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
             Constant.isWeChetPay = false;
             //微信支付返回
             Upload(BaseAjaxParams(API.SUBMIT_PAY_ORDER, makeJsonTextSubmitOrder("")), SUBMIT_PAY_ORDER_SUCCESS);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_OK && resultCode == Constant.INTENT_VOUCHER_CHOOSE) {
+            if(data != null) {
+
+            }
         }
     }
 }
