@@ -59,7 +59,7 @@ public class VoucherAdapter extends AbsAdapter<VoucherInfo>{
             tvVoucherDiscountUnit.setText("元");
             tvVoucherDescription.setText(voucherInfo.description);
             tvVoucherLimitDescription.setText(voucherInfo.limit_description);
-            tvVoucherEndDate.setText("有效期至" + voucherInfo.end_date);
+            tvVoucherEndDate.setText("有效期至" + TimeUtil.FormatTime(voucherInfo.end_date, "yyyy-MM-dd"));
             switch (Integer.parseInt(voucherInfo.voucher_status)) {
                 case Constant.VOUCHER_STATUS_NO_SPEND:
                     //未使用

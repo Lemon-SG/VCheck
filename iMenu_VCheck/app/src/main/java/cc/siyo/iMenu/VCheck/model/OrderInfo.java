@@ -27,6 +27,8 @@ public class OrderInfo extends BaseModel<OrderInfo> {
     public PaymentInfo paymentInfo;
     /** 优惠实体*/
     public CouponInfo couponInfo;
+    /** 礼券实体*/
+    public VoucherInfo voucherInfo;
     /** 总价格实体*/
     public TotalPrice totalPrice;
     /** 菜品实体*/
@@ -44,6 +46,7 @@ public class OrderInfo extends BaseModel<OrderInfo> {
             order_type_description = jsonObject.optString("order_type_description");
             paymentInfo = new PaymentInfo().parse(jsonObject.optJSONObject("payment_info"));
             couponInfo = new CouponInfo().parse(jsonObject.optJSONObject("coupon_info"));
+            voucherInfo = new VoucherInfo().parse(jsonObject.optJSONObject("voucher_info"));
             totalPrice = new TotalPrice().parse(jsonObject.optJSONObject("total_price"));
             menu = new Menu().parse(jsonObject.optJSONObject("menu_info"));
             return this;

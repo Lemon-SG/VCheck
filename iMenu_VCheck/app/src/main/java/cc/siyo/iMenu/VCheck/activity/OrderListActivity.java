@@ -323,6 +323,7 @@ public class OrderListActivity extends BaseActivity {
      */
     private String makeJsonText(String orderId) {
         JSONObject json = new JSONObject();
+        Log.e("makeJsonText", orderId);
         try {
             json.put("member_id", PreferencesUtils.getString(mContext, Constant.KEY_MEMBER_ID));
             json.put("operator_type", "1");

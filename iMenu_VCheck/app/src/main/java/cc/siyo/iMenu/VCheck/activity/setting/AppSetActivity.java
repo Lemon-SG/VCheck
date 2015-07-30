@@ -1,6 +1,8 @@
 package cc.siyo.iMenu.VCheck.activity.setting;
 
+import android.content.Intent;
 import android.view.View;
+import android.widget.TextView;
 
 import net.tsz.afinal.annotation.view.ViewInject;
 
@@ -36,6 +38,11 @@ public class AppSetActivity extends BaseActivity {
 
     @Override
     public void initData() {
-
+        findViewById(R.id.tvPushSet).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(context, PushSettingActivity.class));
+            }
+        });
     }
 }

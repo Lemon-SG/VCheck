@@ -113,6 +113,12 @@ public class Constant {
     public static final int INTENT_VOUCHER_CHOOSE = 0;
     /** INTENT 跳转到礼券列表页面标石：1->我的页面进入，正常展示操作*/
     public static final int INTENT_VOUCHER_SHOW = 1;
+    /** INTENT 从礼券选择返回到确认订单页面，选择礼券或选择不使用礼券类型*/
+    public static final String RESULT_VOUCHER_TYPE = "RESULT_VOUCHER_TYPE";
+    /** INTENT 从礼券选择返回到确认订单页面，选择礼券或选择不使用礼券标石： 100->使用礼券*/
+    public static final int RESULT_VOUCHER_SPEND = 100;
+    /** INTENT 从礼券选择返回到确认订单页面，选择礼券或选择不使用礼券标石： 101->bu使用礼券*/
+    public static final int RESULT_VOUCHER_NO_SPEND = 101;
 
     /*******************************   本地存储 KEY   *************************************/
     /** 用户ID：member_id*/
@@ -121,6 +127,16 @@ public class Constant {
     public static final String KEY_TOKEN = "token";
     /** 手机号*/
     public static final String KEY_MOBILE = "mobile";
+    /** 总开关状态*/
+    public static final String KEY_PUSH_ALL = "KEY_PUSH_ALL";
+    /** 消费确认开关状态*/
+    public static final String KEY_PUSH_PAY = "KEY_PUSH_PAY";
+    /** 退款提醒开关状态*/
+    public static final String KEY_PUSH_RETURN = "KEY_PUSH_RETURN";
+    /** 活动消息开关状态*/
+    public static final String KEY_PUSH_ACTIVITY = "KEY_PUSH_ACTIVITY";
+    /** 获得礼券开关状态*/
+    public static final String KEY_PUSH_VOUCHER = "KEY_PUSH_VOUCHER";
 
     /******************************   版本更新   *********************************/
     /** 版本更新APK保存路径*/

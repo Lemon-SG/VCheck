@@ -3,6 +3,7 @@ package cc.siyo.iMenu.VCheck.model;
 import org.json.JSONObject;
 
 import cc.siyo.iMenu.VCheck.util.NumberFormatUtils;
+import cc.siyo.iMenu.VCheck.util.StringUtils;
 
 /**
  * Created by Lemon on 2015/7/27 14:35.
@@ -38,8 +39,12 @@ public class VoucherInfo extends BaseModel<VoucherInfo> {
             begin_date = jsonObject.optString("begin_date");
             end_date = jsonObject.optString("end_date");
             voucher_status = jsonObject.optString("voucher_status");
-            discount = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("discount")));
-            total = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("total")));
+            if(!StringUtils.isBlank(jsonObject.optString("discount"))) {
+                discount = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("discount")));
+            }
+            if(!StringUtils.isBlank(jsonObject.optString("total"))) {
+                total = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("total")));
+            }
             limit_description = jsonObject.optString("limit_description");
             return this;
         }

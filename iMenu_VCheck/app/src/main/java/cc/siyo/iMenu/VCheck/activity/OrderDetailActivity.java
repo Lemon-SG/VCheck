@@ -208,12 +208,12 @@ public class OrderDetailActivity extends BaseActivity {
         tv_orderDetail_name.setText(memberOrder.order_info.menu.menu_name);
         if(!StringUtils.isBlank(memberOrder.order_info.menu.price.special_price)) {
             //有优惠价格
-            tv_orderDetail_order_price.setText(memberOrder.order_info.totalPrice.special_price + memberOrder.order_info.menu.price.price_unit);
+            tv_orderDetail_order_price.setText(memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
             tv_orderDetail_price.setText("单价:" + memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
             tv_orderDetail_order_totPrice.setText(memberOrder.order_info.totalPrice.special_price + memberOrder.order_info.menu.price.price_unit);
         } else {
             //无优惠价格
-            tv_orderDetail_order_price.setText(memberOrder.order_info.totalPrice.original_price + memberOrder.order_info.menu.price.price_unit);
+            tv_orderDetail_order_price.setText(memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
             tv_orderDetail_price.setText("单价:" + memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
             tv_orderDetail_order_totPrice.setText(memberOrder.order_info.totalPrice.original_price + memberOrder.order_info.menu.price.price_unit);
         }

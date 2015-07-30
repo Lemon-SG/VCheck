@@ -113,6 +113,7 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
         finalHttp = new FinalHttp();
         orderInfo = (OrderInfo) getIntent().getExtras().getSerializable("orderInfo");
         rl_order_confirm_gift.setOnClickListener(this);
+        rl_order_confirm_gift_spend.setOnClickListener(this);
         rl_payment_Alipay.setOnClickListener(this);
         rl_payment_weChat.setOnClickListener(this);
         tv_orderConfirm_nowPay.setOnClickListener(this);
@@ -125,7 +126,7 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
             }
         });
         paymentCode = Constant.PAMENT_CODE_ALIPAY;
-        Upload(BaseAjaxParams(API.CHECKOUT, makeJsonTextCheckOut()), CHECKOUT_SUCCESS);
+        Upload(BaseAjaxParams(API.CHECKOUT, makeJsonTextCheckOut(orderInfo.voucherInfo.voucher_member_id)), CHECKOUT_SUCCESS);
         Upload(BaseAjaxParams(API.GET_VOUCHER_LIST, makeJsonText()), GET_VOUCHER_LIST_SUCCESS);
     }
 
@@ -138,7 +139,18 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
         //TODO 还需支付金额应为合计-优惠券金额，暂无优惠券，后续完善
         tv_order_confirm_need_pay.setText(tv_order_confirm_total_price.getText().toString());
         tv_order_confirm_needPay_price.setText(orderInfo.totalPrice.special_price == "" ? orderInfo.totalPrice.original_price : orderInfo.totalPrice.special_price);
-
+        if(orderInfo.voucherInfo != null) {
+            if(!StringUtils.isBlank(orderInfo.voucherInfo.voucher_member_id)) {
+                //有使用优惠
+                rl_order_confirm_gift_spend.setVisibility(View.VISIBLE);
+                rl_order_confirm_gift.setVisibility(View.GONE);
+                tv_order_confirm_voucher_name.setText(orderInfo.voucherInfo.voucher_name);
+                tv_order_confirm_voucher_discount.setText(orderInfo.voucherInfo.discount);
+            } else {
+                rl_order_confirm_gift_spend.setVisibility(View.GONE);
+                rl_order_confirm_gift.setVisibility(View.VISIBLE);
+            }
+        }
         if(!StringUtils.isBlank(orderInfo.paymentInfo.payment_code)) {
             //有选中的支付方式
             if(orderInfo.paymentInfo.payment_code.equals(Constant.PAMENT_CODE_ALIPAY)) {
@@ -279,21 +291,24 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.rl_order_confirm_gift_spend:
             case R.id.rl_order_confirm_gift:
                 //选择礼券
                 Intent intent = new Intent(context, VoucherListActivity.class);
                 intent.putExtra(Constant.INTENT_VOUCHER_TYPE, Constant.INTENT_VOUCHER_CHOOSE);
-                startActivityForResult(intent, RESULT_OK);
+                intent.putExtra("orderId", orderInfo.order_id);
+                intent.putExtra("paymentCode", paymentCode);
+                startActivityForResult(intent, Constant.INTENT_VOUCHER_CHOOSE);
                 break;
             case R.id.rl_payment_Alipay:
                 //支付宝选择
                 paymentCode = Constant.PAMENT_CODE_ALIPAY;
-                Upload(BaseAjaxParams(API.CHECKOUT, makeJsonTextCheckOut()), CHECKOUT_SUCCESS);
+                Upload(BaseAjaxParams(API.CHECKOUT, makeJsonTextCheckOut(orderInfo.voucherInfo.voucher_member_id)), CHECKOUT_SUCCESS);
                 break;
             case R.id.rl_payment_weChat:
                 //微信支付选择
                 paymentCode = Constant.PAMENT_CODE_WECHAT;
-                Upload(BaseAjaxParams(API.CHECKOUT, makeJsonTextCheckOut()), CHECKOUT_SUCCESS);
+                Upload(BaseAjaxParams(API.CHECKOUT, makeJsonTextCheckOut(orderInfo.voucherInfo.voucher_member_id)), CHECKOUT_SUCCESS);
                 break;
             case R.id.tv_orderConfirm_nowPay:
                 //立即支付
@@ -360,13 +375,12 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
      * order_id	订单ID
      * @return
      */
-    private String makeJsonTextCheckOut() {
+    private String makeJsonTextCheckOut(String voucher_member_id) {
         JSONObject json = new JSONObject();
         JSONObject checkoutInfoJson = new JSONObject();
         try {
             checkoutInfoJson.put("payment_code", paymentCode);
-            //TODO 优惠券
-//            checkoutInfoJson.put("coupon_id", "");
+            checkoutInfoJson.put("voucher_member_id", voucher_member_id);
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
             json.put("order_id", orderInfo.order_id);
             json.put("checkout_info", checkoutInfoJson);
@@ -400,7 +414,6 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     private String makeJsonTextGenerateData() {
         JSONObject json = new JSONObject();
         try {
-            //TODO 优惠券
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
             json.put("order_id", orderInfo.order_id);
         } catch (JSONException e) {
@@ -419,7 +432,6 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     private String makeJsonTextSubmitOrder(String payment_result) {
         JSONObject json = new JSONObject();
         try {
-            //TODO 优惠券
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
             json.put("order_id", orderInfo.order_id);
             json.put("payment_result", payment_result);
@@ -490,11 +502,12 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RESULT_OK && resultCode == Constant.INTENT_VOUCHER_CHOOSE) {
+        if(requestCode == Constant.INTENT_VOUCHER_CHOOSE) {
             if(data != null) {
-
+                orderInfo = (OrderInfo) data.getExtras().getSerializable("orderInfo");
+                initData();
             }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

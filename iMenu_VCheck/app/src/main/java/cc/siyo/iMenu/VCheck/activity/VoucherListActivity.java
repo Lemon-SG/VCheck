@@ -1,5 +1,6 @@
 package cc.siyo.iMenu.VCheck.activity;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -28,6 +29,7 @@ import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Member;
+import cc.siyo.iMenu.VCheck.model.OrderInfo;
 import cc.siyo.iMenu.VCheck.model.ShareInvite;
 import cc.siyo.iMenu.VCheck.model.VoucherInfo;
 import cc.siyo.iMenu.VCheck.util.AnimationController;
@@ -67,6 +69,7 @@ public class VoucherListActivity extends BaseActivity {
     private AjaxParams ajaxParams;
     private static final int GET_VOUCHER_LIST_SUCCESS = 100;
     private static final int EXCHANGE_VOUCHER_SUCCESS = 300;
+    private static final int CHECKOUT_SUCCESS = 400;
     /** 登出失败标石*/
     private static final int GET_VOUCHER_LIST_FALSE = 200;
     /** 适配器*/
@@ -100,27 +103,38 @@ public class VoucherListActivity extends BaseActivity {
             }
         });
         animationController = new AnimationController();
+    }
+
+    @Override
+    public void initData() {
         VoucherDoType = getIntent().getExtras().getInt(Constant.INTENT_VOUCHER_TYPE);
         switch (VoucherDoType) {
             case Constant.INTENT_VOUCHER_CHOOSE:
                 //选择礼券操作
                 tvVoucherNoChoose.setVisibility(View.VISIBLE);
+                final String orderId = getIntent().getExtras().getString("orderId");
+                final String paymentCode = getIntent().getExtras().getString("paymentCode");
+                list_voucher.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        UploadAdapter_checkout(orderId, paymentCode, voucherAdapter.getDataList().get(position - 1).voucher_member_id);
+                    }
+                });
                 break;
             case Constant.INTENT_VOUCHER_SHOW:
                 //展示操作
                 tvVoucherNoChoose.setVisibility(View.GONE);
+                list_voucher.setOnItemClickListener(null);
                 break;
         }
-    }
 
-    @Override
-    public void initData() {
         page = Constant.PAGE;
         finalHttp = new FinalHttp();
         isPull = true;
         UploadAdapter();
         voucherAdapter = new VoucherAdapter(VoucherListActivity.this, R.layout.list_item_voucher);
         list_voucher.setAdapter(voucherAdapter);
+
         tvVoucherExchange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,7 +164,9 @@ public class VoucherListActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //不使用礼券
-
+                final String orderId = getIntent().getExtras().getString("orderId");
+                final String paymentCode = getIntent().getExtras().getString("paymentCode");
+                UploadAdapter_checkout(orderId, paymentCode, "");
             }
         });
 
@@ -176,12 +192,6 @@ public class VoucherListActivity extends BaseActivity {
                 page = Constant.PAGE;
                 isPull = true;
                 UploadAdapter();
-            }
-        });
-        list_voucher.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
             }
         });
     }
@@ -232,7 +242,26 @@ public class VoucherListActivity extends BaseActivity {
                     if(msg.obj != null) {
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(jsonStatus.isSuccess) {
-
+                            //TODO 兑换礼券成功后的操作
+                        }
+                    }
+                    break;
+                case CHECKOUT_SUCCESS:
+                    closeProgressDialog();
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        JSONObject data = jsonStatus.data;
+                        OrderInfo orderInfo = new OrderInfo().parse(data.optJSONObject("order_info"));
+                        Intent intent = new Intent(context, OrderConfirmActivity.class);
+                        intent.putExtra("orderInfo", orderInfo);
+                        if(!StringUtils.isBlank(orderInfo.voucherInfo.voucher_member_id)) {
+                            //礼券使用成功
+                            setResult(Constant.RESULT_VOUCHER_SPEND, intent);
+                            finish();
+                        } else {
+                            //不使用
+                            setResult(Constant.RESULT_VOUCHER_NO_SPEND, intent);
+                            finish();
                         }
                     }
                     break;
@@ -338,7 +367,8 @@ public class VoucherListActivity extends BaseActivity {
                     if (jsonStatus.isSuccess) {
                         handler.sendMessage(handler.obtainMessage(EXCHANGE_VOUCHER_SUCCESS, BaseJSONData(t)));
                     } else {
-                        handler.sendMessage(handler.obtainMessage(GET_VOUCHER_LIST_FALSE, BaseJSONData(t)));
+//                        handler.sendMessage(handler.obtainMessage(GET_VOUCHER_LIST_FALSE, BaseJSONData(t)));
+                        prompt(jsonStatus.error_desc);
                     }
                 } else {
                     prompt(getResources().getString(R.string.request_no_data));
@@ -347,6 +377,50 @@ public class VoucherListActivity extends BaseActivity {
         });
     }
 
+    /** 编辑结算信息请求*/
+    private void UploadAdapter_checkout(String order_id, String paymentCode, String voucher_member_id) {
+        ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.CHECKOUT);
+        ajaxParams.put("token", PreferencesUtils.getString(context, Constant.KEY_TOKEN));
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonTextCheckOut(order_id, paymentCode, voucher_member_id));
+        Log.e(TAG, Constant.REQUEST + API.CHECKOUT + "\n" + ajaxParams.toString());
+        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                closeProgressDialog();
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                showProgressDialog(getResources().getString(R.string.loading));
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if (!StringUtils.isBlank(t)) {
+                    Log.e(TAG, Constant.RESULT + API.CHECKOUT + "\n" + t.toString());
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if (jsonStatus.isSuccess) {
+                        handler.sendMessage(handler.obtainMessage(CHECKOUT_SUCCESS, BaseJSONData(t)));
+                    } else {
+                        handler.sendMessage(handler.obtainMessage(GET_VOUCHER_LIST_FALSE, BaseJSONData(t)));
+                    }
+                } else {
+                    prompt(getResources().getString(R.string.request_no_data));
+                }
+            }
+        });
+    }
     /**
      * 编辑结算信息封装
      * member_id	会员ID
@@ -355,15 +429,14 @@ public class VoucherListActivity extends BaseActivity {
      * order_id	订单ID
      * @return
      */
-    private String makeJsonTextCheckOut() {
+    private String makeJsonTextCheckOut(String order_id, String paymentCode, String voucher_member_id) {
         JSONObject json = new JSONObject();
         JSONObject checkoutInfoJson = new JSONObject();
         try {
             checkoutInfoJson.put("payment_code", paymentCode);
-            //TODO 优惠券
-//            checkoutInfoJson.put("coupon_id", "");
+            checkoutInfoJson.put("voucher_member_id", voucher_member_id);
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
-            json.put("order_id", orderInfo.order_id);
+            json.put("order_id", order_id);
             json.put("checkout_info", checkoutInfoJson);
         } catch (JSONException e) {
             e.printStackTrace();

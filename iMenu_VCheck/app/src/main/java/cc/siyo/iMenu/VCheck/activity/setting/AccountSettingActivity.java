@@ -17,6 +17,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tencent.android.tpush.XGPushConfig;
+
 import net.tsz.afinal.FinalBitmap;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
@@ -87,8 +91,6 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
     private static final int LOGOUT_FALSE = 200;
     /** 邮箱已绑定标石*/
     private boolean isHadEmail = true;
-    /** A FINAL 框架的HTTP请求工具*/
-    private FinalBitmap finalBitmap;
     private static final int CAMERA = 1;
     /** 上传头像成功 */
     private static final int ICON_SUCCESS = 1000;
@@ -99,12 +101,13 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
     /** 上传的图片对象 **/
     private Bitmap bitmap;
     private PromptDialog promptDialog;
+    private ImageLoader imageLoader;
+    private DisplayImageOptions option;
 
     @Override
     public int getContentView() {
-        finalBitmap = FinalBitmap.create(this);
-        finalBitmap.configLoadingImage(R.drawable.ic_member);
-        finalBitmap.configLoadfailImage(R.drawable.ic_member);
+        imageLoader = ImageLoader.getInstance();
+        option = MyApplication.getDisplayImageOptions(context, 30, R.drawable.test_member_img);
         return R.layout.activity_account_setting;
     }
 
@@ -144,7 +147,7 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
             tv_setting_nickName.setText(member.member_name);
             headFile = Constant.PATH_HEADPHOTO_IMG + member.mobile + ".jpg";
             Log.e(TAG, "init headFile->" + headFile);
-            finalBitmap.display(iv_member_icon, member.icon_image.source);
+            imageLoader.displayImage(member.icon_image.thumb, iv_member_icon, option);
             if(!StringUtils.isBlank(member.email)){
                 tv_setting_email.setText(hidEmail(member.email));
                 isHadEmail = true;
@@ -328,8 +331,7 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
         JSONObject json = new JSONObject();
         try {
             json.put("member_id", PreferencesUtils.getString(AccountSettingActivity.this, Constant.KEY_MEMBER_ID));
-            //TODO 设备TOKEN
-            json.put("device_token", "");
+            json.put("device_token", XGPushConfig.getToken(context));
         } catch (JSONException e) {
             e.printStackTrace();
         }

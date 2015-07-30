@@ -2,6 +2,7 @@ package cc.siyo.iMenu.VCheck.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -108,6 +109,7 @@ public class OrderAdapter extends AbsAdapter<MemberOrder>{
                     if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_PAY_SPEND)) {
                         orderId = memberOrder.order_info.order_id;
                     }
+
                     if(!StringUtils.isBlank(orderId)) {
                         //长安删除订单
                         if(promptDialog == null) {
@@ -115,18 +117,20 @@ public class OrderAdapter extends AbsAdapter<MemberOrder>{
                                 @Override
                                 public void onClick(View v) {
                                     //删除订单
+                                    Log.e("adapter", orderId);
                                     ((OrderListActivity)context).UploadAdapter(orderId);
                                     promptDialog.dismiss();
+                                    orderId = "";
                                 }
                             }, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     promptDialog.dismiss();
+                                    orderId = "";
                                 }
                             });
                         }
                         promptDialog.show();
-                        orderId = "";
                     }
                     return false;
                 }

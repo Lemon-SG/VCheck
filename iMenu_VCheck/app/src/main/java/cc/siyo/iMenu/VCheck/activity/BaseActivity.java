@@ -33,7 +33,7 @@ import cn.sharesdk.wechat.moments.WechatMoments;
 
 public abstract class BaseActivity extends FinalActivity {
 
-    private static final String TAG = "BaseActivity";
+    protected static String TAG = "BaseActivity";
     public Context context;
     protected final static int SUCCESS = 100;
     protected final static int FAILURE = 101;
@@ -53,13 +53,13 @@ public abstract class BaseActivity extends FinalActivity {
     public final static int SHARE_CANCEL = 10002;
     /** 全局微信分享状态,默认为失败，如在回调中呗重置，即更改状态*/
     public static int SHARE_STATUS = SHARE_FAILED;
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        ActivityStackManager.getActivityManager().push(this);
         context = this;
+        TAG = context.getClass().getName();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getContentView());
         token = PreferencesUtils.getString(context, Constant.KEY_TOKEN);

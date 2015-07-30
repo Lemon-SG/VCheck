@@ -1,7 +1,6 @@
 package cc.siyo.iMenu.VCheck.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -9,16 +8,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import net.tsz.afinal.FinalBitmap;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import cc.siyo.iMenu.VCheck.MyApplication;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.activity.setting.AboutUsActivity;
@@ -30,13 +27,10 @@ import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Member;
-import cc.siyo.iMenu.VCheck.model.OrderInfo;
 import cc.siyo.iMenu.VCheck.model.ShareInvite;
-import cc.siyo.iMenu.VCheck.model.VoucherInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.util.Util;
-import cc.siyo.iMenu.VCheck.view.PromptDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
 /**
@@ -87,16 +81,15 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     /** 登出失败标石*/
     private static final int GET_MEMBER_DETAIL_FALSE = 200;
     private Member member;
-    /** A FINAL 框架的HTTP请求工具*/
-    private FinalBitmap finalBitmap;
     /** 分享邀请实体*/
     private ShareInvite shareInvite;
+    private ImageLoader imageLoader;
+    private DisplayImageOptions option;
 
     @Override
     public int getContentView() {
-        finalBitmap = FinalBitmap.create(this);
-        finalBitmap.configLoadingImage(R.drawable.ic_member);
-        finalBitmap.configLoadfailImage(R.drawable.ic_member);
+        imageLoader = ImageLoader.getInstance();
+        option = MyApplication.getDisplayImageOptions(context, 50, R.drawable.test_member_img);
         return R.layout.activity_mine;
     }
 
@@ -116,10 +109,10 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
         tv_share.setOnClickListener(this);
         topbar.settitleViewText("我的账户");
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
-                @Override
-                public void onClick(View view) {
-                    finish();
-                }
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
         });
     }
 
@@ -151,7 +144,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                                 member = new Member().parse(data.optJSONObject("member_info"));
                                 tv_mine_nickName.setText(member.member_name);
                                 Log.e(TAG, member.icon_image.thumb);
-                                finalBitmap.display(iv_user_headImg, member.icon_image.thumb);
+                                imageLoader.displayImage(member.icon_image.thumb, iv_user_headImg, option);
                             }
                             if(data.optJSONObject("order_info") != null){//订单
                                 String pendingOrderCount = data.optJSONObject("order_info").optString("order_pending_count");
