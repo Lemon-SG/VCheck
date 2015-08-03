@@ -1,13 +1,29 @@
 package cc.siyo.iMenu.VCheck.activity.setting;
 
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
+import net.tsz.afinal.http.AjaxCallBack;
+import net.tsz.afinal.http.AjaxParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cc.siyo.iMenu.VCheck.MyApplication;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.activity.BaseActivity;
+import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.model.JSONStatus;
+import cc.siyo.iMenu.VCheck.model.PushInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
+import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
 /**
@@ -24,25 +40,26 @@ public class PushSettingActivity extends BaseActivity implements View.OnClickLis
     @ViewInject(id = R.id.rlPushPay)private RelativeLayout rlPushPay;
     /** 退款提醒开关*/
     @ViewInject(id = R.id.rlPushReturn)private RelativeLayout rlPushReturn;
-    /** 活动信息开关*/
-    @ViewInject(id = R.id.rlPushActivity)private RelativeLayout rlPushActivity;
     /** 获得礼券开关*/
     @ViewInject(id = R.id.rlPushVoucher)private RelativeLayout rlPushVoucher;
     @ViewInject(id = R.id.ivPushAll)private ImageView ivPushAll;
     @ViewInject(id = R.id.ivPushPay)private ImageView ivPushPay;
     @ViewInject(id = R.id.ivPushReturn)private ImageView ivPushReturn;
-    @ViewInject(id = R.id.ivPushActivity)private ImageView ivPushActivity;
     @ViewInject(id = R.id.ivPushVoucher)private ImageView ivPushVoucher;
     /** 总开关标石*/
-    private boolean isPushAll;
+    private int AllStatus;
     /** 消费确认开关标石*/
-    private boolean isPushPay;
+    private int PayStatus;
     /** 退款提醒开关标石*/
-    private boolean isPushReturn;
-    /** 活动消息开关标石*/
-    private boolean isPushActivity;
+    private int ReturnStatus;
     /** 礼券开关标石*/
-    private boolean isPushVoucher;
+    private int VoucherStatus;
+    /** 推送实体*/
+    private PushInfo pushInfo;
+    /** A FINAL框架的HTTP请求工具 */
+    private FinalHttp finalHttp;
+    /** 封装参数的键值对 */
+    private AjaxParams ajaxParams;
 
     @Override
     public int getContentView() {
@@ -51,11 +68,10 @@ public class PushSettingActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public void initView() {
-        isPushAll = PreferencesUtils.getBoolean(context, Constant.KEY_PUSH_ALL, true);
-        isPushPay = PreferencesUtils.getBoolean(context, Constant.KEY_PUSH_PAY, true);
-        isPushReturn = PreferencesUtils.getBoolean(context, Constant.KEY_PUSH_RETURN, true);
-        isPushActivity = PreferencesUtils.getBoolean(context, Constant.KEY_PUSH_ACTIVITY, true);
-        isPushVoucher = PreferencesUtils.getBoolean(context, Constant.KEY_PUSH_VOUCHER, true);
+        AllStatus = PreferencesUtils.getInt(context, Constant.KEY_PUSH_ALL, 1);
+        PayStatus = PreferencesUtils.getInt(context, Constant.KEY_PUSH_PAY, 1);
+        ReturnStatus = PreferencesUtils.getInt(context, Constant.KEY_PUSH_RETURN, 1);
+        VoucherStatus = PreferencesUtils.getInt(context, Constant.KEY_PUSH_VOUCHER, 1);
         topbar.settitleViewText("推送设置");
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
             @Override
@@ -66,43 +82,62 @@ public class PushSettingActivity extends BaseActivity implements View.OnClickLis
         rlPushAll.setOnClickListener(this);
         rlPushPay.setOnClickListener(this);
         rlPushReturn.setOnClickListener(this);
-        rlPushActivity.setOnClickListener(this);
         rlPushVoucher.setOnClickListener(this);
     }
 
     @Override
     public void initData() {
-        if(isPushAll) {
-            ivPushAll.setImageResource(R.drawable.ic_collect_red);
-            if(isPushPay) {
-                ivPushPay.setImageResource(R.drawable.ic_collect_red);
+        finalHttp = new FinalHttp();
+//        pushInfo = (PushInfo) getIntent().getExtras().getSerializable("pushInfo");
+//        if(Integer.parseInt(pushInfo.push_switch) == Constant.PUSH_ON) {
+//            isPushAll = true;
+//        }
+//        if(Integer.parseInt(pushInfo.consume_msg) == Constant.PUSH_ON) {
+//            isPushPay = true;
+//        }
+//        if(Integer.parseInt(pushInfo.refund_msg) == Constant.PUSH_ON) {
+//            isPushReturn = true;
+//        }
+//        if(Integer.parseInt(pushInfo.voucher_msg) == Constant.PUSH_ON) {
+//            isPushVoucher = true;
+//        }
+        if(AllStatus == Constant.PUSH_ON) {
+            //总开关开
+            ivPushAll.setImageResource(R.drawable.ic_push_open_checked);
+            if(PayStatus == Constant.PUSH_ON) {
+                ivPushPay.setImageResource(R.drawable.ic_push_open_checked);
             } else {
-                ivPushPay.setImageResource(R.drawable.ic_collect_black);
+                ivPushPay.setImageResource(R.drawable.ic_push_open_check);
             }
-            if(isPushReturn) {
-                ivPushReturn.setImageResource(R.drawable.ic_collect_red);
+            if(ReturnStatus == Constant.PUSH_ON) {
+                ivPushReturn.setImageResource(R.drawable.ic_push_open_checked);
             } else {
-                ivPushReturn.setImageResource(R.drawable.ic_collect_black);
+                ivPushReturn.setImageResource(R.drawable.ic_push_open_check);
             }
-            if(isPushActivity) {
-                ivPushActivity.setImageResource(R.drawable.ic_collect_red);
+            if(VoucherStatus == Constant.PUSH_ON) {
+                ivPushVoucher.setImageResource(R.drawable.ic_push_open_checked);
             } else {
-                ivPushActivity.setImageResource(R.drawable.ic_collect_black);
-            }
-            if(isPushVoucher) {
-                ivPushVoucher.setImageResource(R.drawable.ic_collect_red);
-            } else {
-                ivPushVoucher.setImageResource(R.drawable.ic_collect_black);
+                ivPushVoucher.setImageResource(R.drawable.ic_push_open_check);
             }
         } else {
-            ivPushAll.setImageResource(R.drawable.ic_collect);
-            ivPushAll.setImageResource(R.drawable.ic_collect);
-            ivPushPay.setImageResource(R.drawable.ic_collect);
-            ivPushReturn.setImageResource(R.drawable.ic_collect);
-            ivPushActivity.setImageResource(R.drawable.ic_collect);
-            ivPushVoucher.setImageResource(R.drawable.ic_collect);
+            //总开关关
+            ivPushAll.setImageResource(R.drawable.ic_push_close_check);
+            if(PayStatus == Constant.PUSH_ON) {
+                ivPushPay.setImageResource(R.drawable.ic_push_close_checked);
+            } else {
+                ivPushPay.setImageResource(R.drawable.ic_push_close_check);
+            }
+            if(ReturnStatus == Constant.PUSH_ON) {
+                ivPushReturn.setImageResource(R.drawable.ic_push_close_checked);
+            } else {
+                ivPushReturn.setImageResource(R.drawable.ic_push_close_check);
+            }
+            if(VoucherStatus == Constant.PUSH_ON) {
+                ivPushVoucher.setImageResource(R.drawable.ic_push_close_checked);
+            } else {
+                ivPushVoucher.setImageResource(R.drawable.ic_push_close_check);
+            }
         }
-
     }
 
     @Override
@@ -110,77 +145,154 @@ public class PushSettingActivity extends BaseActivity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.rlPushAll:
                 //推送总开关
-                if(isPushAll) {
-                    isPushAll = false;
-                    ivPushAll.setImageResource(R.drawable.ic_collect);
-                    ivPushPay.setImageResource(R.drawable.ic_collect);
-                    ivPushReturn.setImageResource(R.drawable.ic_collect);
-                    ivPushActivity.setImageResource(R.drawable.ic_collect);
-                    ivPushVoucher.setImageResource(R.drawable.ic_collect);
-                    savePreferences(Constant.KEY_PUSH_ALL, false);
+                if(AllStatus == Constant.PUSH_ON) {
+                    AllStatus = Constant.PUSH_OFF;
                 } else {
-                    isPushAll = true;
-                    savePreferences(Constant.KEY_PUSH_ALL, true);
-                    initData();
+                    AllStatus = Constant.PUSH_ON;
                 }
+                savePreferences(Constant.KEY_PUSH_ALL, AllStatus);
+                UploadAdapter_Edit(AllStatus + "", PayStatus + "", ReturnStatus + "", VoucherStatus + "");
                 break;
             case R.id.rlPushPay:
                 //消费确认
-                if(isPushAll) {
-                    if(isPushPay) {
-                        isPushPay = false;
-                        savePreferences(Constant.KEY_PUSH_PAY, false);
+                if(AllStatus == Constant.PUSH_ON) {
+                    if(PayStatus == Constant.PUSH_ON) {
+                        PayStatus = Constant.PUSH_OFF;
                     } else {
-                        isPushPay = true;
-                        savePreferences(Constant.KEY_PUSH_PAY, true);
+                        PayStatus = Constant.PUSH_ON;
                     }
-                    initData();
+                    savePreferences(Constant.KEY_PUSH_PAY, PayStatus);
+                    UploadAdapter_Edit(AllStatus + "", PayStatus + "", ReturnStatus + "", VoucherStatus + "");
                 }
                 break;
             case R.id.rlPushReturn:
                 //退款提醒
-                if(isPushAll) {
-                    if(isPushReturn) {
-                        isPushReturn = false;
-                        savePreferences(Constant.KEY_PUSH_RETURN, false);
+                if(AllStatus == Constant.PUSH_ON) {
+                    if(ReturnStatus == Constant.PUSH_ON) {
+                        ReturnStatus = Constant.PUSH_OFF;
                     } else {
-                        isPushReturn = true;
-                        savePreferences(Constant.KEY_PUSH_RETURN, true);
+                        ReturnStatus = Constant.PUSH_ON;
                     }
-                    initData();
-                }
-                break;
-            case R.id.rlPushActivity:
-                //活动消息
-                if(isPushAll) {
-                    if(isPushActivity) {
-                        isPushActivity = false;
-                        savePreferences(Constant.KEY_PUSH_ACTIVITY, false);
-                    } else {
-                        isPushActivity = true;
-                        savePreferences(Constant.KEY_PUSH_ACTIVITY, true);
-                    }
-                    initData();
+                    savePreferences(Constant.KEY_PUSH_RETURN, ReturnStatus);
+                    UploadAdapter_Edit(AllStatus + "", PayStatus + "", ReturnStatus + "", VoucherStatus + "");
                 }
                 break;
             case R.id.rlPushVoucher:
                 //获得礼券
-                if(isPushAll) {
-                    if(isPushVoucher) {
-                        isPushVoucher = false;
-                        savePreferences(Constant.KEY_PUSH_VOUCHER, false);
+                if(AllStatus == Constant.PUSH_ON) {
+                    if(VoucherStatus == Constant.PUSH_ON) {
+                        VoucherStatus = Constant.PUSH_OFF;
                     } else {
-                        isPushVoucher = true;
-                        savePreferences(Constant.KEY_PUSH_VOUCHER, true);
+                        VoucherStatus = Constant.PUSH_ON;
                     }
-                    initData();
+                    savePreferences(Constant.KEY_PUSH_VOUCHER, VoucherStatus);
+                    UploadAdapter_Edit(AllStatus + "", PayStatus + "", ReturnStatus + "", VoucherStatus + "");
                 }
                 break;
         }
     }
 
+    Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case SUCCESS:
+                    closeProgressDialog();
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        if(jsonStatus.isSuccess){
+                            initData();
+                        }
+                    }
+                    break;
+                case FAILURE:
+                    closeProgressDialog();
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        if(!StringUtils.isBlank(jsonStatus.error_desc)){
+                            prompt(jsonStatus.error_desc);
+                        }else{
+                            if(!StringUtils.isBlank(jsonStatus.error_code)){
+                                prompt(getResources().getString(R.string.request_erro) + MyApplication.findErroDesc(jsonStatus.error_code));
+                            }else{
+                                prompt(getResources().getString(R.string.request_erro));
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+    };
+
+    /** 编辑个人信息请求*/
+    private void UploadAdapter_Edit(String allStatus, String payStatus, String returnStatus, String voucherStatus) {
+        ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.EDIT_MEMBER_INFO);
+        ajaxParams.put("token", token);
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonText_Edit(allStatus, payStatus, returnStatus, voucherStatus));
+        Log.e(TAG, Constant.REQUEST + API.EDIT_MEMBER_INFO + "\n" + ajaxParams.toString());
+        finalHttp.post(API.server,  ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                closeProgressDialog();
+                prompt(getResources().getString(R.string.request_time_out));
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                showProgressDialog(getResources().getString(R.string.loading));
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if(!StringUtils.isBlank(t)){
+                    Log.e(TAG, Constant.RESULT + API.EDIT_MEMBER_INFO + "\n" +  t.toString());
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if(jsonStatus.isSuccess){
+                        handler.sendMessage(handler.obtainMessage(SUCCESS, BaseJSONData(t)));
+                    }else{
+                        handler.sendMessage(handler.obtainMessage(FAILURE, BaseJSONData(t)));
+                    }
+                }else{
+                    prompt(getResources().getString(R.string.request_no_data));
+                }
+            }
+        });
+    }
+
+    /***
+     * 编辑个人信息
+     * member_id	会员ID
+     * @return json
+     */
+    private String makeJsonText_Edit(String allStatus, String payStatus, String returnStatus, String voucherStatus) {
+        JSONObject json = new JSONObject();
+        JSONObject jsonPushInfo = new JSONObject();
+        try {
+            json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
+            jsonPushInfo.put("push_switch", allStatus);
+            jsonPushInfo.put("consume_msg", payStatus);
+            jsonPushInfo.put("refund_msg", returnStatus);
+            jsonPushInfo.put("voucher_msg", voucherStatus);
+            json.put("push_info", jsonPushInfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
+    }
+
     /** 本类存储至本地属性*/
-    public void savePreferences(String key, boolean value){
-        PreferencesUtils.putBoolean(context, key, value);
+    public void savePreferences(String key, int value){
+        PreferencesUtils.putInt(context, key, value);
     }
 }

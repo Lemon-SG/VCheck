@@ -29,6 +29,10 @@ public class VoucherInfo extends BaseModel<VoucherInfo> {
     public String total;
     /** 限制描述*/
     public String limit_description;
+    /** 会员礼券总数量*/
+    public String voucher_total_count;
+    /** 会员可使用的礼券数量*/
+    public String voucher_use_count;
 
     @Override
     public VoucherInfo parse(JSONObject jsonObject) {
@@ -38,6 +42,8 @@ public class VoucherInfo extends BaseModel<VoucherInfo> {
             description = jsonObject.optString("description");
             begin_date = jsonObject.optString("begin_date");
             end_date = jsonObject.optString("end_date");
+            voucher_total_count = jsonObject.optString("voucher_total_count");
+            voucher_use_count = jsonObject.optString("voucher_use_count");
             voucher_status = jsonObject.optString("voucher_status");
             if(!StringUtils.isBlank(jsonObject.optString("discount"))) {
                 discount = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("discount")));

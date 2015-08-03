@@ -66,6 +66,10 @@ public class Constant {
     public static final int VOUCHER_STATUS_SPENDED = 2;
     /** 优惠券状态(0-无效)*/
     public static final int VOUCHER_STATUS_NO = 0;
+    /** 推送开关：1->开启*/
+    public static final int PUSH_ON = 1;
+    /** 推送开关：0->关闭*/
+    public static final int PUSH_OFF = 0;
 
     /****************************        拍照     **********************************/
     /** 作用: SD卡根目录 */

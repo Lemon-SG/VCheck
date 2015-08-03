@@ -37,6 +37,7 @@ import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.OrderInfo;
+import cc.siyo.iMenu.VCheck.model.VoucherInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.view.TopBar;
@@ -102,6 +103,7 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     private static final int SDK_PAY_FLAG = 1;
     /** 微信支付 */
     private IWXAPI api;
+    private VoucherInfo voucherInfo;
 
     @Override
     public int getContentView() {
@@ -187,8 +189,8 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         JSONObject data = jsonStatus.data;
-                        JSONArray voucherList = data.optJSONArray("voucher_list");
-                        tv_order_confirm_gift_count.setText(voucherList.length() + "可使用");
+                        voucherInfo = new VoucherInfo().parse(data.optJSONObject("voucher_info"));
+                        tv_order_confirm_gift_count.setText(voucherInfo.voucher_use_count + "可使用");
                     }
                     break;
                 case GENERATE_DATA_SUCCESS:
@@ -298,6 +300,7 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
                 intent.putExtra(Constant.INTENT_VOUCHER_TYPE, Constant.INTENT_VOUCHER_CHOOSE);
                 intent.putExtra("orderId", orderInfo.order_id);
                 intent.putExtra("paymentCode", paymentCode);
+                intent.putExtra("voucherCount", Integer.parseInt(voucherInfo.voucher_use_count));
                 startActivityForResult(intent, Constant.INTENT_VOUCHER_CHOOSE);
                 break;
             case R.id.rl_payment_Alipay:
@@ -352,6 +355,9 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
                             break;
                         case SUBMIT_PAY_ORDER_SUCCESS:
                             Log.e(TAG, Constant.RESULT + API.SUBMIT_PAY_ORDER + "\n" + t.toString());
+                            break;
+                        case GET_VOUCHER_LIST_SUCCESS:
+                            Log.e(TAG, Constant.RESULT + API.GET_VOUCHER_LIST + "\n" + t.toString());
                             break;
                     }
                     JSONStatus jsonStatus = BaseJSONData(t);

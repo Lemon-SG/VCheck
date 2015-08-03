@@ -27,6 +27,7 @@ import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Member;
+import cc.siyo.iMenu.VCheck.model.PushInfo;
 import cc.siyo.iMenu.VCheck.model.ShareInvite;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
@@ -85,6 +86,9 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     private ShareInvite shareInvite;
     private ImageLoader imageLoader;
     private DisplayImageOptions option;
+    private PushInfo pushInfo;
+    /** 礼券总数量*/
+    private String voucherCount;
 
     @Override
     public int getContentView() {
@@ -161,7 +165,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                                 }
                             }
                             if(data.optJSONObject("voucher_info") != null){//礼券详情
-                                String voucherCount = data.optJSONObject("voucher_info").optString("voucher_total_count");
+                                voucherCount = data.optJSONObject("voucher_info").optString("voucher_total_count");
                                 if(!voucherCount.equals("0")) {
                                     tv_coupon_count.setText(voucherCount);
                                     tv_coupon_count.setVisibility(View.VISIBLE);
@@ -169,6 +173,9 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                             }
                             if(data.optJSONObject("share_info") != null){//分享详情：邀请码
                                 shareInvite = new ShareInvite().parse(data.optJSONObject("share_info"));
+                            }
+                            if(data.optJSONObject("push_info") != null){//推送设置开关
+                                pushInfo = new PushInfo().parse(data.optJSONObject("push_info"));
                             }
                         }
                     }
@@ -294,7 +301,9 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
 //                startActivity(new Intent(MineActivity.this, Launch.class));
                 break;
             case R.id.ll_app_set://应用设置
-                startActivity(new Intent(MineActivity.this, AppSetActivity.class));
+                Intent intent_app = new Intent(MineActivity.this, AppSetActivity.class);
+                intent_app.putExtra("pushInfo", pushInfo);
+                startActivity(intent_app);
                 break;
             case R.id.tv_message_center://消息中心
                 if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
@@ -314,6 +323,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                 if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
                     Intent intent = new Intent(MineActivity.this, VoucherListActivity.class);
                     intent.putExtra(Constant.INTENT_VOUCHER_TYPE, Constant.INTENT_VOUCHER_SHOW);
+                    intent.putExtra("voucherCount", voucherCount);
                     startActivity(intent);
                 }else{prompt("请先登录");}
                 break;

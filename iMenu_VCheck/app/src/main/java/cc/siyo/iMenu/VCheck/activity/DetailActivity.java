@@ -51,6 +51,7 @@ import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.util.TimeUtil;
 import cc.siyo.iMenu.VCheck.util.Util;
 import cc.siyo.iMenu.VCheck.view.LoadingDialog;
+import cc.siyo.iMenu.VCheck.view.ShareDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 import cc.siyo.iMenu.VCheck.view.viewpager_indicator.TabPageIndicator;
 import cn.sharesdk.framework.Platform;
@@ -169,17 +170,28 @@ public class DetailActivity extends FragmentActivity{
             public void onClick(View view) {
                 //分享
                 Share share = new Share();
-                share.content = "测试分享";
+                share.title = article.title;
+                share.content = article.sub_title;
+                share.imagePath = article.article_image_list.get(0).image.source;
+                share.imageUrl = article.article_image_list.get(0).image.source;
+                share.link = "imenu.so";
                 ShareSDK.initSDK(DetailActivity.this);
-                Platform sina = ShareSDK.getPlatform(DetailActivity.this, SinaWeibo.NAME);
-                SinaWeibo.ShareParams sinaParams = new SinaWeibo.ShareParams();
-                sinaParams.setTitle(share.title);
-                sinaParams.setText(share.content);
-                sinaParams.setSite(share.description);
-                sinaParams.setSiteUrl(share.link);
-                sinaParams.setImagePath(share.imagePath);
-                sina.setPlatformActionListener(new SinaPlatformActionListener());
-                sina.share(sinaParams);
+                ShareDialog shareDialog = new ShareDialog(DetailActivity.this, share);
+                shareDialog.show();
+            }
+        });
+        tv_share_get_gift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //分享
+                Share share = new Share();
+                share.title = article.title;
+                share.content = article.sub_title;
+                share.imagePath = article.article_image_list.get(0).image.source;
+                share.imageUrl = article.article_image_list.get(0).image.source;
+                share.link = "imenu.so";
+                ShareDialog shareDialog = new ShareDialog(DetailActivity.this, share);
+                shareDialog.show();
             }
         });
 

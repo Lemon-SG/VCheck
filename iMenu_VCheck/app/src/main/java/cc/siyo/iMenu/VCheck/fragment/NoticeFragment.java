@@ -1,6 +1,7 @@
 package cc.siyo.iMenu.VCheck.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import cc.siyo.iMenu.VCheck.R;
+import cc.siyo.iMenu.VCheck.activity.MapActivity;
 import cc.siyo.iMenu.VCheck.model.ArticleContent;
 import cc.siyo.iMenu.VCheck.model.Store;
 import cc.siyo.iMenu.VCheck.model.Tips;
@@ -116,7 +118,9 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
         switch (v.getId()){
             case R.id.rl_notice_address:
                 //商家地址
+                Intent intent = new Intent(getActivity(), MapActivity.class);
 
+                startActivity(intent);
                 break;
             case R.id.rl_notice_tel:
                 //商家电话

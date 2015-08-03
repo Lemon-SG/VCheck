@@ -8,8 +8,11 @@ import android.widget.TextView;
 import net.tsz.afinal.annotation.view.ViewInject;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.model.Share;
 import cc.siyo.iMenu.VCheck.model.ShareInvite;
+import cc.siyo.iMenu.VCheck.view.ShareDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
+import cn.sharesdk.framework.ShareSDK;
 
 /**
  * Created by Lemon on 2015/7/24 10:03.
@@ -79,7 +82,12 @@ public class InviteFriendsActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //分享
-
+                Share share = new Share();
+                share.title = "知味-限量精选美食";
+                share.content = "发现一款很棒的美食软件，快来跟我一起体验吧！";
+                share.link = "imenu.so";
+                ShareDialog shareDialog = new ShareDialog(InviteFriendsActivity.this, share);
+                shareDialog.show();
             }
         });
     }

@@ -8,6 +8,7 @@ import net.tsz.afinal.annotation.view.ViewInject;
 
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.activity.BaseActivity;
+import cc.siyo.iMenu.VCheck.model.PushInfo;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
 /**
@@ -38,10 +39,13 @@ public class AppSetActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        final PushInfo pushInfo = (PushInfo) getIntent().getExtras().getSerializable("pushInfo");
         findViewById(R.id.tvPushSet).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, PushSettingActivity.class));
+                Intent intent_app = new Intent(context, PushSettingActivity.class);
+                intent_app.putExtra("pushInfo", pushInfo);
+                startActivity(intent_app);
             }
         });
     }

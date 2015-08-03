@@ -27,6 +27,11 @@ android {
     android {
         packagingOptions {
             exclude 'lib/arm64-v8a/libtpnsSecurity.so'
+            exclude 'lib/arm64-v8a/libBaiduMapSDK_v3_5_0_1.so'
+            exclude 'lib/arm64-v8a/liblocSDK6a.so'
+            exclude 'lib/arm64-v8a/libtpnsSecurity.so'
+            exclude 'lib/arm64-v8a/libtpnsWatchdog.so'
+            exclude 'lib/arm64-v8a/libBMapApiEngine_v3_5_0_1.so'
         }
     }
 }
@@ -41,5 +46,7 @@ dependencies {
     compile files('libs/Xg_sdk_v2.38_20150616_1057.jar')
     compile files('libs/mid-sdk-2.20.jar')
     compile files('libs/universal-image-loader-1.9.2.jar')
+    compile files('libs/locSDK_6.03.jar')
+    compile files('libs/BaiduLBS_Android.jar')
 }
 

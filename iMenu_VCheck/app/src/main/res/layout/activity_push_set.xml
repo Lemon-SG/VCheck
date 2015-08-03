@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_collect_red"/>
+                    android:src="@drawable/ic_push_open_checked"/>
             </RelativeLayout>
 
             <TextView
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_collect_red"/>
+                    android:src="@drawable/ic_push_open_checked"/>
             </RelativeLayout>
 
             <TextView
@@ -128,7 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_collect_red"/>
+                    android:src="@drawable/ic_push_open_checked"/>
             </RelativeLayout>
 
             <TextView
@@ -165,35 +165,6 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/rlPushActivity"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/top_black"
-                    android:textSize="14sp"
-                    android:text="活动消息"/>
-
-                <ImageView
-                    android:id="@+id/ivPushActivity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_collect_red"/>
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/gray_ddd"/>
-
-            <RelativeLayout
                 android:id="@+id/rlPushVoucher"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -214,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_collect_red"/>
+                    android:src="@drawable/ic_push_open_checked"/>
             </RelativeLayout>
 
             <TextView

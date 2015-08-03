@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -52,7 +53,7 @@ public class VoucherListActivity extends BaseActivity {
     /** 兑换礼券按钮*/
     @ViewInject(id = R.id.rlVoucherBottom)private RelativeLayout rlVoucherBottom;
     /** 列表*/
-    @ViewInject(id = R.id.list_voucher)private RefreshListView list_voucher;
+    @ViewInject(id = R.id.list_voucher)private ListView list_voucher;
     /** 输入礼券码*/
     @ViewInject(id = R.id.etVoucherCode)private EditText etVoucherCode;
     /** 兑换按钮*/
@@ -70,23 +71,24 @@ public class VoucherListActivity extends BaseActivity {
     private static final int GET_VOUCHER_LIST_SUCCESS = 100;
     private static final int EXCHANGE_VOUCHER_SUCCESS = 300;
     private static final int CHECKOUT_SUCCESS = 400;
-    /** 登出失败标石*/
     private static final int GET_VOUCHER_LIST_FALSE = 200;
     /** 适配器*/
     private VoucherAdapter voucherAdapter;
     /** 数据源*/
     private List<VoucherInfo> voucherInfoList;
-    private int page = Constant.PAGE;
-    private int pageSize = Constant.PAGE_SIZE;
-    /** 是否到最后一页*/
-    boolean doNotOver = true;
-    /** 是否已经提醒过一遍*/
-    boolean isTip = false;
-    /** 是否是下拉刷新，清空数据*/
-    private boolean isPull = false;
+//    private int page = Constant.PAGE;
+//    private int pageSize = Constant.PAGE_SIZE;
+//    /** 是否到最后一页*/
+//    boolean doNotOver = true;
+//    /** 是否已经提醒过一遍*/
+//    boolean isTip = false;
+//    /** 是否是下拉刷新，清空数据*/
+//    private boolean isPull = false;
     private AnimationController animationController;
     /** 此页面的操作类型*/
     private int VoucherDoType = Constant.INTENT_VOUCHER_SHOW;
+    /** 当前请求多少张礼券*/
+    private int voucherCount;
 
     @Override
     public int getContentView() {
@@ -128,10 +130,11 @@ public class VoucherListActivity extends BaseActivity {
                 break;
         }
 
-        page = Constant.PAGE;
+//        page = Constant.PAGE;
         finalHttp = new FinalHttp();
-        isPull = true;
-        UploadAdapter();
+//        isPull = true;
+        voucherCount = getIntent().getExtras().getInt("voucherCount");
+        UploadAdapter(voucherCount);
         voucherAdapter = new VoucherAdapter(VoucherListActivity.this, R.layout.list_item_voucher);
         list_voucher.setAdapter(voucherAdapter);
 
@@ -170,30 +173,30 @@ public class VoucherListActivity extends BaseActivity {
             }
         });
 
-        list_voucher.setOnLoadMoreListenter(new RefreshListView.OnLoadMoreListener() {
-
-            public void onLoadMore() {
-                isPull = false;
-                if (doNotOver) {
-                    page++;
-                    UploadAdapter();
-                } else {
-                    list_voucher.onLoadMoreComplete();
-                    if (!isTip) {
-                        isTip = true;
-                        prompt("已经到底了");
-                    }
-                }
-            }
-        });
-        list_voucher.setOnRefreshListener(new RefreshListView.OnRefreshListener() {
-
-            public void onRefresh() {
-                page = Constant.PAGE;
-                isPull = true;
-                UploadAdapter();
-            }
-        });
+//        list_voucher.setOnLoadMoreListenter(new RefreshListView.OnLoadMoreListener() {
+//
+//            public void onLoadMore() {
+//                isPull = false;
+//                if (doNotOver) {
+//                    page++;
+//                    UploadAdapter();
+//                } else {
+//                    list_voucher.onLoadMoreComplete();
+//                    if (!isTip) {
+//                        isTip = true;
+//                        prompt("已经到底了");
+//                    }
+//                }
+//            }
+//        });
+//        list_voucher.setOnRefreshListener(new RefreshListView.OnRefreshListener() {
+//
+//            public void onRefresh() {
+//                page = Constant.PAGE;
+//                isPull = true;
+//                UploadAdapter();
+//            }
+//        });
     }
 
     Handler handler = new Handler() {
@@ -202,8 +205,8 @@ public class VoucherListActivity extends BaseActivity {
             switch (msg.what) {
                 case GET_VOUCHER_LIST_SUCCESS:
                     closeProgressDialog();
-                    list_voucher.onRefreshComplete();
-                    list_voucher.onLoadMoreComplete();
+//                    list_voucher.onRefreshComplete();
+//                    list_voucher.onLoadMoreComplete();
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         JSONObject data = jsonStatus.data;
@@ -218,22 +221,22 @@ public class VoucherListActivity extends BaseActivity {
                                     voucherInfos.add(voucherInfo);
                                 }
                             }
-                            if(isPull) {
+//                            if(isPull) {
                                 voucherAdapter.getDataList().clear();
-                            }
+//                            }
                             voucherAdapter.getDataList().addAll(voucherInfoList);
                             voucherAdapter.notifyDataSetChanged();
                             tvVoucherCount.setText(voucherInfos.size() + "张可使用礼券");
-                            if(jsonStatus.pageInfo != null) {
-                                String more = jsonStatus.pageInfo.more;
-                                if(more.equals("1")) {
-                                    //有下一页
-                                    doNotOver = true;
-                                } else {
-                                    //最后一页
-                                    doNotOver = false;
-                                }
-                            }
+//                            if(jsonStatus.pageInfo != null) {
+//                                String more = jsonStatus.pageInfo.more;
+//                                if(more.equals("1")) {
+//                                    //有下一页
+//                                    doNotOver = true;
+//                                } else {
+//                                    //最后一页
+//                                    doNotOver = false;
+//                                }
+//                            }
                         }
                     }
                     break;
@@ -243,6 +246,7 @@ public class VoucherListActivity extends BaseActivity {
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(jsonStatus.isSuccess) {
                             //TODO 兑换礼券成功后的操作
+                            UploadAdapter(voucherCount);
                         }
                     }
                     break;
@@ -267,8 +271,8 @@ public class VoucherListActivity extends BaseActivity {
                     break;
                 case GET_VOUCHER_LIST_FALSE:
                     closeProgressDialog();
-                    list_voucher.onRefreshComplete();
-                    list_voucher.onLoadMoreComplete();
+//                    list_voucher.onRefreshComplete();
+//                    list_voucher.onLoadMoreComplete();
                     if(msg.obj != null){
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(!StringUtils.isBlank(jsonStatus.error_desc)){
@@ -287,12 +291,12 @@ public class VoucherListActivity extends BaseActivity {
     };
 
     /** 获取礼券列表请求*/
-    private void UploadAdapter() {
+    private void UploadAdapter(int voucherCount) {
         ajaxParams = new AjaxParams();
         ajaxParams.put("route", API.GET_VOUCHER_LIST);
         ajaxParams.put("token", PreferencesUtils.getString(context, Constant.KEY_TOKEN));
         ajaxParams.put("device_type", Constant.DEVICE_TYPE);
-        ajaxParams.put("jsonText", makeJsonText());
+        ajaxParams.put("jsonText", makeJsonText(voucherCount));
         Log.e(TAG, Constant.REQUEST + API.GET_VOUCHER_LIST + "\n" + ajaxParams.toString());
         finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
             @Override
@@ -368,6 +372,7 @@ public class VoucherListActivity extends BaseActivity {
                         handler.sendMessage(handler.obtainMessage(EXCHANGE_VOUCHER_SUCCESS, BaseJSONData(t)));
                     } else {
 //                        handler.sendMessage(handler.obtainMessage(GET_VOUCHER_LIST_FALSE, BaseJSONData(t)));
+                        closeProgressDialog();
                         prompt(jsonStatus.error_desc);
                     }
                 } else {
@@ -463,11 +468,11 @@ public class VoucherListActivity extends BaseActivity {
      * member_id	会员ID
      * @return json
      */
-    private String makeJsonText() {
+    private String makeJsonText(int voucherCount) {
         JSONObject json = new JSONObject();
         try {
             json.put("member_id", PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID));
-            json.put("pagination", makeJsonPageText(page, pageSize));
+            json.put("pagination", makeJsonPageText(1, voucherCount));
         } catch (JSONException e) {
             e.printStackTrace();
         }
