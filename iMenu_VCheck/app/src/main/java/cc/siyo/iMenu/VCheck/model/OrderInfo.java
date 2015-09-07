@@ -33,6 +33,10 @@ public class OrderInfo extends BaseModel<OrderInfo> {
     public TotalPrice totalPrice;
     /** 菜品实体*/
     public Menu menu;
+    /** 消费实体*/
+    public ConsumeInfo consume_info;
+    /** 是否可退款(1-可退款/0-不可退款)*/
+    public String is_return;
 
     @Override
     public OrderInfo parse(JSONObject jsonObject) {
@@ -44,11 +48,13 @@ public class OrderInfo extends BaseModel<OrderInfo> {
             mobile = jsonObject.optString("mobile");
             order_type = jsonObject.optString("order_type");
             order_type_description = jsonObject.optString("order_type_description");
+            is_return = jsonObject.optString("is_return");
             paymentInfo = new PaymentInfo().parse(jsonObject.optJSONObject("payment_info"));
             couponInfo = new CouponInfo().parse(jsonObject.optJSONObject("coupon_info"));
             voucherInfo = new VoucherInfo().parse(jsonObject.optJSONObject("voucher_info"));
             totalPrice = new TotalPrice().parse(jsonObject.optJSONObject("total_price"));
             menu = new Menu().parse(jsonObject.optJSONObject("menu_info"));
+            consume_info = new ConsumeInfo().parse(jsonObject.optJSONObject("consume_info"));
             return this;
         }
         return null;

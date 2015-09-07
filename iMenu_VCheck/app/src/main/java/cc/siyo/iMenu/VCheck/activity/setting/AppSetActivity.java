@@ -9,6 +9,7 @@ import net.tsz.afinal.annotation.view.ViewInject;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.activity.BaseActivity;
 import cc.siyo.iMenu.VCheck.model.PushInfo;
+import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 
 /**
@@ -43,9 +44,13 @@ public class AppSetActivity extends BaseActivity {
         findViewById(R.id.tvPushSet).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent_app = new Intent(context, PushSettingActivity.class);
-                intent_app.putExtra("pushInfo", pushInfo);
-                startActivity(intent_app);
+                if(!StringUtils.isBlank(token)) {
+                    Intent intent_app = new Intent(context, PushSettingActivity.class);
+                    intent_app.putExtra("pushInfo", pushInfo);
+                    startActivity(intent_app);
+                } else {
+                    prompt("请登录");
+                }
             }
         });
     }

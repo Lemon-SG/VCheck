@@ -78,4 +78,14 @@ public class API {
     public static final String GET_VOUCHER_LIST = "member/voucher/getVoucherList";
     /** 激活礼券*/
     public static final String EXCHANGE_VOUCHER = "member/voucher/exchangeVoucher";
+    /** 微信登录*/
+    public static final String LOGIN_WITH_WX = "member/member_thirdpart/loginWithWx";
+    /** 微信注册*/
+    public static final String REGISTER_WITH_WX = "member/member_thirdpart/registerWithWx";
+    /** 获取消息列表*/
+    public static final String GET_MESSAGE_LIST = "member/message/getMessageList";
+    /** 编辑微信信息*/
+    public static final String EDIT_WITH_WX = "member/member_thirdpart/editWithWx";
+    /** 获取首页广告列表*/
+    public static final String GET_APP_BANNER_LIST = "base/info/getAppBannerList";
 }

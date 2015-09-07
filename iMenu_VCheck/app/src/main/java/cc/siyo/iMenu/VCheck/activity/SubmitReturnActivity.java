@@ -5,9 +5,11 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import net.tsz.afinal.FinalBitmap;
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -46,6 +48,12 @@ public class SubmitReturnActivity extends BaseActivity {
     @ViewInject(id = R.id.refund_menu_name)private TextView tv_refund_menu_name;
     /** 退款金额*/
     @ViewInject(id = R.id.refund_money)private TextView tv_refund_money;
+    /** 订单时间*/
+    @ViewInject(id = R.id.refund_order_time)private TextView refund_order_time;
+    /** 菜品图片*/
+    @ViewInject(id = R.id.iv_refun_order_menu)private ImageView iv_refun_order_menu;
+    /** 支付方式*/
+    @ViewInject(id = R.id.refund_payment)private TextView refund_payment;
     /** 退款原因列表*/
     @ViewInject(id = R.id.return_reason_list)private ListView return_reason_list;
     /** 提交退款按钮*/
@@ -64,6 +72,7 @@ public class SubmitReturnActivity extends BaseActivity {
     private MemberOrder memberOrder;
     private ReturnReasonAdapter returnReasonAdapter;
     private List<ReturnInfo> returnInfoList;
+    private FinalBitmap finalBitmap;
 
     private static final String TAG = "SubmitReturnActivity";
 
@@ -82,6 +91,7 @@ public class SubmitReturnActivity extends BaseActivity {
                 finish();
             }
         });
+
         returnReasonAdapter = new ReturnReasonAdapter(SubmitReturnActivity.this, R.layout.list_item_return_reason);
         return_reason_list.setAdapter(returnReasonAdapter);
     }
@@ -89,9 +99,17 @@ public class SubmitReturnActivity extends BaseActivity {
     @Override
     public void initData() {
         finalHttp = new FinalHttp();
+        finalBitmap = FinalBitmap.create(context);
+        finalBitmap.configLoadingImage(R.mipmap.default_menu);
+        finalBitmap.configLoadfailImage(R.mipmap.default_menu);
         memberOrder = (MemberOrder) getIntent().getExtras().getSerializable("memberOrder");
+
         tv_refund_menu_name.setText(memberOrder.order_info.menu.menu_name);
-        tv_refund_money.setText(memberOrder.order_info.totalPrice.special_price);
+        refund_order_time.setText(memberOrder.order_info.create_date);
+        refund_payment.setText(memberOrder.order_info.paymentInfo.payment_name);
+        finalBitmap.display(iv_refun_order_menu, memberOrder.article_info.article_image.thumb);
+        tv_refund_money.setText("退款金额:" + memberOrder.order_info.totalPrice.special_price);
+
         tv_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

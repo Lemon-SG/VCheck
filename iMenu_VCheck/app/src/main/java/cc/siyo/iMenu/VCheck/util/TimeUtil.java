@@ -25,6 +25,47 @@ public class TimeUtil {
     public final static int MONTH = 2;
     /** 种类为周 */
     public final static int WEEK = 3;
+
+
+
+    /** 文章详情时间判断，返回显示字符串*/
+    public static String getTimeDiff(Long time) {
+        String msg = "";
+        long sevenTime = 7 * 24 * 60 * 60;
+        Log.e(TAG, "time->" + time + "sevenTime->" + sevenTime);
+        if(time > sevenTime) {
+            //一周以上1234350
+            msg = "剩余一周以上";
+        } else {
+            //一周以内233162
+            int s = (int) (time % 60);
+            int m = (int) (time / 60 % 60);
+            int h = (int) (time / 60 / 60 % 60);
+            int d = (int) ((time / 3600) / 24);
+            Log.e("时间->", d + "天" + h + "时" + m + "分" + s + "秒");
+            if(d > 0) {
+                msg = "剩余" + d + "天";
+                return msg;
+            }
+            if(h > 0) {
+                msg = "剩余" + h + "小时";
+                return msg;
+            }
+            if(m > 0) {
+                msg = "剩余" + m + "分";
+                return msg;
+            }
+            if(s > 0) {
+                msg = "剩余" + s +"秒";
+                return msg;
+            }else {
+                msg = "";
+                return msg;
+            }
+        }
+        return msg;
+    }
+
     /**
      * 要转换的毫秒数
      * @param mss
@@ -55,6 +96,7 @@ public class TimeUtil {
         }
         return dayMsg + hoursMsg + minutesMsg + secondsMsg;
     }
+
     /**
      *
      * @param begin 时间段的开始
@@ -349,29 +391,6 @@ public class TimeUtil {
         long now = System.currentTimeMillis();
         long difference = now - timeLong;
         Log.i("TAG",timeLong+"/"+now+"/"+difference);
-//		if (difference/1000/60<1) {
-//			return "刚刚";
-//		}else if(difference/1000/60<10){
-//			return "10分钟以内";
-//		}else if(difference/1000/60<30){
-//			return "30分钟以内";
-//		}else if(difference/1000/60<60){
-//			return "1小时以内";
-//		}else if(difference/1000/60/60<3){
-//			return "3小时以内";
-//		}else if(difference/1000/60/60<5){
-//			return "5小时以内";
-//		}else if(difference/1000/60/60<12){
-//			return "12小时以内";
-//		}else if(difference/1000/60/60<24){
-//			return "24小时以内";
-//		}else if(difference/1000/60/60/24<2){
-//			return "2天以内";
-//		}else if(difference/1000/60/60/24<3){
-//			return "3天以内";
-//		}else{
-//			return "3天以前";
-//		}
         if (difference/1000/60<=1) {
             return "刚刚";
         }else if(difference/1000/60<=60){
@@ -384,5 +403,6 @@ public class TimeUtil {
             return getStrTime(timeLong, "yyyy-MM-dd HH:mm");
         }
     }
+
 
 }

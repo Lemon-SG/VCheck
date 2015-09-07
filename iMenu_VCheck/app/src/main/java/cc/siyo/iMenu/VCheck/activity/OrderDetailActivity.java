@@ -29,6 +29,7 @@ import cc.siyo.iMenu.VCheck.model.OrderInfo;
 import cc.siyo.iMenu.VCheck.model.ReturnInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
+import cc.siyo.iMenu.VCheck.util.TimeUtil;
 import cc.siyo.iMenu.VCheck.view.PromptDialog;
 import cc.siyo.iMenu.VCheck.view.TopBar;
 /**
@@ -71,6 +72,8 @@ public class OrderDetailActivity extends BaseActivity {
     @ViewInject(id = R.id.tv_orderDetail_count)private TextView tv_orderDetail_count;
     /** 订单合计价格显示*/
     @ViewInject(id = R.id.tv_orderDetail_order_totprice)private TextView tv_orderDetail_order_totprice;
+    /** 订单使用优惠券显示*/
+    @ViewInject(id = R.id.tv_orderDetail_order_voucher)private TextView tv_orderDetail_order_voucher;
     /** 订单合计还需支付价格显示*/
     @ViewInject(id = R.id.tv_orderDetail_order_totPrice)private TextView tv_orderDetail_order_totPrice;
     /** 取消订单按钮*/
@@ -91,6 +94,12 @@ public class OrderDetailActivity extends BaseActivity {
     @ViewInject(id = R.id.tv_order_detail_notice)private TextView tv_order_detail_notice;
     /** 退款方式显示*/
     @ViewInject(id = R.id.tv_return_action_description)private TextView tv_return_action_description;
+    /** 消费码显示*/
+    @ViewInject(id = R.id.tvOrderDetailPayCode)private TextView tvOrderDetailPayCode;
+    /** 消费码有效期显示*/
+    @ViewInject(id = R.id.tvOrderDetailConsumeData)private TextView tvOrderDetailConsumeData;
+    /** 消费码layout*/
+    @ViewInject(id = R.id.llOrderDetailConsume)private LinearLayout llOrderDetailConsume;
     /** 退款进度描述显示*/
     @ViewInject(id = R.id.tv_description)private TextView tv_description;
     private static final String TAG = "OrderDetailActivity";
@@ -124,7 +133,7 @@ public class OrderDetailActivity extends BaseActivity {
         topbar.setLeftButtonOnClickListener(new TopBar.ButtonOnClick() {
             @Override
             public void onClick(View view) {
-                if(changeOrderStatus) {
+                if (changeOrderStatus) {
                     //订单状态更改，返回需重新加载
                     setResult(Constant.RESULT_CODE_ORDER_DETAIL);
                 }
@@ -136,16 +145,17 @@ public class OrderDetailActivity extends BaseActivity {
     @Override
     public void initData() {
         finalBitmap = FinalBitmap.create(context);
-        finalBitmap.configLoadingImage(R.drawable.test_menu_img);
-        finalBitmap.configLoadfailImage(R.drawable.test_menu_img);
+        finalBitmap.configLoadingImage(R.mipmap.default_menu);
+        finalBitmap.configLoadfailImage(R.mipmap.default_menu);
         finalHttp = new FinalHttp();
         orderId = getIntent().getExtras().getString("orderId");
-
         UploadAdapter();
-        orderType = getIntent().getExtras().getString("orderType");
-        if(orderType.equals(Constant.ORDER_TYPE_RETURN_OVER) || orderType.equals(Constant.ORDER_TYPE_RETURN_IN)) {
-            //已退款 | 退款中
-            UploadAdapter_ReturnDetail();
+        if(!StringUtils.isBlank(getIntent().getExtras().getString("orderType"))) {
+            orderType = getIntent().getExtras().getString("orderType");
+            if(orderType.equals(Constant.ORDER_TYPE_RETURN_OVER) || orderType.equals(Constant.ORDER_TYPE_RETURN_IN)) {
+                //已退款 | 退款中
+                UploadAdapter_ReturnDetail();
+            }
         }
     }
 
@@ -158,12 +168,28 @@ public class OrderDetailActivity extends BaseActivity {
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_PAY_NO_SPEND)) {
             //已支付未消费订单，只能申请退款，且不可删除，列表实现：等待消费
-            showBottom(false, false, "申请退款");
-            tv_orderDetail_cancel.setOnClickListener(new OnSubmitReturnClickListener());
+            if(memberOrder.order_info.consume_info != null && !StringUtils.isBlank(memberOrder.order_info.consume_info.consume_code)) {
+                tvOrderDetailPayCode.setText(memberOrder.order_info.consume_info.consume_code);
+                tvOrderDetailConsumeData.setText("有效期至:" + TimeUtil.FormatTime(memberOrder.order_info.consume_info.exprie_date, "yyyy-MM-dd"));
+                llOrderDetailConsume.setVisibility(View.VISIBLE);
+            }
+            if(memberOrder.order_info.is_return.equals("1")) {
+                //可退款
+                showBottom(false, false, "申请退款");
+                tv_orderDetail_cancel.setOnClickListener(new OnSubmitReturnClickListener());
+            } else {
+                //不可退款
+                showBottom(false, false, "不可退款");
+            }
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_PAY_SPEND)) {
             //已支付已消费订单，只能删除，列表显示：已消费
             showBottom(false, false, "");
+            if(memberOrder.order_info.consume_info != null && !StringUtils.isBlank(memberOrder.order_info.consume_info.consume_code)) {
+                tvOrderDetailPayCode.setText(memberOrder.order_info.consume_info.consume_code);
+                tvOrderDetailConsumeData.setText("有效期至:" + TimeUtil.FormatTime(memberOrder.order_info.consume_info.exprie_date, "yyyy-MM-dd"));
+                llOrderDetailConsume.setVisibility(View.VISIBLE);
+            }
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_RETURN_IN)) {
             //退款中订单，无操作，且不可删除，列表显示：退款中
@@ -183,8 +209,14 @@ public class OrderDetailActivity extends BaseActivity {
         }
         if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_PAY_TIMEOUT)) {
             //已付款过期订单，只能申请退款，且不能删除，列表显示：订单已过期，请申请退款
-            showBottom(false, false, "申请退款");
-            tv_orderDetail_cancel.setOnClickListener(new OnSubmitReturnClickListener());
+            if(memberOrder.order_info.is_return.equals("1")) {
+                //可退款
+                showBottom(false, false, "申请退款");
+                tv_orderDetail_cancel.setOnClickListener(new OnSubmitReturnClickListener());
+            } else {
+                //不可退款
+                showBottom(false, false, "不可退款");
+            }
         }
         rl_orderDetail_menu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,17 +238,6 @@ public class OrderDetailActivity extends BaseActivity {
         });
         finalBitmap.display(iv_orderDetail_menu, memberOrder.article_info.article_image.source);
         tv_orderDetail_name.setText(memberOrder.order_info.menu.menu_name);
-        if(!StringUtils.isBlank(memberOrder.order_info.menu.price.special_price)) {
-            //有优惠价格
-            tv_orderDetail_order_price.setText(memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
-            tv_orderDetail_price.setText("单价:" + memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
-            tv_orderDetail_order_totPrice.setText(memberOrder.order_info.totalPrice.special_price + memberOrder.order_info.menu.price.price_unit);
-        } else {
-            //无优惠价格
-            tv_orderDetail_order_price.setText(memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
-            tv_orderDetail_price.setText("单价:" + memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
-            tv_orderDetail_order_totPrice.setText(memberOrder.order_info.totalPrice.original_price + memberOrder.order_info.menu.price.price_unit);
-        }
         tv_orderDetail_store_name.setText(memberOrder.article_info.store_info.store_name);
         tv_orderDetail_address.setText(memberOrder.article_info.store_info.address);
         tv_orderDetail_store_phone.setText(memberOrder.article_info.store_info.tel_1);
@@ -225,13 +246,33 @@ public class OrderDetailActivity extends BaseActivity {
         tv_orderDetail_order_phone.setText(memberOrder.order_info.mobile);
         tv_orderDetail_order_time.setText(memberOrder.order_info.create_date);
         tv_orderDetail_count.setText(memberOrder.order_info.menu.count);
-        if(!StringUtils.isBlank(memberOrder.order_info.totalPrice.special_price)){
+
+        /** 菜品单价显示*/
+        if(!StringUtils.isBlank(memberOrder.order_info.menu.price.special_price)
+                && !memberOrder.order_info.menu.price.special_price.equals("0.0")) {
+            //有优惠价格
+            tv_orderDetail_order_price.setText(memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
+            tv_orderDetail_price.setText("单价:" + memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
+        } else {
+            //无优惠价格
+            tv_orderDetail_order_price.setText(memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
+            tv_orderDetail_price.setText("单价:" + memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
+        }
+        /** 支付相关价格显示*/
+        if(!StringUtils.isBlank(memberOrder.order_info.totalPrice.special_price) && !memberOrder.order_info.totalPrice.special_price.equals("0.0")){
             //优惠总价
             tv_orderDetail_order_totprice.setText(memberOrder.order_info.totalPrice.special_price + memberOrder.order_info.totalPrice.price_unit);
             tv_orderDetail_bottom_price.setText(memberOrder.order_info.totalPrice.special_price);
+            //底部还需支付价格显示
+            tv_orderDetail_order_totPrice.setText(memberOrder.order_info.totalPrice.special_price + memberOrder.order_info.menu.price.price_unit);
         }else {
             tv_orderDetail_order_totprice.setText(memberOrder.order_info.totalPrice.original_price + memberOrder.order_info.totalPrice.price_unit);
             tv_orderDetail_bottom_price.setText(memberOrder.order_info.totalPrice.original_price);
+            //底部还需支付价格显示
+            tv_orderDetail_order_totPrice.setText(memberOrder.order_info.totalPrice.original_price + memberOrder.order_info.menu.price.price_unit);
+        }
+        if(memberOrder.order_info.voucherInfo != null && !StringUtils.isBlank(memberOrder.order_info.voucherInfo.voucher_member_id)) {
+            tv_orderDetail_order_voucher.setText("-" + memberOrder.order_info.voucherInfo.discount + "元");
         }
         StringBuffer stringBuffer = new StringBuffer();
         for (int i = 0; i < memberOrder.article_info.tips_info.content.length; i++) {
@@ -245,14 +286,14 @@ public class OrderDetailActivity extends BaseActivity {
     }
 
     /** 显示退款底部*/
-    private void showReturnBottom(ReturnInfo returnInfo) {
+    private void showReturnBottom(OrderInfo orderInfo, ReturnInfo returnInfo) {
         showBottom(false, true, "");
         tv_date_added.setText("申请:" + returnInfo.date_added);
         tv_return_action_description.setText(returnInfo.return_action_description.trim());
-        if(orderType.equals(Constant.ORDER_TYPE_RETURN_OVER)) {
+        if(orderInfo.order_type.equals(Constant.ORDER_TYPE_RETURN_OVER)) {
             tv_description.setText("您的款项已退回");
         }
-        if(orderType.equals(Constant.ORDER_TYPE_RETURN_IN)) {
+        if(orderInfo.order_type.equals(Constant.ORDER_TYPE_RETURN_IN)) {
             tv_description.setText("预计两个工作日内完成");
         }
     }
@@ -304,7 +345,8 @@ public class OrderDetailActivity extends BaseActivity {
                         JSONObject data = jsonStatus.data;
                         if(jsonStatus.isSuccess && data != null){
                             ReturnInfo returnInfo = new ReturnInfo().parse(data.optJSONObject("return_info"));
-                            showReturnBottom(returnInfo);
+                            OrderInfo orderInfo = new OrderInfo().parse(data.optJSONObject("order_info"));
+                            showReturnBottom(orderInfo, returnInfo);
                         }
                     }
                     break;
@@ -315,6 +357,14 @@ public class OrderDetailActivity extends BaseActivity {
                         JSONObject data = jsonStatus.data;
                         if(jsonStatus.isSuccess && data != null){
                             memberOrder = new MemberOrder().parse(data.optJSONObject("member_order_info"));
+                            if(StringUtils.isBlank(orderType)) {
+                                //没有传递进来订单类型，则属于从推送进来的，因此需要判断订单类型是否为退款等
+                                if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_RETURN_OVER)
+                                        || memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_RETURN_IN)) {
+                                    //需要请求获取退款详情来显示底部  已退款 | 退款中
+                                    UploadAdapter_ReturnDetail();
+                                }
+                            }
                             showData(memberOrder);
                         }
                     }

@@ -12,14 +12,39 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/topbar"
+        android:padding="10dp"
+        android:background="@color/gray_e6"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:src="@mipmap/ic_error_outline_black_18dp"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/black"
+            android:layout_gravity="center_vertical"
+            android:text="请注意,该礼遇需要到店享用"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:padding="15dp"
+        android:layout_marginTop="100dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_order_write_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:paddingBottom="15dp"
             android:textSize="18sp"
             android:textColor="@color/top_black"
             android:text="The Orchid 双人 Brunch"/>
@@ -186,17 +211,16 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:textSize="14sp"
-                android:layout_marginRight="25dp"
                 android:layout_alignParentRight="true"
                 android:textColor="@color/top_black"
                 android:text="186****2029"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_go_next_black"/>
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:src="@drawable/ic_go_next_black"/>-->
         </RelativeLayout>
 
         <LinearLayout
@@ -224,22 +248,22 @@
                         android:layout_weight="1"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:textColorHint="@color/gray_9c"
+                        android:textColorHint="@color/light_gray_text_color"
                         android:hint="请输入手机号"
-                        android:textSize="16sp"/>
+                        android:textSize="14sp"/>
 
                     <TextView
                         android:id="@+id/tv_orderWrite_getVerifyCode"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.5"
+                        android:layout_weight="1.8"
                         android:padding="5dp"
                         android:layout_marginLeft="10dp"
-                        android:text="获取验证码"
-                        android:textSize="16sp"
+                        android:text="发送验证码"
+                        android:textSize="14sp"
                         android:gravity="center"
                         android:background="@drawable/reg_veriy_bg_gray_shape"
-                        android:textColor="@color/gray_87"/>
+                        android:textColor="@color/deep_gray_text_color"/>
                 </LinearLayout>
 
                 <EditText
@@ -248,9 +272,9 @@
                     android:layout_height="wrap_content"
                     android:hint="请输入验证码"
                     android:singleLine="true"
-                    android:textColorHint="@color/gray_9c"
+                    android:textColorHint="@color/light_gray_text_color"
                     android:padding="10dp"
-                    android:textSize="16sp"/>
+                    android:textSize="14sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -262,15 +286,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="通过微点账户登录可以立刻获得礼券,"/>
+                    android:textSize="10sp"
+                    android:textColor="@color/gray_87"
+                    android:text="填写你收到的验证码即刻开启知味之旅,"/>
 
-                <TextView
-                    android:id="@+id/tv_order_write_login"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:textColor="@color/orange_red"
-                    android:text="立即登录"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_order_write_login"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:textColor="@color/orange_red"-->
+                    <!--android:text="立即登录"/>-->
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -305,7 +331,7 @@
                 android:layout_marginRight="3dp"
                 android:layout_alignBottom="@+id/tv_price"
                 android:textColor="@color/orange_red"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/tv_price"
@@ -324,7 +350,7 @@
                 android:text="元"
                 android:layout_toRightOf="@+id/tv_price"
                 android:layout_alignBottom="@+id/tv_price"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:layout_marginLeft="3dp"
                 android:textColor="@color/orange_red"/>
         </RelativeLayout>
@@ -335,12 +361,12 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:layout_marginRight="15dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:gravity="center"
-            android:layout_weight="2"
+            android:layout_weight="1.5"
             android:padding="5dp"
             android:layout_gravity="center_vertical"
             android:text="提交订单"
-            android:background="@color/orange_red"/>
+            android:background="@drawable/bg_btn_detail_submit_org"/>
     </LinearLayout>
 </RelativeLayout>

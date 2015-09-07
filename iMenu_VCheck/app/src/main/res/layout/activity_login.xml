@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/topbar"
         android:padding="30dp"
-        android:text="首次使用微点账号登陆，赢得丰富礼券"
+        android:text="使用知味账号登录，赢得丰富礼券"
         android:textColor="@color/black"
         android:textSize="14sp"
         android:layout_centerHorizontal="true"/>

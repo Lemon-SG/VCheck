@@ -84,8 +84,10 @@ public class InviteFriendsActivity extends BaseActivity {
                 //分享
                 Share share = new Share();
                 share.title = "知味-限量精选美食";
-                share.content = "发现一款很棒的美食软件，快来跟我一起体验吧！";
-                share.link = "imenu.so";
+                share.imageUrl = "http://218.244.158.175/imenu_test/image/data/article/234AE392B.jpg";
+                share.imagePath = "http://218.244.158.175/imenu_test/image/data/article/234AE392B.jpg";
+                share.content = shareInvite.invite_code;
+                share.link = shareInvite.share_url;
                 ShareDialog shareDialog = new ShareDialog(InviteFriendsActivity.this, share);
                 shareDialog.show();
             }

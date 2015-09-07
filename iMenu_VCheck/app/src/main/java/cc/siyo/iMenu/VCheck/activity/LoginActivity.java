@@ -3,6 +3,7 @@ package cc.siyo.iMenu.VCheck.activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.API;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
+import cc.siyo.iMenu.VCheck.model.ProFile;
 import cc.siyo.iMenu.VCheck.util.MD5;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
@@ -33,6 +35,7 @@ import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
+import cn.sharesdk.wechat.friends.Wechat;
 
 /**
  * Created by Lemon on 2015/5/5.
@@ -63,6 +66,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private static final int EDIT_PUSH_DEVICE_SUCCESS = 300;
     /** 登录成功标石*/
     private static final int LOGIN_SUCCESS = 100;
+    /** 微信登录成功标石*/
+    private static final int LOGIN_WX_SUCCESS = 400;
     /** 登录失败标石*/
     private static final int LOGIN_FALSE = 200;
     /** 输入的用户名是什么类型->1-手机号码/2-用户名*/
@@ -133,6 +138,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                             PreferencesUtils.putString(LoginActivity.this, Constant.KEY_MOBILE, et_login_name.getText().toString());
                         }
                         UploadAdapter_Submit();
+                    }
+                    break;
+                case LOGIN_WX_SUCCESS:
+                    //{"status":{"succeed":"1"},"data":{"member_id":"0","token":""}}  member=0-->未绑定
+                    closeProgressDialog();
+                    if(msg.obj != null){
+                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+                        JSONObject data = jsonStatus.data;
+                        String member_id = data.optString(Constant.KEY_MEMBER_ID);
+                        String token = data.optString(Constant.KEY_TOKEN);
+                        if(!StringUtils.isBlank(member_id) && !member_id.equals("0")) {
+                            //已绑定微信，登录成功
+                            savePreferences(member_id, token);
+                            UploadAdapter_Submit();
+                        } else {
+                            //未绑定微信，去完善资料
+                            Intent intent_reg = new Intent(LoginActivity.this, RegWxSinaActivity.class);
+                            intent_reg.putExtra("proFile", proFile);
+                            startActivity(intent_reg);
+                            finish();
+                        }
                     }
                     break;
                 case LOGIN_FALSE:
@@ -299,15 +325,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.iv_login_sina:
                 //微博登陆
-                showProgressDialog(getResources().getString(R.string.loading));
-                Platform sina = ShareSDK.getPlatform(context, SinaWeibo.NAME);
-                sina.setPlatformActionListener(new SinaPlatformActionListener());
-                sina.showUser(null);
+//                showProgressDialog(getResources().getString(R.string.loading));
+//                Platform sina = ShareSDK.getPlatform(context, SinaWeibo.NAME);
+//                sina.setPlatformActionListener(new SinaPlatformActionListener());
+//                sina.SSOSetting(true);
+//                sina.showUser(null);
                 break;
             case R.id.iv_login_weChat:
                 //微信登录
-//                showProgressDialog(getResources().getString(R.string.loading));
-
+                showProgressDialog(getResources().getString(R.string.loading));
+                Platform weChat = ShareSDK.getPlatform(context, Wechat.NAME);
+                weChat.setPlatformActionListener(new WeChatPlatformActionListener());
+                weChat.showUser(null);
                 break;
         }
     }
@@ -345,6 +374,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         public void onError(Platform platform, int i, Throwable throwable) {
             closeProgressDialog();
             Log.e(TAG, "新浪登录回调onError ->");
+            throwable.printStackTrace();
         }
 
         @Override
@@ -353,4 +383,102 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             Log.e(TAG, "新浪登录回调onCancel ->");
         }
     }
+
+    /** 微信回调监听*/
+    private class WeChatPlatformActionListener implements PlatformActionListener {
+
+        @Override
+        public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
+            closeProgressDialog();
+            Log.e(TAG, "微信登录回调onComplete ->");
+            if(hashMap != null && !hashMap.isEmpty()){
+                UploadAdapter(hashMap);
+            }
+        }
+
+        @Override
+        public void onError(Platform platform, int i, Throwable throwable) {
+            closeProgressDialog();
+            Log.e(TAG, "微信登录回调onError ->");
+            throwable.printStackTrace();
+        }
+
+        @Override
+        public void onCancel(Platform platform, int i) {
+            closeProgressDialog();
+            Log.e(TAG, "微信登录回调onCancel ->");
+        }
+    }
+
+    /** 微信登录请求*/
+    private void UploadAdapter(HashMap<String, Object> hashMap) {
+        ajaxParams = new AjaxParams();
+        ajaxParams.put("route", API.LOGIN_WITH_WX);
+        ajaxParams.put("token", "");
+        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+        ajaxParams.put("jsonText", makeJsonText(hashMap));
+        Log.e(TAG, Constant.REQUEST + API.LOGIN_WITH_WX + "\n" + ajaxParams.toString());
+        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+                super.onFailure(t, errorNo, strMsg);
+                closeProgressDialog();
+                prompt(getResources().getString(R.string.request_time_out));
+                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+            }
+
+            @Override
+            public void onStart() {
+                super.onStart();
+                showProgressDialog(getResources().getString(R.string.loading));
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+                super.onLoading(count, current);
+            }
+
+            @Override
+            public void onSuccess(String t) {
+                super.onSuccess(t);
+                if (!StringUtils.isBlank(t)) {
+                    Log.e(TAG, Constant.RESULT + API.LOGIN + "\n" + t.toString());
+                    JSONStatus jsonStatus = BaseJSONData(t);
+                    if (jsonStatus.isSuccess) {
+                        handler.sendMessage(handler.obtainMessage(LOGIN_WX_SUCCESS, BaseJSONData(t)));
+                    } else {
+                        handler.sendMessage(handler.obtainMessage(LOGIN_FALSE, BaseJSONData(t)));
+                    }
+                } else {
+                    prompt(getResources().getString(R.string.request_no_data));
+                }
+            }
+        });
+    }
+
+    /***
+     * 微信登录/注册参数封装
+     * @return json
+     */
+    private String makeJsonText(HashMap<String, Object> hashMap) {
+        JSONObject json = new JSONObject();
+        JSONObject wx_info = new JSONObject();
+        try {
+            json.put("sex", hashMap.get("sex").toString());
+            json.put("nickname", hashMap.get("nickname").toString());
+            json.put("unionid", hashMap.get("unionid").toString());
+            json.put("province", hashMap.get("province").toString());
+            json.put("openid", hashMap.get("openid").toString());
+            json.put("city", hashMap.get("city").toString());
+            json.put("country", hashMap.get("country").toString());
+            json.put("headimgurl", hashMap.get("headimgurl").toString());
+            wx_info.put("wx_info", json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        proFile = new ProFile().parse(json);
+        return wx_info.toString();
+    }
+
+    private ProFile proFile;
 }

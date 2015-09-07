@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.text.Html;
 import android.util.Log;
 import android.util.SparseArray;
@@ -15,9 +16,8 @@ import java.util.List;
  * Created by Lemon on 2015/5/6.
  * Desc:详情viewpager adapter
  */
-public class DetailFragmentViewPagerAdapter extends FragmentPagerAdapter{
+public class DetailFragmentViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    private static final String TAG = "DetailFragmentViewPagerAdapter";
     private static final String[] TITLE = new String[] {"亮点", "菜单", "须知"};
     /** 碎片集合*/
     private List<Fragment> fragmentList;

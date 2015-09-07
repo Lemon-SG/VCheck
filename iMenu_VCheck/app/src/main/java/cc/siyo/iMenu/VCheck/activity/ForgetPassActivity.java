@@ -52,7 +52,7 @@ public class ForgetPassActivity extends BaseActivity{
 
     @Override
     public void initView() {
-        topbar.settitleViewText("忘记密码");
+        topbar.settitleViewText("找回密码");
         topbar.setText(TopBar.RIGHT_BUTTON, "下一步");
         topbar.setRightButtonOnClickListener(new TopBar.ButtonOnClick() {
             @Override
@@ -215,12 +215,14 @@ public class ForgetPassActivity extends BaseActivity{
 
     /** 登录方式*/
     private void doVerifyLoginName() {
-        String loginName = et_email_mobile.getText().toString();
-        String telRegex = "[1][3578]\\d{9}";//"[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8、7中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
-        if(loginName.matches(telRegex)){
-            loginType = Constant.MATCHER_MOBILE;
-        }else{
-            loginType = Constant.MATCHER_EMAIL;
-        }
+        loginType = Constant.MATCHER_MOBILE;
+//        String loginName = et_email_mobile.getText().toString();
+////        String telRegex = "[1][3578]\\d{9}";//"[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8、7中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+//        boolean emailRegex = MatcherUtil.Matcher(Constant.MATCHER_EMAIL, loginName);//"[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8、7中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+//        if(!emailRegex){
+//            loginType = Constant.MATCHER_MOBILE;
+//        }else{
+//            loginType = Constant.MATCHER_EMAIL;
+//        }
     }
 }

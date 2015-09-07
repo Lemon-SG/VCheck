@@ -59,7 +59,7 @@ public class VoucherAdapter extends AbsAdapter<VoucherInfo>{
             tvVoucherDiscountUnit.setText("元");
             tvVoucherDescription.setText(voucherInfo.description);
             tvVoucherLimitDescription.setText(voucherInfo.limit_description);
-            tvVoucherEndDate.setText("有效期至" + TimeUtil.FormatTime(voucherInfo.end_date, "yyyy-MM-dd"));
+            tvVoucherEndDate.setText("有效期" + TimeUtil.FormatTime(voucherInfo.begin_date, "yyyy-MM-dd") + "至" + TimeUtil.FormatTime(voucherInfo.end_date, "yyyy-MM-dd"));
             switch (Integer.parseInt(voucherInfo.voucher_status)) {
                 case Constant.VOUCHER_STATUS_NO_SPEND:
                     //未使用
@@ -71,7 +71,33 @@ public class VoucherAdapter extends AbsAdapter<VoucherInfo>{
                     llVoucher.setBackgroundResource(R.drawable.bg_voucher_no_spend);
                     break;
                 case Constant.VOUCHER_STATUS_SPENDED://已使用
+                    tvVoucherDiscount.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
+                    tvVoucherDiscountUnit.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
+                    tvVoucherDescription.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    tvVoucherLimitDescription.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    tvVoucherEndDate.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    llVoucher.setBackgroundResource(R.drawable.bg_voucher_spend);
+                    tvVoucherDescription.setText(voucherInfo.description + "(已使用)");
+                    break;
                 case Constant.VOUCHER_STATUS_NO://无效
+                    tvVoucherDiscount.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
+                    tvVoucherDiscountUnit.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
+                    tvVoucherDescription.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    tvVoucherLimitDescription.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    tvVoucherEndDate.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    llVoucher.setBackgroundResource(R.drawable.bg_voucher_spend);
+                    tvVoucherDescription.setText(voucherInfo.description + "(无效)");
+                    break;
+                case Constant.VOUCHER_STATUS_NO_START://未使用未开始
+                    tvVoucherDiscount.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
+                    tvVoucherDiscountUnit.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
+                    tvVoucherDescription.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    tvVoucherLimitDescription.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    tvVoucherEndDate.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));
+                    llVoucher.setBackgroundResource(R.drawable.bg_voucher_spend);
+                    tvVoucherDescription.setText(voucherInfo.description + "(未开始)");
+                    break;
+                case Constant.VOUCHER_STATUS_NO_GUO://未使用过期
                     tvVoucherDiscount.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
                     tvVoucherDiscountUnit.setTextColor(context.getResources().getColor(R.color.voucher_deep_gray));
                     tvVoucherDescription.setTextColor(context.getResources().getColor(R.color.voucher_light_gray));

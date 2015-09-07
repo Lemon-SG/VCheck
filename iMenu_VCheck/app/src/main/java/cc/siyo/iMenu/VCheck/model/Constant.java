@@ -18,6 +18,7 @@ public class Constant {
     public static final int MATCHER_EMAIL = 2;
     /** 匹配昵称*/
     public static final int MATCHER_NICKNAME = 3;
+
     /** 修改账户资料类别KEY*/
     public static final String EDIT_ACCOUNT = "EDIT_ACCOUNT";
     /** 修改账户资料类别标石：绑定邮箱*/
@@ -28,6 +29,7 @@ public class Constant {
     public static final int EDIT_MOBILE = 2;
     /** 修改账户资料类别标石：修改密码*/
     public static final int EDIT_PASS = 3;
+
     /** 分享种类标石:新浪微博分享*/
     public static final int SHARE_TYPE_SINA = 1;
     /** 分享种类标石:人人网分享*/
@@ -36,22 +38,26 @@ public class Constant {
     public static final int SHARE_TYPE_WECHAT = 3;
     /** 分享种类标石:微信朋友圈分享*/
     public static final int SHARE_TYPE_WECHAT_MOMENT = 4;
+
     /** 编辑收藏操作标石:1-添加*/
     public static final int COLLECT_TYPE_OPERATOR_ADD = 1;
     /** 编辑收藏操作标石:2-删除*/
     public static final int COLLECT_TYPE_OPERATOR_DELETE = 2;
     /** 编辑收藏操作标石:3-清空)*/
     public static final int COLLECT_TYPE_OPERATOR_CLEAN = 3;
+
     /** 提交推送设备信息操作类型标石:1-添加/2-删除/3-清空(默认为1)*/
     public static final int OPERATOR_TYPE_ADD = 1;
     /** 提交推送设备信息操作类型标石:2-删除*/
     public static final int OPERATOR_TYPE_DEL = 2;
     /** 提交推送设备信息操作类型标石:3-清空*/
     public static final int OPERATOR_TYPE_CELEAR = 3;
+
     /** 购物车操作类型标石:3-清空*/
     public static final int OPERATOR_TYPE_EDIT = 1;
     /** 购物车操作类型标石:2-清空*/
     public static final int OPERATOR_TYPE_CLEAN = 2;
+
     /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
     public static final int LAUNACH_IMG_TYPE_H = 1;
     /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
@@ -60,16 +66,49 @@ public class Constant {
     public static final int LAUNACH_IMG_TYPE_XH = 3;
     /** 首页广告图片尺寸:1-hdpi,2-mdpi,3-xhdpi,4-xxhdpi*/
     public static final int LAUNACH_IMG_TYPE_XXH = 4;
+
     /** 优惠券状态(1-未使用)*/
     public static final int VOUCHER_STATUS_NO_SPEND = 1;
     /** 优惠券状态(2-已使用)*/
     public static final int VOUCHER_STATUS_SPENDED = 2;
     /** 优惠券状态(0-无效)*/
     public static final int VOUCHER_STATUS_NO = 0;
+    /** 优惠券状态(12-未使用未开始)*/
+    public static final int VOUCHER_STATUS_NO_START = 12;
+    /** 优惠券状态(13-未使用过期)*/
+    public static final int VOUCHER_STATUS_NO_GUO = 13;
+
     /** 推送开关：1->开启*/
     public static final int PUSH_ON = 1;
     /** 推送开关：0->关闭*/
     public static final int PUSH_OFF = 0;
+
+    /** 消息类型:1->活动消息;*/
+    public static final int MESSAGE_ACTIVITY = 1;
+    /** 消息类型:2->消费确认;*/
+    public static final int MESSAGE_PAY = 2;
+    /** 消息类型:3->退款提醒;*/
+    public static final int MESSAGE_RETURN = 3;
+    /** 消息类型:4->获得礼券;*/
+    public static final int MESSAGE_VOUCHER = 4;
+    /** 消息类型:5->开售提醒*/
+    public static final int MESSAGE_SALE = 5;
+
+    /** 微信与微博绑定标石：0->未绑定*/
+    public static final String BIND_NO_WECHAT_SINA = "0";
+    /** 微信与微博绑定标石：1->已绑定*/
+    public static final String BIND_WECHAT_SINA = "1";
+
+    /** 菜品状态标石:10->销售中*/
+    public static final int MENU_STATUS_SALE = 10;
+    /** 菜品状态标石:11->已售罄*/
+    public static final int MENU_STATUS_OUT = 11;
+    /** 菜品状态标石:20->已结束*/
+    public static final int MENU_STATUS_OVER = 20;
+
+    /** 定位广播action*/
+    public static final String LOCATION = "location";
+    public static final String LOCATION_ACTION = "locationAction";
 
     /****************************        拍照     **********************************/
     /** 作用: SD卡根目录 */
@@ -123,8 +162,20 @@ public class Constant {
     public static final int RESULT_VOUCHER_SPEND = 100;
     /** INTENT 从礼券选择返回到确认订单页面，选择礼券或选择不使用礼券标石： 101->bu使用礼券*/
     public static final int RESULT_VOUCHER_NO_SPEND = 101;
+    /** 第三方登录跳转至注册页面标石*/
+    public static final String INTENT_REG_WX_SINA = "INTENT_REG_WX_SINA";
+    /** 跳转WEBACTIVITY传递参数路径KEY*/
+    public static final String INTENT_WEB_URL = "INTENT_WEB_URL";
+    /** 跳转WEBACTIVITY传递参数名称KEY*/
+    public static final String INTENT_WEB_NAME = "INTENT_WEB_NAME";
+    /** 跳转WEBACTIVITY传递参数名称-用户协议*/
+    public static final String INTENT_WEB_NAME_NOTICE = "INTENT_WEB_NAME_NOTICE";
+    /** 跳转WEBACTIVITY传递参数名称-web跳转*/
+    public static final String INTENT_WEB_NAME_WEB = "INTENT_WEB_NAME_WEB";
 
     /*******************************   本地存储 KEY   *************************************/
+    /** 是否是第一次启动标石：默认true值->是第一次安装*/
+    public static final String KEY_IS_LAUNCH = "KEY_IS_LAUNCH";
     /** 用户ID：member_id*/
     public static final String KEY_MEMBER_ID = "member_id";
     /** token*/
@@ -141,6 +192,8 @@ public class Constant {
     public static final String KEY_PUSH_ACTIVITY = "KEY_PUSH_ACTIVITY";
     /** 获得礼券开关状态*/
     public static final String KEY_PUSH_VOUCHER = "KEY_PUSH_VOUCHER";
+    /** 邀请码*/
+    public static final String KEY_INVITE_CODE = "KEY_INVITE_CODE";
 
     /******************************   版本更新   *********************************/
     /** 版本更新APK保存路径*/
@@ -172,13 +225,31 @@ public class Constant {
     /** 请求数据页数*/
     public static final int PAGE = 1;
     /** 请求数据每页显示条数*/
-    public static final int PAGE_SIZE = 5;
+    public static final int PAGE_SIZE = 8;
     /** 非法TOKEN CODE*/
     public static final String TOKEN_ERROR_CODE = "2002";
     /** 错误码:该手机号已存在*/
     public static final int ERROR_CODE_MOBILE_HERE = 2013;
     /** 错误码:该邮箱已存在*/
     public static final int ERROR_CODE_EMAIL_HERE = 2016;
+    /** 链接跳转：网页*/
+    public static final String LINK_WEB = "web";
+    /** 链接跳转：首页*/
+    public static final String LINK_HOME = "home";
+    /** 链接跳转：文章详情*/
+    public static final String LINK_ARTICLE = "article";
+    /** 链接跳转：用户中心*/
+    public static final String LINK_MEMBER = "member_center";
+    /** 链接跳转：消息列表*/
+    public static final String LINK_MESSAGE = "message_list";
+    /** 链接跳转：订单列表*/
+    public static final String LINK_ORDER_LIST = "order_list";
+    /** 链接跳转：订单详情*/
+    public static final String LINK_ORDER_DETAIL = "order_detail";
+    /** 链接跳转：收藏列表*/
+    public static final String LINK_COLLECTION = "collection_list";
+    /** 链接跳转：礼券列表*/
+    public static final String LINK_VOUCHER = "voucher_list";
 
     /**************************      支付      ****************************/
     /** paymentCode:支付宝支付*/

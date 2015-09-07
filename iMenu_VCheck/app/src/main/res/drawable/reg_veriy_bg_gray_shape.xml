@@ -18,7 +18,7 @@
     <!-- 圆角 -->
     <corners
 
-        android:radius="5dp" />
+        android:radius="3dp" />
     <!--<corners-->
         <!--android:bottomLeftRadius="5dp"-->
         <!--android:bottomRightRadius="5dp"-->

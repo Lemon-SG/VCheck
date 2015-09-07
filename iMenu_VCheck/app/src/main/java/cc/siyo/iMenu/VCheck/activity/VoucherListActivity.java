@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -84,11 +85,11 @@ public class VoucherListActivity extends BaseActivity {
 //    boolean isTip = false;
 //    /** 是否是下拉刷新，清空数据*/
 //    private boolean isPull = false;
-    private AnimationController animationController;
+//    private AnimationController animationController;
     /** 此页面的操作类型*/
     private int VoucherDoType = Constant.INTENT_VOUCHER_SHOW;
     /** 当前请求多少张礼券*/
-    private int voucherCount;
+    private int voucherCount = 20;
 
     @Override
     public int getContentView() {
@@ -104,37 +105,41 @@ public class VoucherListActivity extends BaseActivity {
                 finish();
             }
         });
-        animationController = new AnimationController();
+        list_voucher.addFooterView((LayoutInflater.from(context)).inflate(R.layout.list_item_footview, null));
+//        animationController = new AnimationController();
     }
 
     @Override
     public void initData() {
-        VoucherDoType = getIntent().getExtras().getInt(Constant.INTENT_VOUCHER_TYPE);
-        switch (VoucherDoType) {
-            case Constant.INTENT_VOUCHER_CHOOSE:
-                //选择礼券操作
-                tvVoucherNoChoose.setVisibility(View.VISIBLE);
-                final String orderId = getIntent().getExtras().getString("orderId");
-                final String paymentCode = getIntent().getExtras().getString("paymentCode");
-                list_voucher.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        UploadAdapter_checkout(orderId, paymentCode, voucherAdapter.getDataList().get(position - 1).voucher_member_id);
-                    }
-                });
-                break;
-            case Constant.INTENT_VOUCHER_SHOW:
-                //展示操作
-                tvVoucherNoChoose.setVisibility(View.GONE);
-                list_voucher.setOnItemClickListener(null);
-                break;
+        if(getIntent() != null && getIntent().getExtras() != null) {
+            VoucherDoType = getIntent().getExtras().getInt(Constant.INTENT_VOUCHER_TYPE);
+            switch (VoucherDoType) {
+                case Constant.INTENT_VOUCHER_CHOOSE:
+                    //选择礼券操作
+                    tvVoucherNoChoose.setVisibility(View.VISIBLE);
+                    final String orderId = getIntent().getExtras().getString("orderId");
+                    final String paymentCode = getIntent().getExtras().getString("paymentCode");
+                    list_voucher.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            UploadAdapter_checkout(orderId, paymentCode, voucherAdapter.getDataList().get(position - 1).voucher_member_id);
+                        }
+                    });
+                    break;
+                case Constant.INTENT_VOUCHER_SHOW:
+                    //展示操作
+                    tvVoucherNoChoose.setVisibility(View.GONE);
+                    list_voucher.setOnItemClickListener(null);
+                    break;
+            }
+            voucherCount = getIntent().getExtras().getInt("voucherCount");
         }
-
 //        page = Constant.PAGE;
         finalHttp = new FinalHttp();
 //        isPull = true;
-        voucherCount = getIntent().getExtras().getInt("voucherCount");
-        UploadAdapter(voucherCount);
+        if(!StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))) {
+            UploadAdapter(voucherCount);
+        }
         voucherAdapter = new VoucherAdapter(VoucherListActivity.this, R.layout.list_item_voucher);
         list_voucher.setAdapter(voucherAdapter);
 
@@ -157,7 +162,7 @@ public class VoucherListActivity extends BaseActivity {
                     rlVoucherCode.setVisibility(View.INVISIBLE);
                     rlVoucherCount.setVisibility(View.VISIBLE);
                 } else {
-                    animationController.slideFadeIn(rlVoucherCode, 100, 0);
+//                    animationController.slideFadeIn(rlVoucherCode, 100, 0);
                     rlVoucherCode.setVisibility(View.VISIBLE);
                     rlVoucherCount.setVisibility(View.INVISIBLE);
                 }
@@ -477,5 +482,29 @@ public class VoucherListActivity extends BaseActivity {
             e.printStackTrace();
         }
         return json.toString();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Constant.RESQUEST_CODE) {
+            switch (resultCode) {
+                case Constant.RESULT_CODE_LOGIN:
+                    Log.e(TAG, "resultCode ->" + resultCode);
+                    UploadAdapter(voucherCount);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
+        }
     }
 }

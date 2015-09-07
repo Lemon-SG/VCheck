@@ -2,15 +2,18 @@ package cc.siyo.iMenu.VCheck.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import cc.siyo.iMenu.VCheck.R;
+import cc.siyo.iMenu.VCheck.activity.DetailActivity;
 import cc.siyo.iMenu.VCheck.adapter.DetailLightSpotAdapter;
 import cc.siyo.iMenu.VCheck.model.ArticleContent;
 import cc.siyo.iMenu.VCheck.util.Utility;
@@ -29,17 +32,6 @@ public class DetailLightSpotFragment extends BaseFragment{
     private DetailLightSpotAdapter detailLightSpotAdapter;
     /** 数据源*/
     private List<ArticleContent> articleContentList;
-
-//    private WebView web_lightSpot;
-//    private String article_content;
-
-//    public static final DetailLightSpotFragment newInstance(String article_content){
-//        DetailLightSpotFragment detailLightSpotFragment = new DetailLightSpotFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putString("article_content", article_content);
-//        detailLightSpotFragment.setArguments(bundle);
-//        return detailLightSpotFragment;
-//    }
 
     public static final DetailLightSpotFragment newInstance(List<ArticleContent> articleContentList){
         DetailLightSpotFragment detailLightSpotFragment = new DetailLightSpotFragment();

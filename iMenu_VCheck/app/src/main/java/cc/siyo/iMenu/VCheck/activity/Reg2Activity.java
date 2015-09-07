@@ -50,6 +50,8 @@ public class Reg2Activity extends BaseActivity{
     private String code;
     /** 手机号*/
     private String mobile;
+    /** 当前是否处于正常注册标石*/
+    private boolean isNorReg = true;
 
     @Override
     public int getContentView() {
@@ -86,6 +88,13 @@ public class Reg2Activity extends BaseActivity{
             verifyCode = getIntent().getExtras().getString("verifyCode");
             code = getIntent().getExtras().getString("code");
             mobile = getIntent().getExtras().getString("mobile");
+            if(!StringUtils.isBlank(getIntent().getExtras().getString(Constant.INTENT_REG_WX_SINA))) {
+                if(getIntent().getExtras().getString(Constant.INTENT_REG_WX_SINA).equals(Constant.INTENT_REG_WX_SINA)) {
+                    isNorReg = false;
+                }
+            } else {
+                isNorReg = true;
+            }
         }
     }
 

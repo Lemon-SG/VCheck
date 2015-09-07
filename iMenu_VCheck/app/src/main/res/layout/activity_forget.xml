@@ -16,7 +16,8 @@
         android:padding="15dp"
         android:layout_margin="20dp"
         android:singleLine="true"
+        android:inputType="phone"
         android:textColorHint="@color/gray_9c"
-        android:hint="邮箱/手机号"
+        android:hint="手机号"
         android:textSize="16sp"/>
 </LinearLayout>

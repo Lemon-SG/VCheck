@@ -6,12 +6,20 @@
 
     <TextView
         android:id="@+id/tv_city"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:textSize="28sp"
+        android:textSize="22sp"
         android:textColor="@color/white"
         android:text="西安"/>
 
+    <TextView
+        android:id="@+id/tv_city_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:textSize="14sp"
+        android:textColor="@color/gray_87"
+        android:text="[即将开通]"/>
 </LinearLayout>

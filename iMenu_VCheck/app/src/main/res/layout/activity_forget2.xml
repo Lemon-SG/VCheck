@@ -27,6 +27,7 @@
                 android:layout_weight="1"
                 android:padding="10dp"
                 android:singleLine="true"
+                android:editable="false"
                 android:textColorHint="@color/gray_9c"
                 android:hint="手机号码"
                 android:textSize="16sp"/>

@@ -1,6 +1,7 @@
 package cc.siyo.iMenu.VCheck.activity;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -45,6 +46,8 @@ public class RegActivity extends BaseActivity{
     @ViewInject(id = R.id.et_reg_inviteCode)private EditText et_reg_inviteCode;
     /** 获取验证码按钮*/
     @ViewInject(id = R.id.tv_reg_getVerifyCode)private TextView tv_reg_getVerifyCode;
+    /** 用户协议*/
+    @ViewInject(id = R.id.tvNotice)private TextView tvNotice;
     /** A FINAL框架的HTTP请求工具 */
     private FinalHttp finalHttp;
     /** 封装参数的键值对 */
@@ -105,6 +108,9 @@ public class RegActivity extends BaseActivity{
 
     @Override
     public void initData() {
+
+        tvNotice.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+
         finalHttp = new FinalHttp();
         tv_reg_getVerifyCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +118,16 @@ public class RegActivity extends BaseActivity{
                 //获取验证码
                 showOrHideProgressDialog(true);
                 doGetVerifyCode();
+            }
+        });
+        tvNotice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //用户协议
+                Intent intent = new Intent(context, WebViewActivity.class);
+                intent.putExtra(Constant.INTENT_WEB_URL, "file:///android_asset/notice.html");
+                intent.putExtra(Constant.INTENT_WEB_NAME, Constant.INTENT_WEB_NAME_NOTICE);
+                startActivity(intent);
             }
         });
     }

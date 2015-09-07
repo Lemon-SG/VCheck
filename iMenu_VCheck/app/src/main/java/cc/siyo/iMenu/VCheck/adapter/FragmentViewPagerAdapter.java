@@ -42,4 +42,8 @@ public class FragmentViewPagerAdapter extends FragmentPagerAdapter {
 		return TITLE.length;
 	}
 
+	@Override
+	public int getItemPosition(Object object) {
+		return POSITION_NONE;
+	}
 }

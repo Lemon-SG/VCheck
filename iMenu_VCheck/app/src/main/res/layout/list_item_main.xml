@@ -6,31 +6,69 @@
     android:paddingRight="10dp"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/iv_menu_img_item"
+    <RelativeLayout
+        android:id="@+id/rl_main_img"
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="-30dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/test_menu_img"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-40dp"
+        android:layout_marginTop="10dp">
 
-    <ImageView
-        android:id="@+id/iv_member_img_item"
+        <ImageView
+            android:id="@+id/iv_menu_img_item"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/default_menu"/>
+
+        <TextView
+            android:id="@+id/tv_detail_time"
+            android:layout_width="68dp"
+            android:layout_height="24dp"
+            android:text=""
+            android:textSize="10sp"
+            android:padding="5dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="left|center_vertical"
+            android:textColor="@color/white"
+            android:background="@drawable/ic_bookmark_black_36dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_gravity="right"
-        android:layout_marginRight="15dp"
-        android:scaleType="fitXY"/>
+        android:layout_marginRight="15dp">
+
+        <TextView
+            android:id="@+id/tv_main_member_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/transparent_whiteA0"
+            android:textSize="12sp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="center_vertical"
+            android:text=""/>
+
+        <ImageView
+            android:id="@+id/iv_member_img_item"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:padding="1dp"
+            android:background="@drawable/bg_member_border"
+            android:src="@drawable/default_member"
+            android:scaleType="fitXY"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:layout_marginTop="10dp"
-        android:textSize="18sp"
-        android:textColor="@color/black"
+        android:layout_marginTop="5dp"
+        android:textSize="16sp"
+        android:textColor="@color/main_black_title"
         android:text="13款烤鸟 刺身打造东瀛风情宵夜 千和日料双人菜单"/>
 
     <RelativeLayout
@@ -38,28 +76,14 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tv_store_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:background="@color/gray_ddd"
-            android:textColor="@color/gray_b3"
-            android:text="八府庄"
-            android:layout_centerVertical="true"
-            android:padding="3dp"
-            android:layout_marginTop="5dp"/>
-
-        <TextView
             android:id="@+id/tv_sub_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/tv_store_address"
             android:singleLine="true"
-            android:textSize="15sp"
-            android:textColor="@color/gray_b3"
+            android:textSize="14sp"
+            android:textColor="@color/main_gray_title_sub"
             android:text="沪上难得的日料深夜食堂"
             android:layout_marginTop="5dp"/>
     </RelativeLayout>
@@ -71,45 +95,46 @@
         android:layout_marginTop="10dp">
 
         <TextView
+            android:id="@+id/tv_menu_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/main_org_price"
+            android:text=""/>
+
+        <TextView
             android:id="@+id/tv_special_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="17sp"
+            android:textSize="16sp"
+            android:layout_toLeftOf="@+id/tv_price_menu_unit"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:textColor="@color/orange_red"
+            android:textColor="@color/main_org_price"
             android:text="168"/>
 
         <TextView
             android:id="@+id/tv_price_menu_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/tv_special_price"
-            android:textColor="@color/orange_red"
+            android:textSize="10sp"
+            android:paddingBottom="2dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@+id/tv_special_price"
+            android:textColor="@color/main_org_price"
             android:text="元/份"/>
 
         <TextView
             android:id="@+id/tv_original_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/tv_price_menu_unit"
+            android:textSize="10sp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/tv_special_price"
             android:layout_centerVertical="true"
-            android:textColor="@color/gray_b3"
+            android:textColor="@color/main_gray_origin_price"
             android:text="198元"/>
-
-        <TextView
-            android:id="@+id/tv_menu_stock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:textColor="@color/orange_red"
-            android:text="仅剩6份"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -123,12 +148,12 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="1.5dp"
-            android:background="@color/black"/>
+            android:background="@color/main_black_driver"/>
 
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="1.5dp"
-            android:background="@color/black"/>
+            android:background="@color/main_black_driver"/>
     </LinearLayout>
 </LinearLayout>

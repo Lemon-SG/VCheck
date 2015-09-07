@@ -3,7 +3,7 @@
     android:id="@+id/top_bar"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:background="@color/top_black"
+    android:background="@color/black"
     android:orientation="vertical" >
 
     <!-- 头部 -->

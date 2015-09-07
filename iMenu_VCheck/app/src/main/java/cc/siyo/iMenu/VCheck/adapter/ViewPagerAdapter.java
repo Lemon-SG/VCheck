@@ -10,7 +10,7 @@ import android.view.View;
 import cc.siyo.iMenu.VCheck.activity.DetailActivity;
 
 /**
- * 店长推荐viewPager适配器
+ * viewPager适配器
  * 
  * @author shang_guan
  * 

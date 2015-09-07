@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:textColor="@color/black"
+        android:textColor="@color/light_gray_text_color"
         android:gravity="center_horizontal"
-        android:text="─── •  I M E N U  • ───"/>
+        android:text="─── •  知味  • ───"/>
 
 </LinearLayout>

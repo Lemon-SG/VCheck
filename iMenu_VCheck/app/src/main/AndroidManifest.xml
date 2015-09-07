@@ -38,6 +38,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
 
+
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <!-- 这个权限用于进行网络定位-->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -64,27 +65,29 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <!--百度地图server声明-->
-        <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote" >
-            <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2" >
-                </action>
-            </intent-filter>
-        </service>
-        <!--key:开发者申请的key-->
-        <meta-data
-            android:name="com.baidu.lbsapi.API_KEY"
-            android:value="Tusy1r4BLiZrRKCohpydhwGS" />
+
+        <!--&lt;!&ndash;百度地图server声明&ndash;&gt;-->
+        <!--<service-->
+            <!--android:name="com.baidu.location.f"-->
+            <!--android:enabled="true"-->
+            <!--android:process=":remote" >-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.baidu.location.service_v2.2" >-->
+                <!--</action>-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+        <!--&lt;!&ndash;key:开发者申请的key&ndash;&gt;-->
+        <!--<meta-data-->
+            <!--android:name="com.baidu.lbsapi.API_KEY"-->
+            <!--android:value="Tusy1r4BLiZrRKCohpydhwGS" />-->
+
+            <!--android:launchMode="singleTask"-->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.PageIndicatorDefaults">
-
-        </activity>
-        <activity android:name=".activity.MineActivity"/>
+            android:theme="@style/Theme.PageIndicatorDefaults"/>
+        <activity android:name=".activity.MineActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.DetailActivity"
             android:theme="@style/Theme.PageIndicatorDefaults"/>
@@ -110,11 +113,17 @@
         <activity android:name=".activity.VoucherListActivity"/>
         <activity android:name=".activity.setting.PushSettingActivity"/>
         <activity android:name=".activity.MapActivity"/>
+        <activity android:name=".activity.LaunchIndexActivity"/>
+        <activity android:name=".activity.WebViewActivity"/>
+        <activity android:name=".activity.RegWxSinaActivity"/>
+        <activity android:name=".activity.VideoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"/>
         <activity android:name=".activity.OrderConfirmActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="wx79252ca0921c523d"/><!-- 微信demo：wxf2f565574a968187-->
+                <data android:scheme="wx14b6df2a2946b753"/><!-- 微信demo：wxf2f565574a968187-->
             </intent-filter>
         </activity>
         <activity
@@ -124,7 +133,8 @@
             android:theme="@android:style/Theme.Translucent"/>
 
 
-        <activity android:name=".activity.Launch">
+        <activity android:name=".activity.Launch"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -315,6 +325,7 @@
         </receiver>
         /**************************** 信鸽配置↑ ***************************/
 
+        <service android:name=".server.LocationSvc" />
     </application>
 
 </manifest>

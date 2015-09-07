@@ -2,10 +2,10 @@ package cc.siyo.iMenu.VCheck.activity;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import net.tsz.afinal.FinalBitmap;
@@ -16,6 +16,7 @@ import java.util.List;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.adapter.ViewPagerAdapter;
 import cc.siyo.iMenu.VCheck.model.ArticleImage;
+import cc.siyo.iMenu.VCheck.util.ScreenUtils;
 
 /**
  * Created by Lemon on 2015/6/29 14:13.
@@ -39,8 +40,8 @@ public class MenuBigImgViewPagerActivity extends BaseActivity {
     @Override
     public int getContentView() {
         finalBitmap = FinalBitmap.create(this);
-        finalBitmap.configLoadingImage(R.drawable.test_menu_img);
-        finalBitmap.configLoadfailImage(R.drawable.test_menu_img);
+        finalBitmap.configLoadingImage(R.mipmap.default_menu);
+        finalBitmap.configLoadfailImage(R.mipmap.default_menu);
         return R.layout.activity_menu_bigimg;
     }
 
@@ -61,8 +62,15 @@ public class MenuBigImgViewPagerActivity extends BaseActivity {
                         List<View> mViewList = new ArrayList<>();
                         for (int i = 0; i < articleImageList.size(); i++) {
                             LayoutInflater inflater = getLayoutInflater();
-                            View view = inflater.inflate(R.layout.layout_detail_viewpager_item, null);
+                            View view = inflater.inflate(R.layout.layout_viewpager_item, null);
                             ImageView iv_viewpager_img = (ImageView) view.findViewById(R.id.iv_viewpager_img);
+
+                            //获取16:9尺寸的图片宽度，距离屏幕两侧各10dp
+                            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ScreenUtils.getImageParam(context, 0);
+                            iv_viewpager_img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            iv_viewpager_img.setLayoutParams(layoutParams);
+
+
                             finalBitmap.display(iv_viewpager_img, articleImageList.get(i).image.source);
                             view.setOnClickListener(new View.OnClickListener() {
                                 @Override

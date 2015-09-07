@@ -135,12 +135,20 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void initData() {
         tv_order_confirm_title.setText(orderInfo.menu.menu_name);
-        tv_order_confirm_price.setText(orderInfo.menu.price.special_price == "" ? orderInfo.menu.price.original_price : orderInfo.menu.price.special_price + orderInfo.totalPrice.price_unit);
+        if(!StringUtils.isBlank(orderInfo.menu.price.special_price) && !orderInfo.menu.price.special_price.equals("0.0")) {
+            tv_order_confirm_price.setText(orderInfo.menu.price.special_price + orderInfo.totalPrice.price_unit);
+        } else {
+            tv_order_confirm_price.setText(orderInfo.menu.price.original_price + orderInfo.totalPrice.price_unit);
+        }
+        if(!StringUtils.isBlank(orderInfo.totalPrice.special_price) && !orderInfo.totalPrice.special_price.equals("0.0")) {
+            tv_order_confirm_total_price.setText(orderInfo.totalPrice.special_price + orderInfo.totalPrice.price_unit);
+            tv_order_confirm_needPay_price.setText(orderInfo.totalPrice.special_price);
+        } else {
+            tv_order_confirm_total_price.setText(orderInfo.totalPrice.original_price + orderInfo.totalPrice.price_unit);
+            tv_order_confirm_needPay_price.setText(orderInfo.totalPrice.original_price);
+        }
         tv_order_confirm_count.setText(orderInfo.menu.count);
-        tv_order_confirm_total_price.setText(orderInfo.totalPrice.special_price == "" ? orderInfo.totalPrice.original_price : orderInfo.totalPrice.special_price + orderInfo.totalPrice.price_unit);
-        //TODO 还需支付金额应为合计-优惠券金额，暂无优惠券，后续完善
         tv_order_confirm_need_pay.setText(tv_order_confirm_total_price.getText().toString());
-        tv_order_confirm_needPay_price.setText(orderInfo.totalPrice.special_price == "" ? orderInfo.totalPrice.original_price : orderInfo.totalPrice.special_price);
         if(orderInfo.voucherInfo != null) {
             if(!StringUtils.isBlank(orderInfo.voucherInfo.voucher_member_id)) {
                 //有使用优惠
@@ -157,17 +165,17 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
             //有选中的支付方式
             if(orderInfo.paymentInfo.payment_code.equals(Constant.PAMENT_CODE_ALIPAY)) {
                 //选中支付宝
-                iv_payment_Alipay_choose.setImageResource(R.drawable.ic_collect_red);
-                iv_payment_weChat_choose.setImageResource(R.drawable.ic_collect_black);
+                iv_payment_Alipay_choose.setImageResource(R.drawable.ic_push_open_checked);
+                iv_payment_weChat_choose.setImageResource(R.drawable.ic_push_open_check);
             } else {
                 //选中微信支付
-                iv_payment_Alipay_choose.setImageResource(R.drawable.ic_collect_black);
-                iv_payment_weChat_choose.setImageResource(R.drawable.ic_collect_red);
+                iv_payment_Alipay_choose.setImageResource(R.drawable.ic_push_open_check);
+                iv_payment_weChat_choose.setImageResource(R.drawable.ic_push_open_checked);
             }
         } else {
             //无选中的支付方式
-            iv_payment_Alipay_choose.setImageResource(R.drawable.ic_collect_red);
-            iv_payment_weChat_choose.setImageResource(R.drawable.ic_collect_black);
+            iv_payment_Alipay_choose.setImageResource(R.drawable.ic_push_open_checked);
+            iv_payment_weChat_choose.setImageResource(R.drawable.ic_push_open_check);
         }
     }
 

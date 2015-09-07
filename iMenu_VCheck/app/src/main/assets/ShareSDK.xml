@@ -67,32 +67,16 @@
         AppKey = "7bcdc916168d"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
     
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
+        <!--RedirectUrl="http://www.sharesdk.cn"-->
     <SinaWeibo
         Id="1"
         SortId="1"
-        AppKey="568898243"
-        AppSecret="38a4f8204cc784f81f9f0daaf31e02e3"
-        RedirectUrl="http://www.sharesdk.cn"
-        ShareByAppClient="false"
-        Enable="true" />
-
-    <TencentWeibo
-        Id="2" 
-        SortId="2"
-        AppKey="801307650"
-        AppSecret="ae36f4ee3946e1cbb98d6965b0b2ff5c"
-        RedirectUri="http://sharesdk.cn"
-        Enable="true" />
-
-    <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
-    <QZone
-        Id="3"
-        SortId="3"
-        AppId="100371282"
-        AppKey="aed9b0303e3ed1e27bae87c33761161d"
+        AppKey="1996315039"
+        AppSecret="94ec5a65201d543395e0932fa22d007a"
+        RedirectUrl="http://192.168.100.100"
         ShareByAppClient="true"
         Enable="true" />
-    
+
     <!-- 
     	Wechat微信和WechatMoments微信朋友圈的appid是一样的；
     
@@ -108,24 +92,24 @@
     <Wechat
         Id="4"
         SortId="4"
-        AppId="wx79252ca0921c523d"
-        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        AppId="wx14b6df2a2946b753"
+        AppSecret="fd8d9ff4952252d02eb6c3de2451afad"
         BypassApproval="false"
         Enable="true" />
     
     <WechatMoments
         Id="5"
         SortId="5"
-        AppId="wx79252ca0921c523d"
-        AppSecret="64020361b8ec4c99936c0e3999a9f249"
-        BypassApproval="true"
+        AppId="wx14b6df2a2946b753"
+        AppSecret="fd8d9ff4952252d02eb6c3de2451afad"
+        BypassApproval="false"
         Enable="true" />
-        
+
 	<WechatFavorite
         Id="6"
         SortId="6"
-        AppId="wx4868b35061f87885"
-        AppSecret="64020361b8ec4c99936c0e3999a9f249"
+        AppId="wx14b6df2a2946b753"
+        AppSecret="fd8d9ff4952252d02eb6c3de2451afad"
         Enable="true" />
     
 	<!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->

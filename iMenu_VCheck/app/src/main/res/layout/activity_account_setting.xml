@@ -68,12 +68,12 @@
                 android:id="@+id/iv_member_icon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:padding="5dp"
-                android:scaleType="center"
-                android:background="@drawable/defult_headimg"
+                android:scaleType="centerInside"
+                android:padding="1dp"
+                android:background="@drawable/bg_member_border"
+                android:src="@drawable/default_member"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_member"/>
+                android:layout_centerVertical="true"/>
         </RelativeLayout>
 
         <TextView
@@ -270,6 +270,7 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/rlSettingSina"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="15dp">
@@ -300,6 +301,7 @@
             android:background="@color/gray_ddd"/>
 
         <RelativeLayout
+            android:id="@+id/rlSettinWeChat"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="15dp">

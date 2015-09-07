@@ -13,9 +13,10 @@
     <color name="orange_red">#FF5A00</color>
     <color name="gray_ddd">#ddd</color>
     <color name="green">#92b478</color>
+    <color name="green_deep">#27ae61</color>
     <color name="dark_red">#C00000</color>
     <color name="transparent_black20">#a0000000</color>
-    <color name="transparent_whiteA0">#a0DDDDDD</color>
+    <color name="transparent_whiteA0">#a0FFFFFF</color>
 
     <color name="deep_gray_text_color">#474747</color>
     <color name="light_gray_text_color">#A9A9A9</color>
@@ -58,4 +59,29 @@
     <color name="top_black">#1A1A1A</color>
     <color name="driver_up">#27292B</color>
     <color name="driver_down">#46484A</color>
+
+
+
+
+
+
+
+
+
+    <color name="main_black_title">#2C3038</color>
+    <color name="main_black_driver">#27292B</color>
+    <color name="main_gray_address">#97999C</color>
+    <color name="main_gray_address_bg">#EFEFEF</color>
+    <color name="main_gray_title_sub">#A0A2A5</color>
+    <color name="main_gray_origin_price">#BFC0C3</color>
+    <color name="main_org_price">#FF5A00</color>
+    <!--<color name="">#</color>-->
+    <!--<color name="">#</color>-->
+    <!--<color name="">#</color>-->
+    <!--<color name="">#</color>-->
+
+
+
+
+
 </resources>

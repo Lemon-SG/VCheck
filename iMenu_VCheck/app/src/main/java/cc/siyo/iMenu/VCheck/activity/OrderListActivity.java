@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -98,6 +99,7 @@ public class OrderListActivity extends BaseActivity {
         UploadAdapter();
 
         orderAdapter = new OrderAdapter(OrderListActivity.this, R.layout.list_item_order);
+        list_order.addFooterView((LayoutInflater.from(mContext)).inflate(R.layout.list_item_footview, null));
         list_order.setAdapter(orderAdapter);
         list_order.setOnLoadMoreListenter(new RefreshListView.OnLoadMoreListener() {
 
@@ -125,8 +127,6 @@ public class OrderListActivity extends BaseActivity {
         });
     }
 
-
-
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -146,12 +146,12 @@ public class OrderListActivity extends BaseActivity {
                                 MemberOrder memberOrder = new MemberOrder().parse(member_order_list.optJSONObject(i));
                                 memberOrderList.add(memberOrder);
                             }
+                            if(isPull) {
+                                orderAdapter.getDataList().clear();
+                            }
+                            orderAdapter.getDataList().addAll(memberOrderList);
+                            orderAdapter.notifyDataSetChanged();
                         }
-                        if(isPull) {
-                            orderAdapter.getDataList().clear();
-                        }
-                        orderAdapter.getDataList().addAll(memberOrderList);
-                        orderAdapter.notifyDataSetChanged();
                         if(jsonStatus.pageInfo != null) {
                             String more = jsonStatus.pageInfo.more;
                             if(more.equals("1")) {
@@ -340,13 +340,23 @@ public class OrderListActivity extends BaseActivity {
         Log.e(TAG, "resultCode ->" + Constant.RESULT_CODE_ORDER_DETAIL);
         if(requestCode == Constant.RESQUEST_CODE) {
             switch (resultCode) {
+                case Constant.RESULT_CODE_LOGIN:
                 case Constant.RESULT_CODE_ORDER_DETAIL:
-                    Log.e(TAG, "resultCode ->" + Constant.RESULT_CODE_ORDER_DETAIL);
+                    Log.e(TAG, "resultCode ->" + resultCode);
                     //返回当前页面，需要加载标石
                     UploadAdapter();
                     break;
             }
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
         }
     }
 }

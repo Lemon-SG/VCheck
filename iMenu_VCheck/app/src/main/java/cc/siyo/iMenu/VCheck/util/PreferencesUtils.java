@@ -31,7 +31,7 @@ import android.util.Log;
  */
 public class PreferencesUtils {
 
-    public static String PREFERENCE_NAME = "iMenuSelleerConfig";
+    public static String PREFERENCE_NAME = "VCheckConfig";
     
 
     /**

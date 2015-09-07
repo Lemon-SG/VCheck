@@ -3,10 +3,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <cc.siyo.iMenu.VCheck.view.TopBar
+        android:id="@+id/topbar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"/>
+
     <cc.siyo.iMenu.VCheck.view.stiky_scrollview.StickyScrollView
         android:id="@+id/ScrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_below="@+id/topbar"
         android:layout_above="@+id/driver_bottom"
         android:overScrollMode="never"
         android:fadingEdge="none"
@@ -17,12 +23,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <cc.siyo.iMenu.VCheck.view.TopBar
-                android:id="@+id/topbar"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:tag="sticky"/>
-
             <RelativeLayout
                 android:id="@+id/rl_detail_imgList"
                 android:layout_width="fill_parent"
@@ -31,7 +31,7 @@
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewpager_detail_imgList"
                     android:layout_width="fill_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="wrap_content" />
 
                 <LinearLayout
                     android:id="@+id/ll_viewpager_dian_detail_imgList"
@@ -41,13 +41,26 @@
                     android:layout_alignParentBottom="true"
                     android:gravity="center_horizontal|center_vertical"
                     android:orientation="horizontal"
-                    android:padding="10dp" />
+                    android:padding="15dp" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_detail_time"
+                android:layout_width="96dp"
+                android:layout_height="30dp"
+                android:text=""
+                android:padding="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="left|center_vertical"
+                android:textColor="@color/white"
+                android:background="@drawable/ic_bookmark_black_36dp"/>
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -62,25 +75,26 @@
                     android:id="@+id/tv_detail_stockAndTime"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/gray_ddd"
-                    android:textSize="14sp"
+                    android:textColor="@color/main_gray_title_sub"
+                    android:textSize="12sp"
                     android:layout_marginTop="10dp"
                     android:text=""/>
 
                 <TextView
+                    android:id="@+id/tv_detail_consume_tips"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/green"
-                    android:text="支持退款"/>
+                    android:textColor="@color/green_deep"
+                    android:text=""/>
 
                 <TextView
                     android:id="@+id/tv_detail_summary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/top_black"
-                    android:textSize="16sp"
+                    android:textColor="@color/main_gray_title_sub"
+                    android:textSize="14sp"
                     android:layout_marginTop="10dp"
                     android:text=""/>
 
@@ -93,16 +107,16 @@
                         android:id="@+id/tv_share_get_gift"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_share"
-                        android:drawablePadding="5dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/transparent_black20"
+                        android:drawableLeft="@mipmap/ic_share_black_18dp"
+                        android:drawablePadding="10dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"
                         android:background="@drawable/detail_share_btn_bg_shape"
-                        android:text="分享获取现金礼券"/>
+                        android:text="分享获取礼券"/>
 
                     <TextView
                         android:id="@+id/tv_detail_collect"
@@ -110,34 +124,118 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_toRightOf="@+id/tv_share_get_gift"
-                        android:drawableLeft="@drawable/ic_collect_black"
-                        android:drawablePadding="5dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="5dp"
-                        android:paddingBottom="5dp"
-                        android:textSize="16sp"
-                        android:textColor="@color/transparent_black20"
+                        android:drawableLeft="@mipmap/ic_favorite_black_18dp"
+                        android:drawablePadding="10dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textSize="12sp"
+                        android:textColor="@color/black"
                         android:background="@drawable/detail_share_btn_bg_shape"/>
                 </RelativeLayout>
             </LinearLayout>
 
-                <!--/** 只留一个分类，并隐藏*/-->
-                <cc.siyo.iMenu.VCheck.view.viewpager_indicator.TabPageIndicator
-                    android:id="@+id/indicator"
-                    android:layout_height="wrap_content"
-                    android:layout_width="fill_parent"
-                    android:background="@color/white"
-                    android:paddingRight="20dp"
-                    android:paddingLeft="20dp"
-                    android:paddingBottom="20dp"
-                    android:tag="sticky"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/white"
+                android:tag="sticky">
 
-                <cc.siyo.iMenu.VCheck.view.MyViewPager
-                    android:id="@+id/pager"
+                    <LinearLayout
+                        android:id="@+id/llDetailLight"
+                        android:layout_width="fill_parent"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvLightDriverTop"
+                            android:layout_width="fill_parent"
+                            android:layout_height="1.5dp"
+                            android:background="@color/top_black"/>
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="42dp"
+                            android:text="亮点"
+                            android:textSize="13sp"
+                            android:textColor="@color/black"
+                            android:gravity="center"/>
+
+                        <TextView
+                            android:id="@+id/tvLightDriverBottom"
+                            android:layout_width="fill_parent"
+                            android:layout_height="1.5dp"
+                            android:background="@color/top_black"/>
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llDetailMenu"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:background="@android:color/white"/>
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvMenuDriverTop"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1.5dp"
+                        android:background="@color/gray_ddd"/>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="42dp"
+                        android:text="菜单"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/tvMenuDriverBottom"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1.5dp"
+                        android:background="@color/gray_ddd"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llDetailNotice"
+                    android:layout_width="fill_parent"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvNoticeDriverTop"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1.5dp"
+                        android:background="@color/gray_ddd"/>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="42dp"
+                        android:text="须知"
+                        android:textSize="13sp"
+                        android:textColor="@color/black"
+                        android:gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/tvNoticeDriverBottom"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1.5dp"
+                        android:background="@color/gray_ddd"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <cc.siyo.iMenu.VCheck.view.MyViewPager
+                android:id="@+id/pager"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"/>
         </LinearLayout>
     </cc.siyo.iMenu.VCheck.view.stiky_scrollview.StickyScrollView>
 
@@ -154,6 +252,7 @@
         android:layout_height="wrap_content"
         android:background="#FFFFF9"
         android:padding="10dp"
+        android:layout_gravity="center_vertical"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
@@ -161,6 +260,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -204,17 +304,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="17sp"
-            android:textStyle="bold"
+            android:textSize="16sp"
             android:gravity="center"
-            android:layout_margin="5dp"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
+            android:padding="5dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.5"
-            android:text="CHECK NOW"
-            android:background="@color/orange_red"/>
+            android:text="立即支付"/>
     </LinearLayout>
 </RelativeLayout>

@@ -8,15 +8,26 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
+import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.XGPushRegisterResult;
 import com.tencent.android.tpush.XGPushShowedResult;
 import com.tencent.android.tpush.XGPushTextMessage;
 
+import cc.siyo.iMenu.VCheck.activity.CollectListActivity;
+import cc.siyo.iMenu.VCheck.activity.DetailActivity;
+import cc.siyo.iMenu.VCheck.activity.MineActivity;
+import cc.siyo.iMenu.VCheck.activity.OrderDetailActivity;
+import cc.siyo.iMenu.VCheck.activity.OrderListActivity;
+import cc.siyo.iMenu.VCheck.activity.VoucherListActivity;
+import cc.siyo.iMenu.VCheck.activity.setting.MessageActivity;
+import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.model.LinkPushParams;
 import cc.siyo.iMenu.VCheck.xg.common.NotificationService;
 import cc.siyo.iMenu.VCheck.xg.notification.XGNotification;
 
@@ -117,8 +128,8 @@ public class MessageReceiver extends XGPushBaseReceiver {
 			// APP自己处理通知被清除后的相关动作
 			text = "通知被清除 :" + message;
 		}
-		Toast.makeText(context, "广播接收到通知被点击:" + message.toString(),
-				Toast.LENGTH_SHORT).show();
+//		Toast.makeText(context, "广播接收到通知被点击:" + message.toString(),
+//				Toast.LENGTH_SHORT).show();
 		// 获取自定义key-value
 		String customContent = message.getCustomContent();
 		if (customContent != null && customContent.length() != 0) {
@@ -180,5 +191,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
 		Log.d(LogTag, text);
 		show(context, text);
 	}
+
+
 
 }

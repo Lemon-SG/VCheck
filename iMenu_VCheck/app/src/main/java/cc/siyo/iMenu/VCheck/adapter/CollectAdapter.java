@@ -76,15 +76,28 @@ public class CollectAdapter extends AbsAdapter<Article>{
         @Override
         public void updateData(final Article article, int position) {
             finalBitmap.display(iv_collect_menu, article.article_image.source);
-            if(!StringUtils.isBlank(article.menu_info.stock.menu_count) && article.menu_info.stock.menu_count != "0") {
-                tv_collect_status.setText("售卖中");
-                tv_collect_pay.setVisibility(View.VISIBLE);
-            } else {
-                tv_collect_status.setText("已售完");
-                tv_collect_pay.setVisibility(View.GONE);
+            switch (Integer.parseInt(article.menu_info.menu_status.menu_status_id)) {
+                case Constant.MENU_STATUS_OUT://已售罄
+                    tv_collect_status.setText(article.menu_info.menu_status.menu_status);
+                    tv_collect_pay.setVisibility(View.GONE);
+                    break;
+                case Constant.MENU_STATUS_OVER://已结束
+                    tv_collect_status.setText(article.menu_info.menu_status.menu_status);
+                    tv_collect_pay.setVisibility(View.GONE);
+                    break;
+                case Constant.MENU_STATUS_SALE://销售中
+                    tv_collect_status.setText("售卖中");
+                    tv_collect_pay.setVisibility(View.VISIBLE);
+                    break;
             }
             tv_collect_menu_name.setText(article.menu_info.menu_name);
-            tv_collect_menu_price.setText(article.menu_info.price.special_price + article.menu_info.price.price_unit);
+            if(!StringUtils.isBlank(article.menu_info.price.special_price)) {
+                //有促销价格
+                tv_collect_menu_price.setText(article.menu_info.price.special_price + article.menu_info.price.price_unit);
+            } else {
+                //无促销价格
+                tv_collect_menu_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
+            }
             tv_collect_pay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

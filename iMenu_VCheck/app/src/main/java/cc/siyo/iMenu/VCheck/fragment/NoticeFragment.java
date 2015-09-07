@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import cc.siyo.iMenu.VCheck.R;
+import cc.siyo.iMenu.VCheck.activity.DetailActivity;
 import cc.siyo.iMenu.VCheck.activity.MapActivity;
 import cc.siyo.iMenu.VCheck.model.ArticleContent;
 import cc.siyo.iMenu.VCheck.model.Store;
@@ -57,8 +59,8 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
     public int getContentView() {
         context = getActivity();
         finalBitmap = FinalBitmap.create(context);
-        finalBitmap.configLoadingImage(R.drawable.ic_member);
-        finalBitmap.configLoadfailImage(R.drawable.ic_member);
+        finalBitmap.configLoadingImage(R.drawable.default_member);
+        finalBitmap.configLoadfailImage(R.drawable.default_member);
         return R.layout.fram_notice;
     }
 
@@ -95,9 +97,9 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
             StringBuffer stringBuffer = new StringBuffer();
             for (int i = 0; i < tips.content.length; i++) {
                 if(i + 1 == tips.content.length) {
-                    stringBuffer.append(" · " + tips.content[i]);
+                    stringBuffer.append("· " + tips.content[i]);
                 } else {
-                    stringBuffer.append(" · " + tips.content[i] + "\n");
+                    stringBuffer.append("· " + tips.content[i] + "\n");
                 }
             }
             tv_notice1.setText(stringBuffer);
@@ -119,7 +121,9 @@ public class NoticeFragment extends BaseFragment implements View.OnClickListener
             case R.id.rl_notice_address:
                 //商家地址
                 Intent intent = new Intent(getActivity(), MapActivity.class);
-
+                intent.putExtra("lng", store.longitude_num);
+                intent.putExtra("lat", store.latitude_num);
+                intent.putExtra("storeName", store.store_name);
                 startActivity(intent);
                 break;
             case R.id.rl_notice_tel:

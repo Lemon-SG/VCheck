@@ -67,8 +67,8 @@ public class OrderWriteActivity extends BaseActivity implements View.OnClickList
     @ViewInject(id = R.id.tv_order_write_count_up)private TextView tv_order_write_count_up;
     /** 产品合计显示*/
     @ViewInject(id = R.id.tv_order_write_total_price)private TextView tv_order_write_total_price;
-    /** 立即登录按钮*/
-    @ViewInject(id = R.id.tv_order_write_login)private TextView tv_order_write_login;
+//    /** 立即登录按钮*/
+//    @ViewInject(id = R.id.tv_order_write_login)private TextView tv_order_write_login;
     /** 未登录时显示的layout*/
     @ViewInject(id= R.id.ll_order_write_login)private LinearLayout ll_order_write_login;
     /** 登录后显示的手机号layout*/
@@ -132,7 +132,7 @@ public class OrderWriteActivity extends BaseActivity implements View.OnClickList
         tv_orderWrite_submitOrder.setOnClickListener(this);
         tv_order_write_count_down.setOnClickListener(this);
         tv_order_write_count_up.setOnClickListener(this);
-        tv_order_write_login.setOnClickListener(this);
+//        tv_order_write_login.setOnClickListener(this);
         rl_order_write_phone.setOnClickListener(this);
         if(!StringUtils.isBlank(token)){
             //已登录
@@ -159,7 +159,7 @@ public class OrderWriteActivity extends BaseActivity implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length() == 6) {
+                if (s.length() == 6) {
                     Log.e(TAG, "验证码输入完");
                     tv_orderWrite_submitOrder.performClick();
                 }
@@ -176,11 +176,19 @@ public class OrderWriteActivity extends BaseActivity implements View.OnClickList
     private void updateData() {
         tv_order_write_count.setText(productCount + "");
         tv_order_write_title.setText(menu.menu_name);
-        unitPrice = Double.parseDouble(menu.price.special_price == "" ? menu.price.original_price : menu.price.special_price);
+        if(!StringUtils.isBlank(menu.price.special_price)) {
+            unitPrice = Double.parseDouble(menu.price.special_price);
+        } else {
+            unitPrice = Double.parseDouble(menu.price.original_price);
+        }
         tv_order_write_price.setText(unitPrice + menu.price.price_unit + "/" + menu.menu_unit.menu_unit);
         productCount = Integer.parseInt(menu.count);
         tv_order_write_total_price.setText(productCount * unitPrice + "" + menu.price.price_unit);
-        tv_price.setText(Double.parseDouble(totalPrice.special_price == "" ? totalPrice.original_price : totalPrice.special_price) + "");
+        if(!StringUtils.isBlank(totalPrice.special_price)) {
+            tv_price.setText(Double.parseDouble(totalPrice.special_price) + "");
+        } else {
+            tv_price.setText(Double.parseDouble(totalPrice.original_price) + "");
+        }
     }
 
     @Override
@@ -190,20 +198,28 @@ public class OrderWriteActivity extends BaseActivity implements View.OnClickList
                 //数量减,重新计算合计价格及底部合计
                 if(productCount == 1) {
                     //不可为0
-                    prompt("最少应订1" + article.menu_info.menu_unit.menu_unit);
+                    prompt("最少应订1份");
                 }else {
                     productCount--;
-                    UploadAdapter_editCart();
+                    if(!StringUtils.isBlank(token)) {
+                        UploadAdapter_editCart();
+                    } else {
+                        tv_price.setText(unitPrice * productCount + "");
+                        tv_order_write_count.setText(productCount + "");
+                        tv_order_write_total_price.setText(productCount * unitPrice + "" + article.menu_info.price.price_unit);
+                    }
                 }
                 break;
             case R.id.tv_order_write_count_up:
                 //数量加,重新计算合计价格及底部合计
                 productCount++;
-                UploadAdapter_editCart();
-                break;
-            case R.id.tv_order_write_login:
-                //立即登录
-
+                if(!StringUtils.isBlank(token)) {
+                    UploadAdapter_editCart();
+                } else {
+                    tv_price.setText(unitPrice * productCount + "");
+                    tv_order_write_count.setText(productCount + "");
+                    tv_order_write_total_price.setText(productCount * unitPrice + "" + article.menu_info.price.price_unit);
+                }
                 break;
             case R.id.rl_order_write_phone:
                 //修改手机号

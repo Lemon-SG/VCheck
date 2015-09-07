@@ -305,7 +305,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_collect_black"/>
+                    android:src="@drawable/ic_push_open_check"/>
             </RelativeLayout>
 
             <TextView
@@ -340,7 +340,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/ic_collect_red"/>
+                    android:src="@drawable/ic_push_open_checked"/>
             </RelativeLayout>
 
             <TextView

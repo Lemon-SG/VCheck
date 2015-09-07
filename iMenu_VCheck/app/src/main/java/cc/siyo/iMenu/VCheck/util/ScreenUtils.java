@@ -2,7 +2,10 @@ package cc.siyo.iMenu.VCheck.util;
 
 import android.content.Context;
 import android.view.Display;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * ScreenUtils
@@ -52,10 +55,10 @@ public class ScreenUtils {
         private int width;
         private int height;
 
-        ScreenResolution() {
+        public ScreenResolution() {
         }
 
-        ScreenResolution(int width, int height) {
+        public ScreenResolution(int width, int height) {
             this.width = width;
             this.height = height;
         }
@@ -67,5 +70,18 @@ public class ScreenUtils {
         public int getWidth() {
             return width;
         }
+    }
+
+    /***
+     * 根据屏幕宽度返回图片的宽高layoutParam值（16:9）
+     * @param widthMarginDp 图片距离屏幕两侧的宽度总和
+     * @return
+     */
+    public static ViewGroup.LayoutParams getImageParam(Context context, int widthMarginDp) {
+        ScreenResolution screenResolution = getScreenResolution(context);
+        int width = (screenResolution.getWidth() - ScreenUtils.dpToPxInt(context, widthMarginDp));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(width, (int) (width * 0.5625));
+//        layoutParams.setMargins(0, ScreenUtils.dpToPxInt(context, 10), 0, -(ScreenUtils.dpToPxInt(context, 40)));
+        return  layoutParams;
     }
 }

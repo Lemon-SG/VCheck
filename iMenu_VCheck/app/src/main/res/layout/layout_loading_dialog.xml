@@ -3,22 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ImageView
-        android:id="@+id/loadingImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_centerInParent="true" />
+    <!--<ImageView-->
+        <!--android:id="@+id/loadingImageView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="10dp"-->
+        <!--android:layout_centerInParent="true" />-->
 
+        <!--android:layout_below="@id/loadingImageView"-->
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/loadingImageView"
         android:layout_marginTop="5dp"
         android:padding="5dp"
-        android:textSize="15sp"
-        android:textColor="#888888"
+        android:textSize="14sp"
+        android:textColor="@color/white"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

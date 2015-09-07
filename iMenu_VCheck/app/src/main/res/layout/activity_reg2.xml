@@ -19,33 +19,29 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/reg_num_bg_black_shape"
+            android:background="@drawable/reg_num_bg_gray_shape"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:textColor="@color/black"
+            android:textColor="@color/gray_87"
             android:text="1"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
             android:textColor="@color/black"
-            android:text=".........."/>
+            android:text="· · · · · · · · ·"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/reg_num_bg_org_shape"
+            android:background="@drawable/reg_num_bg_green_shape"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
-            android:textColor="@color/orange_red"
+            android:textColor="@color/green"
             android:text="2"/>
     </LinearLayout>
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/gray_b3"/>
 
     <EditText
         android:id="@+id/et_reg2_pass"

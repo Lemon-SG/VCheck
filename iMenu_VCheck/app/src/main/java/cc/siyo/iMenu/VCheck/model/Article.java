@@ -20,12 +20,6 @@ public class Article extends BaseModel<Article>{
     public String sub_title;
     /** 摘要*/
     public String summary;
-//    /** 解析时直接取出ID：菜单ID*/
-//    public String menu_id;
-//    /** 解析时直接取出ID：商家ID*/
-//    public String store_id;
-//    /** 解析时直接取出ID：会员ID*/
-//    public String member_id;
     /** 菜单实体*/
     public Menu menu_info;
     /** 商家实体*/
@@ -41,7 +35,7 @@ public class Article extends BaseModel<Article>{
     /** 收藏实体类*/
     public Collection collection_info;
     /** 分享实体类*/
-    public Share share_info;
+    public ShareInvite share_info;
     /** 文章亮点实体类*/
     public List<ArticleContent> article_content_list;
     /** 文章菜单列表*/
@@ -56,6 +50,8 @@ public class Article extends BaseModel<Article>{
     public String article_tips;
     /** 订单实体*/
     public OrderInfo orderInfo;
+    /** 消费提示列表*/
+    public String consume_tips_list;
 
     @Override
     public Article parse(JSONObject jsonObject) {
@@ -65,15 +61,6 @@ public class Article extends BaseModel<Article>{
             title = jsonObject.optString("title");
             sub_title = jsonObject.optString("sub_title");
             summary = jsonObject.optString("summary");
-//            if(jsonObject.optJSONObject("menu_info") != null && jsonObject.optJSONObject("menu_info").length() > 0){
-//                menu_id = jsonObject.optJSONObject("menu_info").optString("menu_id");
-//            }
-//            if(jsonObject.optJSONObject("store_info") != null && jsonObject.optJSONObject("store_info").length() > 0){
-//                store_id = jsonObject.optJSONObject("store_info").optString("store_id");
-//            }
-//            if(jsonObject.optJSONObject("member_info") != null && jsonObject.optJSONObject("member_info").length() > 0){
-//                member_id = jsonObject.optJSONObject("member_info").optString("member_id");
-//            }
             menu_info = new Menu().parse(jsonObject.optJSONObject("menu_info"));
             store_info = new Store().parse(jsonObject.optJSONObject("store_info"));
             member_info = new Member().parse(jsonObject.optJSONObject("member_info"));
@@ -96,9 +83,9 @@ public class Article extends BaseModel<Article>{
             if(jsonObject.optJSONObject("order_info") != null && jsonObject.optJSONObject("order_info").length() > 0){
                 orderInfo = new OrderInfo().parse(jsonObject.optJSONObject("order_info"));
             }
-//            if(jsonObject.optJSONObject("share_info") != null && jsonObject.optJSONObject("share_info").length() > 0){
-//                share_info = new Share().parse(jsonObject.optJSONObject("share_info"));
-//            }
+            if(jsonObject.optJSONObject("share_info") != null && jsonObject.optJSONObject("share_info").length() > 0){
+                share_info = new ShareInvite().parse(jsonObject.optJSONObject("share_info"));
+            }
             if(jsonObject.optJSONArray("article_content_list") != null && jsonObject.optJSONArray("article_content_list").length() > 0){
                 article_content_list = new ArrayList<>();
                 for (int i = 0; i < jsonObject.optJSONArray("article_content_list").length(); i++) {
@@ -117,6 +104,14 @@ public class Article extends BaseModel<Article>{
             article_content = jsonObject.optString("article_content");
             article_menu = jsonObject.optString("article_menu");
             article_tips = jsonObject.optString("article_tips");
+            if(jsonObject.optJSONArray("consume_tips_list") != null && jsonObject.optJSONArray("consume_tips_list").length() > 0) {
+                StringBuffer stringBuffer = new StringBuffer("");
+                for (int i = 0; i < jsonObject.optJSONArray("consume_tips_list").length(); i++) {
+                    stringBuffer.append(jsonObject.optJSONArray("consume_tips_list").opt(i));
+                    stringBuffer.append("  ");
+                }
+                consume_tips_list = stringBuffer.toString();
+            }
             return this;
         }
         return null;

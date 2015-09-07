@@ -6,12 +6,14 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 import cc.siyo.iMenu.VCheck.R;
-import cc.siyo.iMenu.VCheck.util.Util;
+import cc.siyo.iMenu.VCheck.activity.DetailActivity;
 
 public class StickyScrollView extends ScrollView {
 
@@ -19,12 +21,14 @@ public class StickyScrollView extends ScrollView {
 
 	private static final String STICKY = "sticky";
 	private View mCurrentStickyView;
-	private Drawable mShadowDrawable;
+//	private Drawable mShadowDrawable;
 	private List<View> mStickyViews;
 	private int mStickyViewTopOffset;
 	private int defaultShadowHeight = 10;
 	private float density;
 	private boolean redirectTouchToStickyView;
+
+	private Context mContext;
 
 	/**
 	 * 当点击Sticky的时候，实现某些背景的渐变
@@ -39,7 +43,6 @@ public class StickyScrollView extends ScrollView {
 				int right = mCurrentStickyView.getRight();
 				int bottom = getScrollY()
 						+ (mCurrentStickyView.getHeight() + mStickyViewTopOffset);
-
 				invalidate(left, top, right, bottom);
 			}
 			postDelayed(this, 16);
@@ -52,8 +55,9 @@ public class StickyScrollView extends ScrollView {
 
 	public StickyScrollView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		mShadowDrawable = context.getResources().getDrawable(
-				R.drawable.sticky_shadow_default);
+		mContext = context;
+//		mShadowDrawable = context.getResources().getDrawable(
+//				R.drawable.sticky_shadow_default);
 		mStickyViews = new LinkedList<View>();
 		density = context.getResources().getDisplayMetrics().density;
 	}
@@ -84,7 +88,7 @@ public class StickyScrollView extends ScrollView {
 		super.onLayout(changed, l, t, r, b);
 		if (changed) {
 			findViewByStickyTag((ViewGroup) getChildAt(0));
-            Util.println(TAG, "findViewByStickyTag");
+//			Log.e(TAG, "findViewByStickyTag");
 		}
 		showStickyView();
 	}
@@ -94,9 +98,9 @@ public class StickyScrollView extends ScrollView {
 		super.onScrollChanged(l, t, oldl, oldt);
 		showStickyView();
 //		if(t > oldt){
-//			System.out.println("上");
+//			Log.e(TAG, "上");
 //		}else{
-//			System.out.println("下");
+//			Log.e(TAG, "下");
 //		}
 	}
 
@@ -152,25 +156,27 @@ public class StickyScrollView extends ScrollView {
 	protected void dispatchDraw(Canvas canvas) {
 		super.dispatchDraw(canvas);
 		if (mCurrentStickyView != null) {
+//			mCurrentStickyView.setBackgroundColor(getResources().getColor(R.color.top_black));
 			// 先保存起来
 			canvas.save();
             // 将坐标原点移动到(0, getScrollY() + mStickyViewTopOffset)
 			canvas.translate(0, getScrollY() + mStickyViewTopOffset);
 
-			if (mShadowDrawable != null) {
-				int left = 0;
-				int top = mCurrentStickyView.getHeight() + mStickyViewTopOffset;
-				int right = mCurrentStickyView.getWidth();
-				int bottom = top + (int) (density * defaultShadowHeight + 0.5f);
-				mShadowDrawable.setBounds(left, top, right, bottom);
-				mShadowDrawable.draw(canvas);
-			}
+//			if (mShadowDrawable != null) {
+//				int left = 0;
+//				int top = mCurrentStickyView.getHeight() + mStickyViewTopOffset;
+//				int right = mCurrentStickyView.getWidth();
+//				int bottom = top + (int) (density * defaultShadowHeight + 0.5f);
+//				mShadowDrawable.setBounds(left, top, right, bottom);
+//				mShadowDrawable.draw(canvas);
+//			}
 
 			canvas.clipRect(0, mStickyViewTopOffset,
 					mCurrentStickyView.getWidth(),
 					mCurrentStickyView.getHeight());
 
 			mCurrentStickyView.draw(canvas);
+//			mCurrentStickyView.setBackgroundColor(getResources().getColor(R.color.white));
 
 			// 重置坐标原点参数
 			canvas.restore();

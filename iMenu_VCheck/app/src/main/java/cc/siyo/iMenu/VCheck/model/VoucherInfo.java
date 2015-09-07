@@ -21,7 +21,7 @@ public class VoucherInfo extends BaseModel<VoucherInfo> {
     public String begin_date;
     /** 结束时间*/
     public String end_date;
-    /** 优惠券状态(1-未使用/2-已使用/0-无效)*/
+    /** 优惠券状态((1-未使用/2-已使用/0-无效/12-未使用未开始/13-未使用过期))*/
     public String voucher_status;
     /** 金额*/
     public String discount;

@@ -53,4 +53,13 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:background="@color/gray_ddd"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:padding="30dp"
+        android:textColor="@color/light_gray_text_color"
+        android:gravity="center_horizontal"
+        android:text="─── •  知味  • ───"/>
 </LinearLayout>

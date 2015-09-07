@@ -16,6 +16,7 @@ import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import cc.siyo.iMenu.VCheck.MyApplication;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.activity.setting.AboutUsActivity;
@@ -29,6 +30,7 @@ import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Member;
 import cc.siyo.iMenu.VCheck.model.PushInfo;
 import cc.siyo.iMenu.VCheck.model.ShareInvite;
+import cc.siyo.iMenu.VCheck.model.ThirdPartInfo;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.util.Util;
@@ -57,8 +59,8 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     @ViewInject(id = R.id.ll_about)private LinearLayout ll_about;
     /** 应用设置按钮*/
     @ViewInject(id = R.id.ll_app_set)private LinearLayout ll_app_set;
-    /** 启动画面进入*/
-    @ViewInject(id = R.id.tv_open_launch)private TextView tv_open_launch;
+//    /** 启动画面进入*/
+//    @ViewInject(id = R.id.tv_open_launch)private TextView tv_open_launch;
     /** 昵称显示*/
     @ViewInject(id = R.id.tv_mine_nickName)private TextView tv_mine_nickName;
     /** 头像*/
@@ -70,9 +72,9 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     /** 收藏数量显示*/
     @ViewInject(id = R.id.tv_collect_count)private TextView tv_collect_count;
     /** 消息中心*/
-    @ViewInject(id = R.id.tv_message_center)private TextView tv_message_center;
+    @ViewInject(id = R.id.tv_message_center)private LinearLayout tv_message_center;
     /** 邀请好友*/
-    @ViewInject(id = R.id.tv_share)private TextView tv_share;
+    @ViewInject(id = R.id.tv_share)private LinearLayout tv_share;
     /** A FINAL框架的HTTP请求工具 */
     private FinalHttp finalHttp;
     /** 封装参数的键值对 */
@@ -89,11 +91,13 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
     private PushInfo pushInfo;
     /** 礼券总数量*/
     private String voucherCount;
+    /** 是否绑定微信和微博*/
+    private ThirdPartInfo thirdpart_info;
 
     @Override
     public int getContentView() {
         imageLoader = ImageLoader.getInstance();
-        option = MyApplication.getDisplayImageOptions(context, 50, R.drawable.test_member_img);
+        option = MyApplication.getDisplayImageOptions(context, 50, R.drawable.default_member);
         return R.layout.activity_mine;
     }
 
@@ -108,7 +112,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
         ll_about.setOnClickListener(this);
         ll_app_set.setOnClickListener(this);
         llVoucherList.setOnClickListener(this);
-        tv_open_launch.setOnClickListener(this);
+//        tv_open_launch.setOnClickListener(this);
         tv_message_center.setOnClickListener(this);
         tv_share.setOnClickListener(this);
         topbar.settitleViewText("我的账户");
@@ -126,7 +130,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
         if(StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))
             || PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN).equals("null")){
             //未登录状态
-            tv_mine_nickName.setText("立即登录赢礼券");
+            tv_mine_nickName.setText("登录/注册享丰富礼券");
         }else{
             //已登录状态
             UploadAdapter();
@@ -173,9 +177,13 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                             }
                             if(data.optJSONObject("share_info") != null){//分享详情：邀请码
                                 shareInvite = new ShareInvite().parse(data.optJSONObject("share_info"));
+                                PreferencesUtils.putString(context, Constant.KEY_INVITE_CODE, shareInvite.invite_code);
                             }
                             if(data.optJSONObject("push_info") != null){//推送设置开关
                                 pushInfo = new PushInfo().parse(data.optJSONObject("push_info"));
+                            }
+                            if(data.optJSONObject("thirdpart_info") != null) {
+                                thirdpart_info = new ThirdPartInfo().parse(data.optJSONObject("thirdpart_info"));
                             }
                         }
                     }
@@ -273,7 +281,8 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                     Log.e(TAG, "跳转个人设置");
                     Intent intent_accountSetting = new Intent(MineActivity.this, AccountSettingActivity.class);
                     intent_accountSetting.putExtra("MEMBER", member);
-                    startActivityForResult(intent_accountSetting, Constant.RESQUEST_CODE);
+                    intent_accountSetting.putExtra("thirdpart_info", thirdpart_info);
+                    MineActivity.this.startActivityForResult(intent_accountSetting, Constant.RESQUEST_CODE);
                 }
                 break;
             case R.id.ll_feedback://跳转意见反馈
@@ -297,9 +306,9 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
             case R.id.ll_about://关于我们
                 startActivity(new Intent(MineActivity.this, AboutUsActivity.class));
                 break;
-            case R.id.tv_open_launch://启动画面进入
-//                startActivity(new Intent(MineActivity.this, Launch.class));
-                break;
+//            case R.id.tv_open_launch://启动画面进入
+//                startActivity(new Intent(MineActivity.this, VideoActivity.class));
+//                break;
             case R.id.ll_app_set://应用设置
                 Intent intent_app = new Intent(MineActivity.this, AppSetActivity.class);
                 intent_app.putExtra("pushInfo", pushInfo);
@@ -323,7 +332,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                 if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
                     Intent intent = new Intent(MineActivity.this, VoucherListActivity.class);
                     intent.putExtra(Constant.INTENT_VOUCHER_TYPE, Constant.INTENT_VOUCHER_SHOW);
-                    intent.putExtra("voucherCount", voucherCount);
+                    intent.putExtra("voucherCount", Integer.parseInt(voucherCount));
                     startActivity(intent);
                 }else{prompt("请先登录");}
                 break;
@@ -345,8 +354,11 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                     break;
                 case Constant.RESULT_CODE_LOGOUT:
                     //退出登录
-                    tv_mine_nickName.setText("立即登录赢礼券");
-                    iv_user_headImg.setImageResource(R.drawable.ic_member);
+                    tv_mine_nickName.setText("登录/注册享丰富礼券");
+                    tv_order_count.setVisibility(View.INVISIBLE);
+                    tv_collect_count.setVisibility(View.INVISIBLE);
+                    tv_coupon_count.setVisibility(View.INVISIBLE);
+                    iv_user_headImg.setImageResource(R.drawable.default_member);
                     break;
             }
         }

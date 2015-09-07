@@ -7,13 +7,16 @@
         android:id="@+id/ivLaunch"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_launch"/>
 
     <TextView
         android:id="@+id/tv_version"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:text=""
-        android:layout_marginBottom="80dp"
+        android:text="©2015 Siyo Technology Co.,Ltd"
+        android:textColor="@color/gray_87"
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp"
         android:gravity="bottom|center_horizontal"/>
 </FrameLayout>

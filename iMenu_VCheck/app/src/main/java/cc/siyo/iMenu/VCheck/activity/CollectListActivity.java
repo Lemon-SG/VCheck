@@ -1,9 +1,11 @@
 package cc.siyo.iMenu.VCheck.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import net.tsz.afinal.FinalHttp;
@@ -92,11 +94,12 @@ public class CollectListActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        list_collect.addFooterView((LayoutInflater.from(context)).inflate(R.layout.list_item_footview, null));
         collectAdapter = new CollectAdapter(CollectListActivity.this, R.layout.list_item_collect);
         list_collect.setAdapter(collectAdapter);
 
-        page = Constant.PAGE;
         finalHttp = new FinalHttp();
+        page = Constant.PAGE;
         isPull = true;
         UploadAdapter();
 
@@ -139,8 +142,8 @@ public class CollectListActivity extends BaseActivity {
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         JSONObject data = jsonStatus.data;
                         JSONArray article_list = data.optJSONArray("article_list");
+                        articleList = new ArrayList<>();
                         if(article_list != null && article_list.length() > 0) {
-                            articleList = new ArrayList<>();
                             for (int i = 0; i < article_list.length(); i++) {
                                 Article article = new Article().parse(article_list.optJSONObject(i));
                                 articleList.add(article);
@@ -209,7 +212,7 @@ public class CollectListActivity extends BaseActivity {
         ajaxParams.put("device_type", Constant.DEVICE_TYPE);
         ajaxParams.put("jsonText", makeJsonText());
         Log.e(TAG, Constant.REQUEST + API.GET_COLLECTION_PRODUCT_LIST + "\n" + ajaxParams.toString());
-        finalHttp.post(API.server,  ajaxParams, new AjaxCallBack<String>() {
+        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
@@ -234,15 +237,15 @@ public class CollectListActivity extends BaseActivity {
             @Override
             public void onSuccess(String t) {
                 super.onSuccess(t);
-                if(!StringUtils.isBlank(t)){
-                    Log.e(TAG, Constant.RESULT + API.GET_COLLECTION_PRODUCT_LIST + "\n" +  t.toString());
+                if (!StringUtils.isBlank(t)) {
+                    Log.e(TAG, Constant.RESULT + API.GET_COLLECTION_PRODUCT_LIST + "\n" + t.toString());
                     JSONStatus jsonStatus = BaseJSONData(t);
-                    if(jsonStatus.isSuccess){
+                    if (jsonStatus.isSuccess) {
                         handler.sendMessage(handler.obtainMessage(GET_COLLECT_LIST_SUCCESS, BaseJSONData(t)));
-                    }else{
+                    } else {
                         handler.sendMessage(handler.obtainMessage(GET_COLLECT_LIST_FALSE, BaseJSONData(t)));
                     }
-                }else{
+                } else {
                     prompt(getResources().getString(R.string.request_no_data));
                 }
             }
@@ -259,7 +262,7 @@ public class CollectListActivity extends BaseActivity {
         ajaxParams.put("device_type", Constant.DEVICE_TYPE);
         ajaxParams.put("jsonText", makeJsonText(articleId));
         Log.e(TAG, Constant.REQUEST + API.EDIT_COLLECTION_PRODUCT + "\n" + ajaxParams.toString());
-        finalHttp.post(API.server,  ajaxParams, new AjaxCallBack<String>() {
+        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
             @Override
             public void onFailure(Throwable t, int errorNo, String strMsg) {
                 super.onFailure(t, errorNo, strMsg);
@@ -283,15 +286,15 @@ public class CollectListActivity extends BaseActivity {
             @Override
             public void onSuccess(String t) {
                 super.onSuccess(t);
-                if(!StringUtils.isBlank(t)){
-                    Log.e(TAG, Constant.RESULT + API.EDIT_COLLECTION_PRODUCT + "\n" +  t.toString());
+                if (!StringUtils.isBlank(t)) {
+                    Log.e(TAG, Constant.RESULT + API.EDIT_COLLECTION_PRODUCT + "\n" + t.toString());
                     JSONStatus jsonStatus = BaseJSONData(t);
-                    if(jsonStatus.isSuccess){
+                    if (jsonStatus.isSuccess) {
                         handler.sendMessage(handler.obtainMessage(EDIT_COLLECT_SUCCESS, BaseJSONData(t)));
-                    }else{
+                    } else {
                         handler.sendMessage(handler.obtainMessage(GET_COLLECT_LIST_FALSE, BaseJSONData(t)));
                     }
-                }else{
+                } else {
                     prompt(getResources().getString(R.string.request_no_data));
                 }
             }
@@ -334,5 +337,30 @@ public class CollectListActivity extends BaseActivity {
             e.printStackTrace();
         }
         return json.toString();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == Constant.RESQUEST_CODE) {
+            switch (resultCode) {
+                case Constant.RESULT_CODE_LOGIN:
+                    Log.e(TAG, "resultCode ->" + resultCode);
+                    page = Constant.PAGE;
+                    isPull = true;
+                    UploadAdapter();
+                    break;
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
+        }
     }
 }

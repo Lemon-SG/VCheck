@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@id/llDetailLight"
     android:orientation="vertical">
 
     <cc.siyo.iMenu.VCheck.view.MyListView
@@ -9,7 +10,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="#00000000"
-        android:listSelector="@color/gray_eee"
+        android:listSelector="@android:color/transparent"
+        android:divider="@null"
         android:fadingEdge="none"
         android:focusable="true"
         android:focusableInTouchMode="true"/>
@@ -33,4 +35,13 @@
             android:layout_marginTop="1.5dp"
             android:background="@color/black"/>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:padding="10dp"
+        android:textColor="@color/light_gray_text_color"
+        android:gravity="center_horizontal"
+        android:text="─── •  知味  • ───"/>
 </LinearLayout>

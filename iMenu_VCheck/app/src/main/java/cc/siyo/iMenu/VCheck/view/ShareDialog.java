@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import cc.siyo.iMenu.VCheck.R;
+import cc.siyo.iMenu.VCheck.activity.InviteFriendsActivity;
 import cc.siyo.iMenu.VCheck.model.Share;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
@@ -47,8 +48,13 @@ public class ShareDialog extends Dialog {
 				ShareSDK.initSDK(context);
 				Platform weChat = ShareSDK.getPlatform(context, Wechat.NAME);
 				Wechat.ShareParams weChatParams = new Wechat.ShareParams();
-				weChatParams.setTitle(share.title);
-				weChatParams.setText(share.content);
+				if (context.getClass() == InviteFriendsActivity.class) {
+					weChatParams.setTitle("送你知味App独享30元礼券");
+					weChatParams.setText("高端定制限量美食，享受最优质的用餐体验，邀请码：" + share.content);
+				} else {
+					weChatParams.setTitle(share.title);
+					weChatParams.setText("知味-" + share.content);
+				}
 				weChatParams.setUrl(share.link);
 				weChatParams.setSiteUrl(share.link);
 				weChatParams.setImageUrl(share.imageUrl);
@@ -56,6 +62,7 @@ public class ShareDialog extends Dialog {
 				weChatParams.setShareType(Platform.SHARE_WEBPAGE);
 				weChat.setPlatformActionListener(new SharePlatformActionListener());
 				weChat.share(weChatParams);
+
 			}
 		});
 		findViewById(R.id.llShareWeChatMoment).setOnClickListener(new View.OnClickListener() {
@@ -83,13 +90,18 @@ public class ShareDialog extends Dialog {
 				ShareSDK.initSDK(context);
 				Platform sina = ShareSDK.getPlatform(context, SinaWeibo.NAME);
 				SinaWeibo.ShareParams sinaParams = new SinaWeibo.ShareParams();
+				if (context.getClass() == InviteFriendsActivity.class) {
+					sinaParams.setText("邀请你体验 知味App-最精致的高端定制餐饮，使用邀请码" + share.content + "即可获取30元礼券" + share.link);
+				} else {
+					sinaParams.setText("@知味_Taste 上的[" + share.title + "]超赞~" + "知味Taste" + share.content + share.link);
+				}
 		        sinaParams.setTitle(share.title);
-		        sinaParams.setText(share.content);
 		        sinaParams.setSite(share.description);
 		        sinaParams.setSiteUrl(share.link);
 		        sinaParams.setImagePath(share.imagePath);
 				sina.setPlatformActionListener(new SharePlatformActionListener());
 				sina.share(sinaParams);
+				Log.e("ShareDialog", "coming");
 			}
 		});
 	}

@@ -37,13 +37,14 @@ public abstract class BaseActivity extends FinalActivity {
     public Context context;
     protected final static int SUCCESS = 100;
     protected final static int FAILURE = 101;
-    protected String token;
+    protected static String token;
+    protected static String memberId;
     private NetworkChangedReceiver receiver;
 
     private LoadingDialog loadingDialog;
-    /**每页显示几条数据*/
+    /** 每页显示几条数据*/
     protected final static int PAGESIZE = 10;
-    /**显示第几页*/
+    /** 显示第几页*/
     protected final static int PAGE = 1;
     /** 全局微信分享成功标石*/
     public final static int SHARE_SUCCESS = 10000;
@@ -63,6 +64,7 @@ public abstract class BaseActivity extends FinalActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getContentView());
         token = PreferencesUtils.getString(context, Constant.KEY_TOKEN);
+        memberId = PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID);
         Log.e(TAG, "token=" + token);
 //        colorValue = PreferencesUtils.getString(context, "ColorValue");
 //        receiver = new NetworkChangedReceiver();
@@ -306,13 +308,13 @@ public abstract class BaseActivity extends FinalActivity {
                 jsonStaus = new JSONStatus().parse(obj);
                 if(!StringUtils.isBlank(jsonStaus.error_desc)){
                     if(jsonStaus.error_code.equals(Constant.TOKEN_ERROR_CODE)){
-                        prompt("登录过期，请重新登录");
                         System.out.println("TOKEN_ERROR_CODE");
                         PreferencesUtils.clear(context);
-//                        Intent intent = new Intent(context, LoginActivity.class);
-//                        startActivity(intent);
-//                        finish();
-                        return null;
+                        prompt("登录过期，请重新登录");
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+//                        return null;
                     }
                 }
             }

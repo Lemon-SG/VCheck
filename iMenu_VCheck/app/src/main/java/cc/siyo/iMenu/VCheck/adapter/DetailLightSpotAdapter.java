@@ -23,8 +23,8 @@ public class DetailLightSpotAdapter extends AbsAdapter<ArticleContent> {
     public DetailLightSpotAdapter(Activity context, int layout) {
         super(context, layout);
         finalBitmap = FinalBitmap.create(context);
-        finalBitmap.configLoadingImage(R.drawable.test_menu_img);
-        finalBitmap.configLoadfailImage(R.drawable.test_menu_img);
+        finalBitmap.configLoadingImage(R.drawable.test_member_img);
+        finalBitmap.configLoadfailImage(R.drawable.test_member_img);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.util.Log;
 import org.json.JSONObject;
 
 import cc.siyo.iMenu.VCheck.util.NumberFormatUtils;
+import cc.siyo.iMenu.VCheck.util.StringUtils;
 
 /**
  * Created by Lemon on 2015/6/4 16:28.
@@ -25,7 +26,11 @@ public class TotalPrice extends BaseModel<TotalPrice> {
         if(jsonObject != null && jsonObject.length() > 0){
             Log.e(TAG, "开始解析");
             original_price = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("original_price")));
-            special_price = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("special_price")));
+            if(!StringUtils.isBlank(jsonObject.optString("special_price"))) {
+                special_price = NumberFormatUtils.format(Double.parseDouble(jsonObject.optString("special_price")));
+            } else {
+                special_price = "0.0";
+            }
             price_unit = jsonObject.optString("price_unit");
             return this;
         }

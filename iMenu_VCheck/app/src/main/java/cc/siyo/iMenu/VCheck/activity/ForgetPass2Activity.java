@@ -98,6 +98,8 @@ public class ForgetPass2Activity extends BaseActivity{
     @Override
     public void initData() {
         finalHttp = new FinalHttp();
+        et_mobile.setText(getIntent().getExtras().getString("loginName"));
+        doGetVerifyCode();
         tv_getVerifyCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
