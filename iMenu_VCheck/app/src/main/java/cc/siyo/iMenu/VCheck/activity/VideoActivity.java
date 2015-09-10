@@ -78,7 +78,7 @@ public class VideoActivity extends BaseActivity {
 
 
 //        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.info);
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/raw/info");
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/raw/info0812c");
         VideoView videoView = (VideoView) this.findViewById(R.id.video_view);
         //隐藏自带进度
         MediaController mc = new MediaController(this);

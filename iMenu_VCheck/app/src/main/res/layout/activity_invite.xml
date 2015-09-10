@@ -13,6 +13,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
+        android:background="@drawable/bg_mine_top"
         android:layout_weight="1">
 
         <RelativeLayout
@@ -28,6 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:textColor="@color/gray_b3"
                 android:layout_centerHorizontal="true"
                 android:text="已成功邀请"/>
 
@@ -35,7 +37,7 @@
                 android:id="@+id/llInviteCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:orientation="horizontal">
@@ -45,12 +47,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="26sp"
-                    android:textColor="@color/blue_2"
-                    android:text="22"/>
+                    android:textColor="@color/gray_b3"
+                    android:text="0"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/gray_b3"
                     android:text="人"/>
             </LinearLayout>
 
@@ -60,23 +63,26 @@
                 android:textSize="16sp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/llInviteCount"
-                android:text="点击查看详情"/>
+                android:text=""/>
         </RelativeLayout>
 
         <TextView
+            android:id="@+id/tvInviteCodeTips"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:textSize="14sp"
             android:layout_marginBottom="20dp"
+            android:textColor="@color/gray_b3"
             android:gravity="bottom|center_horizontal"
-            android:text="邀请越多好友，获得越多奖励！Taste with more！"/>
+            android:text=""/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:background="@color/gray_ddd"
+        android:background="@color/gray_e6"
+        android:gravity="center_vertical"
         android:layout_weight="1">
 
         <!--<TextView-->
@@ -96,6 +102,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:padding="10dp"
+            android:textColor="@color/top_black"
             android:layout_gravity="center"
             android:layout_below="@+id/llInviteCount"
             android:text=""/>
@@ -110,14 +117,13 @@
             android:layout_below="@+id/llInviteCount"
             android:text=""/>
 
-        <TextView
-            android:id="@+id/tvInviteCodeTips"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:layout_gravity="center"
-            android:layout_below="@+id/llInviteCount"
-            android:text=""/>
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textSize="13sp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_below="@+id/llInviteCount"-->
+            <!--android:text=""/>-->
 
         <TextView
             android:id="@+id/tvShareFriends"
@@ -131,7 +137,14 @@
             android:layout_gravity="center"
             android:layout_below="@+id/llInviteCount"
             android:padding="15dp"
-            android:background="@drawable/reg_veriy_bg_gray_shape"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_green_shape"
             android:text="邀请好友"/>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
 </LinearLayout>

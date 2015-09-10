@@ -17,16 +17,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cc.siyo.iMenu.VCheck.MainActivity;
 import cc.siyo.iMenu.VCheck.MyApplication;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.activity.BaseActivity;
 import cc.siyo.iMenu.VCheck.activity.CollectListActivity;
 import cc.siyo.iMenu.VCheck.activity.DetailActivity;
+import cc.siyo.iMenu.VCheck.activity.Launch;
 import cc.siyo.iMenu.VCheck.activity.LoginActivity;
 import cc.siyo.iMenu.VCheck.activity.MineActivity;
 import cc.siyo.iMenu.VCheck.activity.OrderDetailActivity;
 import cc.siyo.iMenu.VCheck.activity.OrderListActivity;
 import cc.siyo.iMenu.VCheck.activity.VoucherListActivity;
+import cc.siyo.iMenu.VCheck.activity.WebViewActivity;
 import cc.siyo.iMenu.VCheck.adapter.MessageAdapter;
 import cc.siyo.iMenu.VCheck.http.LHttpLib;
 import cc.siyo.iMenu.VCheck.http.LHttpResponseHandler;
@@ -82,6 +85,13 @@ public class MessageActivity extends BaseActivity {
 
     @Override
     public void initData() {
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
+        } else {
+            UploadAdapter(page);
+        }
         list_message.addFooterView((LayoutInflater.from(context)).inflate(R.layout.list_item_footview, null));
         messageAdapter = new MessageAdapter(MessageActivity.this, R.layout.list_item_message);
         list_message.setAdapter(messageAdapter);
@@ -115,7 +125,6 @@ public class MessageActivity extends BaseActivity {
                 switchPage(messageAdapter.getDataList().get(position - 1).link_info);
             }
         });
-        UploadAdapter(page);
     }
 
     /** 根据页数请求获取消息列表*/
@@ -192,58 +201,63 @@ public class MessageActivity extends BaseActivity {
             switch (resultCode) {
                 case Constant.RESULT_CODE_LOGIN:
                     Log.e(TAG, "resultCode ->" + resultCode);
-
+                    initData();
+                    break;
+                case Constant.RESULT_CODE_CANCEL_LOGIN:
+                    Log.e(TAG, "resultCode(取消登录) ->" + resultCode);
+                    finish();
                     break;
             }
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
-                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
-            //未登录状态
-            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
-        }
-    }
-
     /** 根据参数进行跳转*/
     private void switchPage(LinkPushParams linkPushParams) {
-        if(linkPushParams.link_route.equals(Constant.LINK_WEB)) {
-            //打开网页链接
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(linkPushParams.link_value));
+        if(linkPushParams.push_type.equals("1")) {
+            //跳转打开
+            if(linkPushParams.link_route.equals(Constant.LINK_WEB)) {
+                //打开网页链接
+                Intent intent = new Intent(this, WebViewActivity.class);
+                intent.putExtra(Constant.INTENT_WEB_URL, linkPushParams.link_value);
+                intent.putExtra(Constant.INTENT_WEB_NAME, Constant.INTENT_WEB_NAME_WEB);
+                startActivity(intent);
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_HOME)) {
+                //打开首页，不做操作
+                startActivity(new Intent(context, MainActivity.class));
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_ARTICLE)) {
+                //打开文章详情,传递ID
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra(Constant.INTENT_ARTICLE_ID, linkPushParams.id);
+                startActivity(intent);
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_MEMBER)) {//打开用户中心
+                startActivity(new Intent(context, MineActivity.class));
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_MESSAGE)) {//打开消息列表
+                startActivity(new Intent(context, MessageActivity.class));
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_COLLECTION)) {//打开收藏列表
+                startActivity(new Intent(context, CollectListActivity.class));
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_ORDER_LIST)) {//打开订单列表
+                startActivity(new Intent(context, OrderListActivity.class));
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_ORDER_DETAIL)) {//打开订单详情,传递ID
+                Intent intent = new Intent(context, OrderDetailActivity.class);
+                intent.putExtra("orderId", linkPushParams.id);
+                startActivity(intent);
+            }
+            if(linkPushParams.link_route.equals(Constant.LINK_VOUCHER)) {//打开礼券列表
+                startActivity(new Intent(context, VoucherListActivity.class));
+            }
+        } else {
+            //正常打开，跳转至Launch
+            Intent intent = new Intent(this, Launch.class);
+            intent.putExtra("linkPushParams", linkPushParams);
             startActivity(intent);
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_HOME)) {
-            //打开首页，不做操作
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_ARTICLE)) {
-            //打开文章详情,传递ID
-            Intent intent = new Intent(context, DetailActivity.class);
-            intent.putExtra(Constant.INTENT_ARTICLE_ID, linkPushParams.id);
-            startActivity(intent);
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_MEMBER)) {//打开用户中心
-            startActivity(new Intent(context, MineActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_MESSAGE)) {//打开消息列表
-            startActivity(new Intent(context, MessageActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_COLLECTION)) {//打开收藏列表
-            startActivity(new Intent(context, CollectListActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_ORDER_LIST)) {//打开订单列表
-            startActivity(new Intent(context, OrderListActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_ORDER_DETAIL)) {//打开订单详情,传递ID
-            Intent intent = new Intent(context, OrderDetailActivity.class);
-            intent.putExtra("orderId", linkPushParams.id);
-            startActivity(intent);
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_VOUCHER)) {//打开礼券列表
-            startActivity(new Intent(context, VoucherListActivity.class));
+            finish();
         }
     }
 }

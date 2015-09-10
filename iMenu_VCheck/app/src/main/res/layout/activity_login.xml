@@ -163,6 +163,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_weight="0.5"
+                android:alpha="0.5"
                 android:src="@drawable/ic_login_sina"/>
 
             <ImageView

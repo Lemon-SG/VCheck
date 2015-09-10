@@ -386,7 +386,7 @@ public class MainFragment extends BaseFragment{
                             View bannerView = LayoutInflater.from(context).inflate(R.layout.layout_viewpager_item, null);
                             ImageView imageView = (ImageView) bannerView.findViewById(R.id.iv_viewpager_img);
                             //获取16:9尺寸的图片宽度，距离屏幕两侧各10dp
-                            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ScreenUtils.getImageParam(context, 0);
+                            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) ScreenUtils.getImageParam(context, 20);
                             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                             imageView.setLayoutParams(layoutParams);
 
@@ -488,6 +488,11 @@ public class MainFragment extends BaseFragment{
     private void setImageDian(List<View> mViewsList) {
         ll_viewpager_dian_main_imgList.removeAllViews();
         imageViews = new ImageView[mViewsList.size()];
+        if(imageViews.length == 1) {
+            ll_viewpager_dian_main_imgList.setVisibility(View.INVISIBLE);
+        } else {
+            ll_viewpager_dian_main_imgList.setVisibility(View.VISIBLE);
+        }
         System.out.println("mViewsList:" + mViewsList.size());
         for (int i = 0; i < mViewsList.size(); i++) {
             LinearLayout.LayoutParams margin = new LinearLayout.LayoutParams(15, 15);

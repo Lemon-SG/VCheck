@@ -20,7 +20,7 @@ public class LinkPushParams extends BaseModel<LinkPushParams> {
     public String link_value;
     /** 如value带有参数的，解析出ID*/
     public String id;
-    /** 跳转方式1->跳转打开；2,->正常打开*/
+    /** 跳转方式1->跳转打开；0,->正常打开*/
     public String push_type;
 
     @Override
@@ -36,6 +36,7 @@ public class LinkPushParams extends BaseModel<LinkPushParams> {
                     Log.e("解析LinkPushParams", link_value);
                 }
             }
+            push_type = "1";
             String pushType = jsonObject.optString("push_type");
             if(!StringUtils.isBlank(pushType)) {
                 if(pushType.contains("=")) {

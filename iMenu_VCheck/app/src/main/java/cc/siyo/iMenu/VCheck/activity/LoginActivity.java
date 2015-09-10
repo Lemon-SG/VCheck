@@ -102,6 +102,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onClick(View view) {
                 //返回
+                setResult(Constant.RESULT_CODE_CANCEL_LOGIN);
                 finish();
             }
          });

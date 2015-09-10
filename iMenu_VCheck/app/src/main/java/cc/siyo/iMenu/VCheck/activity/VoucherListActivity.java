@@ -137,7 +137,11 @@ public class VoucherListActivity extends BaseActivity {
 //        page = Constant.PAGE;
         finalHttp = new FinalHttp();
 //        isPull = true;
-        if(!StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))) {
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
+        } else {
             UploadAdapter(voucherCount);
         }
         voucherAdapter = new VoucherAdapter(VoucherListActivity.this, R.layout.list_item_voucher);
@@ -484,7 +488,6 @@ public class VoucherListActivity extends BaseActivity {
         return json.toString();
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -494,17 +497,11 @@ public class VoucherListActivity extends BaseActivity {
                     Log.e(TAG, "resultCode ->" + resultCode);
                     UploadAdapter(voucherCount);
                     break;
+                case Constant.RESULT_CODE_CANCEL_LOGIN:
+                    Log.e(TAG, "resultCode(取消登录) ->" + resultCode);
+                    finish();
+                    break;
             }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
-                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
-            //未登录状态
-            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
         }
     }
 }

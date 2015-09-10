@@ -101,7 +101,13 @@ public class CollectListActivity extends BaseActivity {
         finalHttp = new FinalHttp();
         page = Constant.PAGE;
         isPull = true;
-        UploadAdapter();
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
+        } else {
+            UploadAdapter();
+        }
 
         list_collect.setOnLoadMoreListenter(new RefreshListView.OnLoadMoreListener() {
 
@@ -350,17 +356,11 @@ public class CollectListActivity extends BaseActivity {
                     isPull = true;
                     UploadAdapter();
                     break;
+                case Constant.RESULT_CODE_CANCEL_LOGIN:
+                    Log.e(TAG, "resultCode(取消登录) ->" + resultCode);
+                    finish();
+                    break;
             }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
-                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
-            //未登录状态
-            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
         }
     }
 }

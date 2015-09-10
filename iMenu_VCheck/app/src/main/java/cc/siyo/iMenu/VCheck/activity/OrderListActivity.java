@@ -96,8 +96,13 @@ public class OrderListActivity extends BaseActivity {
         page = Constant.PAGE;
         finalHttp = new FinalHttp();
         isPull = true;
-        UploadAdapter();
-
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
+        } else {
+            UploadAdapter();
+        }
         orderAdapter = new OrderAdapter(OrderListActivity.this, R.layout.list_item_order);
         list_order.addFooterView((LayoutInflater.from(mContext)).inflate(R.layout.list_item_footview, null));
         list_order.setAdapter(orderAdapter);
@@ -346,17 +351,11 @@ public class OrderListActivity extends BaseActivity {
                     //返回当前页面，需要加载标石
                     UploadAdapter();
                     break;
+                case Constant.RESULT_CODE_CANCEL_LOGIN:
+                    Log.e(TAG, "resultCode(取消登录) ->" + resultCode);
+                    finish();
+                    break;
             }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
-                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
-            //未登录状态
-            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
         }
     }
 }

@@ -237,6 +237,7 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
                         JSONStatus jsonStatus = (JSONStatus) msg.obj;
                         if(jsonStatus.isSuccess){
                             PreferencesUtils.clear(AccountSettingActivity.this);
+                            PreferencesUtils.putInt(context, Constant.KEY_IS_LAUNCH, 1);
                             setResult(Constant.RESULT_CODE_LOGOUT);
                             finish();
                         }

@@ -50,7 +50,7 @@ public class ShareDialog extends Dialog {
 				Wechat.ShareParams weChatParams = new Wechat.ShareParams();
 				if (context.getClass() == InviteFriendsActivity.class) {
 					weChatParams.setTitle("送你知味App独享30元礼券");
-					weChatParams.setText("高端定制限量美食，享受最优质的用餐体验，邀请码：" + share.content);
+					weChatParams.setText("高端定制限量美食，享受最优质的用餐体验," + share.content);
 				} else {
 					weChatParams.setTitle(share.title);
 					weChatParams.setText("知味-" + share.content);
@@ -62,7 +62,6 @@ public class ShareDialog extends Dialog {
 				weChatParams.setShareType(Platform.SHARE_WEBPAGE);
 				weChat.setPlatformActionListener(new SharePlatformActionListener());
 				weChat.share(weChatParams);
-
 			}
 		});
 		findViewById(R.id.llShareWeChatMoment).setOnClickListener(new View.OnClickListener() {
@@ -72,7 +71,7 @@ public class ShareDialog extends Dialog {
 				ShareSDK.initSDK(context);
 				Platform weChatMoment = ShareSDK.getPlatform(context, WechatMoments.NAME);
 				WechatMoments.ShareParams weChatMomentParams = new WechatMoments.ShareParams();
-				weChatMomentParams.setTitle(share.content);
+				weChatMomentParams.setTitle(share.title + " " + share.content);
 				weChatMomentParams.setUrl(share.link);
 				weChatMomentParams.setSiteUrl(share.link);
 				weChatMomentParams.setImageUrl(share.imageUrl);
@@ -91,7 +90,7 @@ public class ShareDialog extends Dialog {
 				Platform sina = ShareSDK.getPlatform(context, SinaWeibo.NAME);
 				SinaWeibo.ShareParams sinaParams = new SinaWeibo.ShareParams();
 				if (context.getClass() == InviteFriendsActivity.class) {
-					sinaParams.setText("邀请你体验 知味App-最精致的高端定制餐饮，使用邀请码" + share.content + "即可获取30元礼券" + share.link);
+					sinaParams.setText("邀请你体验 知味App-最精致的高端定制餐饮，" + share.content + " 即可获取30元礼券" + share.link);
 				} else {
 					sinaParams.setText("@知味_Taste 上的[" + share.title + "]超赞~" + "知味Taste" + share.content + share.link);
 				}

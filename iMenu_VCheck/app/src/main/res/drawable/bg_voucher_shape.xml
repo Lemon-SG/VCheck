@@ -2,12 +2,12 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <!-- 实心 -->
-    <!--<solid android:color="@color/white" />-->
+    <solid android:color="@color/gray_e6" />
 
     <!-- 描边 -->
      <stroke
          android:width="0.5dp"
-         android:color="@color/top_black" />
+         android:color="@color/deep_gray_text_color"/>
 
     <!-- 渐变 -->
     <!-- <gradient -->

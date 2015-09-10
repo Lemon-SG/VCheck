@@ -133,6 +133,8 @@ public class Constant {
     public static final int RESQUEST_CODE = 1000;
     /** INTENT 登录成功返回code*/
     public static final int RESULT_CODE_LOGIN = 2000;
+    /** INTENT 取消登录返回code*/
+    public static final int RESULT_CODE_CANCEL_LOGIN = 7000;
     /** INTENT 修改账户信息返回code*/
     public static final int RESULT_CODE_EDIT_ACCOUNT = 3000;
     /** INTENT 退出登录返回code*/

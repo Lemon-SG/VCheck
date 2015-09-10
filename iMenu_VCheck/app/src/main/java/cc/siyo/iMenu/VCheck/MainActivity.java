@@ -27,6 +27,9 @@ import android.widget.Toast;
 
 import net.tsz.afinal.FinalDb;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -43,7 +46,10 @@ import cc.siyo.iMenu.VCheck.activity.setting.MessageActivity;
 import cc.siyo.iMenu.VCheck.adapter.FragmentViewPagerAdapter;
 import cc.siyo.iMenu.VCheck.adapter.RegionAdapter;
 import cc.siyo.iMenu.VCheck.fragment.MainFragment;
+import cc.siyo.iMenu.VCheck.http.LHttpLib;
+import cc.siyo.iMenu.VCheck.http.LHttpResponseHandler;
 import cc.siyo.iMenu.VCheck.model.Constant;
+import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.LinkPushParams;
 import cc.siyo.iMenu.VCheck.model.Region;
 import cc.siyo.iMenu.VCheck.server.LocationSvc;
@@ -79,10 +85,9 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
         db = FinalDb.create(MainActivity.this, true);
-        region = db.findById(29, Region.class);//在LaunchIndex中存入城市列表
-        regionList = new ArrayList<>();
-        regionList = db.findAll(Region.class);
+        region = db.findById(29, Region.class);
 
         initView();
         if(fragmentsList == null)
@@ -127,8 +132,12 @@ public class MainActivity extends FragmentActivity {
         ll_choose_city = (LinearLayout) findViewById(R.id.ll_choose_city);
         iv_mine = (ImageView) findViewById(R.id.iv_mine);
 
+        tv_show_city.setText("定位");
+        regionList = new ArrayList<>();
+        regionList = db.findAll(Region.class);
         //TODO 定位当前所在城市，如定位不到，打开popWindow，手动选择城市，暂时默认西安
         tv_show_city.setText(region.region_name);
+
 
         ll_choose_city.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,7 +169,7 @@ public class MainActivity extends FragmentActivity {
             popupWindow.setBackgroundDrawable(new BitmapDrawable());
             popupWindow.setWindowLayoutMode(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             popupWindow.showAsDropDown(ll_choose_city);
-            animationController.fadeIn(list_city, 2000, 0);
+//            animationController.fadeIn(list_city, 2000, 0);
 
             final RegionAdapter regionAdapter = new RegionAdapter(this, R.layout.list_item_textview);
             list_city.setAdapter(regionAdapter);
@@ -183,9 +192,9 @@ public class MainActivity extends FragmentActivity {
         }else{
             if(popupWindow.isShowing()){
                 popupWindow.dismiss();
-            }else{
+            } else{
                 popupWindow.showAsDropDown(ll_choose_city);
-                animationController.fadeIn(list_city, 2000, 0);
+//                animationController.fadeIn(list_city, 2000, 0);
             }
         }
     }
@@ -244,6 +253,7 @@ public class MainActivity extends FragmentActivity {
         }
         if(linkPushParams.link_route.equals(Constant.LINK_HOME)) {
             //打开首页，不做操作
+            startActivity(new Intent(context, MainActivity.class));
         }
         if(linkPushParams.link_route.equals(Constant.LINK_ARTICLE)) {
             //打开文章详情,传递ID

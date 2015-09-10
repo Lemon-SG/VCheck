@@ -2,6 +2,7 @@ package cc.siyo.iMenu.VCheck.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +21,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import net.tsz.afinal.FinalBitmap;
 import net.tsz.afinal.FinalHttp;
@@ -121,8 +124,8 @@ public class DetailActivity extends FragmentActivity{
     private ImageView[] imageViews;
     /** 文章内图片集合*/
     private List<ArticleImage> articleImageList;
-    /** A FINAL 框架的HTTP请求工具*/
-    private FinalBitmap finalBitmap;
+//    /** A FINAL 框架的HTTP请求工具*/
+//    private FinalBitmap finalBitmap;
     /** 收藏标石：true->已收藏 | false->未收藏*/
     private boolean isCollect = false;
     /** 收藏数量*/
@@ -144,6 +147,7 @@ public class DetailActivity extends FragmentActivity{
     private TextView tv_detail_time;
     List<View> mViewList = new ArrayList<>();
     private ScreenUtils.ScreenResolution screenResolution;
+    private DisplayImageOptions menuOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,10 +155,18 @@ public class DetailActivity extends FragmentActivity{
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_detail);
         context = getApplicationContext();
-        finalBitmap = FinalBitmap.create(context);
+//        finalBitmap = FinalBitmap.create(context);
         imageLoader = ImageLoader.getInstance();
-        finalBitmap.configLoadingImage(R.mipmap.default_menu);
-        finalBitmap.configLoadfailImage(R.mipmap.default_menu);
+        menuOptions = new DisplayImageOptions.Builder()
+                .cacheInMemory(true).cacheOnDisk(true)
+                .resetViewBeforeLoading(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .showImageOnLoading(R.mipmap.default_menu)
+                .showImageForEmptyUri(R.mipmap.default_menu)
+                .showImageOnFail(R.mipmap.default_menu).build();
+//        finalBitmap.configLoadingImage(R.mipmap.default_menu);
+//        finalBitmap.configLoadfailImage(R.mipmap.default_menu);
         initView();
         initData();
     }
@@ -266,8 +278,8 @@ public class DetailActivity extends FragmentActivity{
                 iv_viewpager_img.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 iv_viewpager_img.setLayoutParams(layoutParams);
 
-                finalBitmap.display(iv_viewpager_img, articleImageList.get(i).image.source);
-//                imageLoader.displayImage(articleImageList.get(i).image.source, iv_viewpager_img);
+//                finalBitmap.display(iv_viewpager_img, articleImageList.get(i).image.source);
+                imageLoader.displayImage(articleImageList.get(i).image.source, iv_viewpager_img, menuOptions);
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -798,7 +810,7 @@ public class DetailActivity extends FragmentActivity{
         share.title = article.title;
         share.description = article.title;
         if(!StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))) {
-            share.content = "最精致的高端定制餐饮体验,用邀请码" + PreferencesUtils.getString(context, Constant.KEY_INVITE_CODE) + "注册既获30元礼券";
+            share.content = "使用邀请码:" + PreferencesUtils.getString(context, Constant.KEY_INVITE_CODE) + "注册既获30元礼券";
         } else {
             share.content = "最精致的高端定制餐饮体验";
         }

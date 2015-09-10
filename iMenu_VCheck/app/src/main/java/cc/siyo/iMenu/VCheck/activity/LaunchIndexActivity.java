@@ -53,7 +53,6 @@ import cc.siyo.iMenu.VCheck.util.Util;
  */
 public class LaunchIndexActivity extends BaseActivity{
 
-    private static final String TAG = "LaunchIndexActivity";
     private FinalHttp finalHttp;
     private static final int GET_CLIENT_CONFIG_SUCCESS = 100;
     private static final int GET_CLIENT_CONFIG_FALSE = 200;
@@ -76,23 +75,24 @@ public class LaunchIndexActivity extends BaseActivity{
         mContext = this;
         db = FinalDb.create(LaunchIndexActivity.this, true);
         finalHttp = new FinalHttp();
+        Upload();//获取城市列表
         finalBitmap = FinalBitmap.create(context);
         finalBitmap.configLoadingImage(R.drawable.bg_mine_top_big);
         finalBitmap.configLoadfailImage(R.drawable.bg_mine_top_big);
+        tvIndexSkip.setVisibility(View.VISIBLE);
         tvIndexSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //跳过
-//                startActivity(new Intent(mContext, MainActivity.class));
-                if (getIntent() != null && getIntent().getExtras() != null) {
-                    if (getIntent().getExtras().getSerializable("linkPushParams") != null) {
-                        LinkPushParams linkPushParams = (LinkPushParams) getIntent().getExtras().getSerializable("linkPushParams");
-                        switchPage(linkPushParams);
-                    }
+                if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getSerializable("linkPushParams") != null) {
+                    LinkPushParams linkPushParams = (LinkPushParams) getIntent().getExtras().getSerializable("linkPushParams");
+                    ToMain(linkPushParams, true);
+                } else {
+                    ToMain(null, true);
                 }
-//                finish();
             }
-        });}
+        });
+    }
 
     @Override
     public void initData() {
@@ -103,14 +103,71 @@ public class LaunchIndexActivity extends BaseActivity{
                 @Override
                 public void onClick(View v) {
                     //广告跳转
-                    Intent intent = new Intent(mContext, MainActivity.class);
-                    intent.putExtra("linkPushParams", bannerInfo.linkPushParams);
-                    startActivity(intent);
-                    finish();
+                    ToMain(bannerInfo.linkPushParams, true);
                 }
             });
         }
-        UploadAdapter(getVersionCode());
+        ToMain(null, false);
+    }
+
+    private void ToMain(final LinkPushParams linkPushParams, boolean isSkip) {
+        final Intent intent = new Intent(mContext, MainActivity.class);
+        if (linkPushParams != null) {
+            intent.putExtra("linkPushParams", linkPushParams);
+        }
+        if(isSkip) {
+            startActivity(intent);
+            finish();
+        } else {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e(TAG, "2000run -> ToMain");
+                    startActivity(intent);
+                    finish();
+                }
+            }, 2000);
+        }
+    }
+
+    /** 获取城市列表请求*/
+    private void Upload(){
+        LHttpLib.getRegionList(getApplicationContext(), new LHttpResponseHandler() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onLoading(long count, long current) {
+
+            }
+
+            @Override
+            public void onSuccess(JSONStatus jsonStatus) {
+                if (jsonStatus.isSuccess) {
+                    JSONObject data = jsonStatus.data;
+                    if (data != null) {
+                        JSONArray jsonArray = data.optJSONArray("region_list");
+                        if (jsonArray != null && jsonArray.length() > 0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                Region region = new Region().parse(jsonArray.optJSONObject(i));
+                                if (db.findById(region.region_id, Region.class) != null) {
+                                    db.update(region);
+                                } else {
+                                    db.save(region);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t, int errorNo, String strMsg) {
+
+            }
+        });
     }
 
     /** 根据参数进行跳转*/
@@ -124,6 +181,9 @@ public class LaunchIndexActivity extends BaseActivity{
         }
         if(linkPushParams.link_route.equals(Constant.LINK_HOME)) {
             //打开首页，不做操作
+            Intent intent = new Intent(mContext, MainActivity.class);
+            startActivity(intent);
+            finish();
         }
         if(linkPushParams.link_route.equals(Constant.LINK_ARTICLE)) {
             //打开文章详情,传递ID
@@ -151,314 +211,257 @@ public class LaunchIndexActivity extends BaseActivity{
         if(linkPushParams.link_route.equals(Constant.LINK_VOUCHER)) {//打开礼券列表
             startActivity(new Intent(context, VoucherListActivity.class));
         }
+        finish();
     }
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case GET_CLIENT_CONFIG_SUCCESS:
-                    closeProgressDialog();
-                    if(msg.obj != null){
-                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
-                        JSONObject data = jsonStatus.data;
-                        JSONArray config_list = data.optJSONArray("config_list");
-                        if(config_list != null && config_list.length() > 0){
-                            clientConfigsList = new ArrayList<>();
-                            for (int i = 0; i < config_list.length(); i++) {
-                                if(config_list.optJSONObject(i) != null){
-                                    ClientConfig clientConfig = new ClientConfig().parse(config_list.optJSONObject(i));
-                                    clientConfigsList.add(clientConfig);
-                                }
-                            }
-                            saveClientConfig();
-                        }
-                        tvIndexSkip.setVisibility(View.VISIBLE);
-                    }
-                    break;
-                case GET_CLIENT_CONFIG_FALSE:
-                    if(msg.obj != null){
-                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
-                        if(!StringUtils.isBlank(jsonStatus.error_desc)){
-                            Util.println(TAG, jsonStatus.error_desc);
-                        }else{
-                            if(!StringUtils.isBlank(jsonStatus.error_code)){
-                                Util.println(TAG, getResources().getString(R.string.request_erro) + MyApplication.findErroDesc(jsonStatus.error_code));
-                            }else{
-                                Util.println(TAG, getResources().getString(R.string.request_erro));
-                            }
-                        }
-                    }
-                    ToMain();
-                    break;
-            }
+//            switch (msg.what) {
+//                case GET_CLIENT_CONFIG_SUCCESS:
+//                    closeProgressDialog();
+//                    if(msg.obj != null){
+//                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+//                        JSONObject data = jsonStatus.data;
+//                        JSONArray config_list = data.optJSONArray("config_list");
+//                        if(config_list != null && config_list.length() > 0){
+//                            clientConfigsList = new ArrayList<>();
+//                            for (int i = 0; i < config_list.length(); i++) {
+//                                if(config_list.optJSONObject(i) != null){
+//                                    ClientConfig clientConfig = new ClientConfig().parse(config_list.optJSONObject(i));
+//                                    clientConfigsList.add(clientConfig);
+//                                }
+//                            }
+//                            saveClientConfig();
+//                        }
+//                        tvIndexSkip.setVisibility(View.VISIBLE);
+//                    }
+//                    break;
+//                case GET_CLIENT_CONFIG_FALSE:
+//                    if(msg.obj != null){
+//                        JSONStatus jsonStatus = (JSONStatus) msg.obj;
+//                        if(!StringUtils.isBlank(jsonStatus.error_desc)){
+//                            Util.println(TAG, jsonStatus.error_desc);
+//                        }else{
+//                            if(!StringUtils.isBlank(jsonStatus.error_code)){
+//                                Util.println(TAG, getResources().getString(R.string.request_erro) + MyApplication.findErroDesc(jsonStatus.error_code));
+//                            }else{
+//                                Util.println(TAG, getResources().getString(R.string.request_erro));
+//                            }
+//                        }
+//                    }
+//                    ToMain();
+//                    break;
+//            }
         }
     };
 
-    /** 获取配置信息，版本更新请求*/
-    private void UploadAdapter(String versionAndroid) {
-        AjaxParams ajaxParams = new AjaxParams();
-        ajaxParams.put("route", API.GET_CLIENT_CONFIG);
-        ajaxParams.put("token", "");
-        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
-        ajaxParams.put("jsonText", makeJsonText(versionAndroid));
-        Log.e(TAG, Constant.REQUEST + API.GET_CLIENT_CONFIG + '\n' + ajaxParams.toString());
-        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
-            @Override
-            public void onFailure(Throwable t, int errorNo, String strMsg) {
-                super.onFailure(t, errorNo, strMsg);
-                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
-            }
+//    /** 获取配置信息，版本更新请求*/
+//    private void UploadAdapter(String versionAndroid) {
+//        AjaxParams ajaxParams = new AjaxParams();
+//        ajaxParams.put("route", API.GET_CLIENT_CONFIG);
+//        ajaxParams.put("token", "");
+//        ajaxParams.put("device_type", Constant.DEVICE_TYPE);
+//        ajaxParams.put("jsonText", makeJsonText(versionAndroid));
+//        Log.e(TAG, Constant.REQUEST + API.GET_CLIENT_CONFIG + '\n' + ajaxParams.toString());
+//        finalHttp.post(API.server, ajaxParams, new AjaxCallBack<String>() {
+//            @Override
+//            public void onFailure(Throwable t, int errorNo, String strMsg) {
+//                super.onFailure(t, errorNo, strMsg);
+//                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+//            }
+//
+//            @Override
+//            public void onStart() {
+//                super.onStart();
+//            }
+//
+//            @Override
+//            public void onLoading(long count, long current) {
+//                super.onLoading(count, current);
+//            }
+//
+//            @Override
+//            public void onSuccess(String t) {
+//                super.onSuccess(t);
+//                if (!StringUtils.isBlank(t)) {
+//                    Log.e(TAG, Constant.RESULT + API.GET_CLIENT_CONFIG + '\n' + t);
+//                    JSONStatus jsonStatus = BaseJSONData(t);
+//                    if (jsonStatus.isSuccess) {
+//                        handler.sendMessage(handler.obtainMessage(GET_CLIENT_CONFIG_SUCCESS, BaseJSONData(t)));
+//                    } else {
+//                        handler.sendMessage(handler.obtainMessage(GET_CLIENT_CONFIG_FALSE, BaseJSONData(t)));
+//                    }
+//                } else {
+//                    prompt(getResources().getString(R.string.request_no_data));
+//                }
+//            }
+//        });
+//    }
+//
+//    /***
+//     * device_type	10-iPhone/11-iPad/20-Android
+//     * version_android
+//     * @return json
+//     */
+//    private String makeJsonText(String versionAndroid) {
+//        JSONObject json = new JSONObject();
+//        try {
+//            json.put("device_type", Constant.DEVICE_TYPE);//0EB2961DE
+//            json.put("version_android", versionAndroid);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return json.toString();
+//    }
+//
+//    private void saveClientConfig() {
+//        if(clientConfigsList != null && clientConfigsList.size() > 0){
+//            for (int i = 0; i < clientConfigsList.size(); i++) {
+//                if(clientConfigsList.get(i).key.equals(Constant.KEY_VERSION_ANDROID)){
+//                    PreferencesUtils.putString(mContext, Constant.KEY_VERSION_ANDROID, clientConfigsList.get(i).value);
+//                    versionUrl = clientConfigsList.get(i).data;
+//                    Log.e(TAG, "version_value:" + clientConfigsList.get(i).value);
+//                    Log.e(TAG, "versionUrl:" + clientConfigsList.get(i).data);
+//                }
+//                if(clientConfigsList.get(i).key.equals(Constant.KEY_NEED_UPDATE)){
+//                    Log.e(TAG, Constant.KEY_NEED_UPDATE + clientConfigsList.get(i).value);
+//                    PreferencesUtils.putString(mContext, Constant.KEY_NEED_UPDATE, clientConfigsList.get(i).value);
+//                }
+//                if(clientConfigsList.get(i).key.equals(Constant.KEY_IS_TIPS)){
+//                    Log.e(TAG, Constant.KEY_IS_TIPS + clientConfigsList.get(i).value);
+//                    PreferencesUtils.putString(mContext, Constant.KEY_IS_TIPS, clientConfigsList.get(i).value);
+//                }
+//            }
+//        }
+//        //Is popup update hint
+//        Boolean isTips = false;
+//        if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_IS_TIPS))){
+//            if(PreferencesUtils.getString(mContext, Constant.KEY_IS_TIPS).equals(Constant.IS_TIPS_YES)){
+//                isTips = true;
+//            }
+//        }
+//        //Is do constraint update
+//        Boolean needUpdate = false;
+//        if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_NEED_UPDATE))){
+//            if(PreferencesUtils.getString(mContext, Constant.KEY_NEED_UPDATE).equals(Constant.NEED_UPDATE_YES)){
+//                //constraint update
+//                needUpdate = true;
+//            }
+//        }
+//        /** do constraint update*/
+//        if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_VERSION_ANDROID))){
+//            System.out.println("version:" + getVersionCode());
+//            Double currentVersion = Double.parseDouble(getVersionCode());
+//            Double newVersion = Double.parseDouble(PreferencesUtils.getString(mContext, Constant.KEY_VERSION_ANDROID));
+//            if(currentVersion < newVersion){
+//                //need update
+//                if(!StringUtils.isBlank(versionUrl)){
+//                    doUpdate(isTips, needUpdate);
+//                }else{
+//                    ToMain();
+//                }
+//            }else{
+//                ToMain();
+//            }
+//        }else{
+//            ToMain();
+//        }
+//    }
+//
+//    /** update before verify*/
+//    private void doUpdate(Boolean isTips, Boolean needUpdate) {
+//        if(isTips){
+//            //need prompt dialog
+//            if(needUpdate){
+//                //constraint update,prompt one button dialog
+//                showTokenDialog(LaunchIndexActivity.this, getResources().getString(R.string.found_newVersion), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        downloadApk(versionUrl);
+//                    }
+//                });
+//            }else{
+//                //not constraint update , prompt two dialog
+//                showDialog(LaunchIndexActivity.this, getResources().getString(R.string.found_newVersion), new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        downloadApk(versionUrl);
+//                    }
+//                }, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        ToMain();
+//                    }
+//                }, false).show();
+//            }
+//        }else{
+//            //not prompt dialog , background do update , if not constraint update..so not update
+//            if(needUpdate){
+//                //constraint update , prompt download dialog
+//                downloadApk(versionUrl);
+//            }
+//            //not need constraint update and not do update
+//        }
+//    }
+//
+//    private void downloadApk(String url){
+////		url = "http://www.imenu.so/android/iMenu.apk";//TEST
+//        final ProgressDialog downloadDialog = new ProgressDialog(mContext, R.style.LightDialog);
+//        downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        downloadDialog.setTitle(getResources().getString(R.string.down_downing));
+//        downloadDialog.setIndeterminate(false);
+//        downloadDialog.setCancelable(false);
+//        downloadDialog.setCanceledOnTouchOutside(false);
+//        downloadDialog.show();
+//        finalHttp.download(url, Constant.APK_TARGET, new AjaxCallBack<File>() {
+//            @Override
+//            public void onFailure(Throwable t, int errorNo, String strMsg) {
+//                super.onFailure(t, errorNo, strMsg);
+//                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+//                prompt(getResources().getString(R.string.request_erro) + strMsg);
+//            }
+//
+//            @Override
+//            public void onLoading(long count, long current) {
+//                super.onLoading(count, current);
+//                int progress;
+//                if (current != count && current != 0) {
+//                    progress = (int) (current / (float) count * 100);
+//                } else {
+//                    progress = 100;
+//                }
+//                downloadDialog.setProgress(progress);
+//                Log.e(TAG, "download:" + progress + "%");
+//            }
+//
+//            @Override
+//            public void onStart() {
+//                super.onStart();
+//                Log.e(TAG, "start download");
+//            }
+//
+//            @Override
+//            public void onSuccess(File t) {
+//                super.onSuccess(t);
+//                Log.e(TAG, "download success");
+//                downloadDialog.dismiss();
+//                PackageUtils.installNormal(mContext, Constant.APK_TARGET);
+//            }
+//        });
+//    }
 
-            @Override
-            public void onStart() {
-                super.onStart();
-            }
-
-            @Override
-            public void onLoading(long count, long current) {
-                super.onLoading(count, current);
-            }
-
-            @Override
-            public void onSuccess(String t) {
-                super.onSuccess(t);
-                if (!StringUtils.isBlank(t)) {
-                    Log.e(TAG, Constant.RESULT + API.GET_CLIENT_CONFIG + '\n' + t);
-                    JSONStatus jsonStatus = BaseJSONData(t);
-                    if (jsonStatus.isSuccess) {
-                        handler.sendMessage(handler.obtainMessage(GET_CLIENT_CONFIG_SUCCESS, BaseJSONData(t)));
-                    } else {
-                        handler.sendMessage(handler.obtainMessage(GET_CLIENT_CONFIG_FALSE, BaseJSONData(t)));
-                    }
-                } else {
-                    prompt(getResources().getString(R.string.request_no_data));
-                }
-            }
-        });
-    }
-
-    /***
-     * device_type	10-iPhone/11-iPad/20-Android
-     * version_android
-     * @return json
-     */
-    private String makeJsonText(String versionAndroid) {
-        JSONObject json = new JSONObject();
-        try {
-            json.put("device_type", Constant.DEVICE_TYPE);//0EB2961DE
-            json.put("version_android", versionAndroid);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return json.toString();
-    }
-
-    private void saveClientConfig() {
-        if(clientConfigsList != null && clientConfigsList.size() > 0){
-            for (int i = 0; i < clientConfigsList.size(); i++) {
-                if(clientConfigsList.get(i).key.equals(Constant.KEY_VERSION_ANDROID)){
-                    PreferencesUtils.putString(mContext, Constant.KEY_VERSION_ANDROID, clientConfigsList.get(i).value);
-                    versionUrl = clientConfigsList.get(i).data;
-                    Log.e(TAG, "version_value:" + clientConfigsList.get(i).value);
-                    Log.e(TAG, "versionUrl:" + clientConfigsList.get(i).data);
-                }
-                if(clientConfigsList.get(i).key.equals(Constant.KEY_NEED_UPDATE)){
-                    Log.e(TAG, Constant.KEY_NEED_UPDATE + clientConfigsList.get(i).value);
-                    PreferencesUtils.putString(mContext, Constant.KEY_NEED_UPDATE, clientConfigsList.get(i).value);
-                }
-                if(clientConfigsList.get(i).key.equals(Constant.KEY_IS_TIPS)){
-                    Log.e(TAG, Constant.KEY_IS_TIPS + clientConfigsList.get(i).value);
-                    PreferencesUtils.putString(mContext, Constant.KEY_IS_TIPS, clientConfigsList.get(i).value);
-                }
-            }
-        }
-        //Is popup update hint
-        Boolean isTips = false;
-        if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_IS_TIPS))){
-            if(PreferencesUtils.getString(mContext, Constant.KEY_IS_TIPS).equals(Constant.IS_TIPS_YES)){
-                isTips = true;
-            }
-        }
-        //Is do constraint update
-        Boolean needUpdate = false;
-        if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_NEED_UPDATE))){
-            if(PreferencesUtils.getString(mContext, Constant.KEY_NEED_UPDATE).equals(Constant.NEED_UPDATE_YES)){
-                //constraint update
-                needUpdate = true;
-            }
-        }
-        /** do constraint update*/
-        if(!StringUtils.isBlank(PreferencesUtils.getString(mContext, Constant.KEY_VERSION_ANDROID))){
-            System.out.println("version:" + getVersionCode());
-            Double currentVersion = Double.parseDouble(getVersionCode());
-            Double newVersion = Double.parseDouble(PreferencesUtils.getString(mContext, Constant.KEY_VERSION_ANDROID));
-            if(currentVersion < newVersion){
-                //need update
-                if(!StringUtils.isBlank(versionUrl)){
-                    doUpdate(isTips, needUpdate);
-                }else{
-                    ToMain();
-                }
-            }else{
-                ToMain();
-            }
-        }else{
-            ToMain();
-        }
-    }
-
-    /** update before verify*/
-    private void doUpdate(Boolean isTips, Boolean needUpdate) {
-        if(isTips){
-            //need prompt dialog
-            if(needUpdate){
-                //constraint update,prompt one button dialog
-                showTokenDialog(LaunchIndexActivity.this, getResources().getString(R.string.found_newVersion), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        downloadApk(versionUrl);
-                    }
-                });
-            }else{
-                //not constraint update , prompt two dialog
-                showDialog(LaunchIndexActivity.this, getResources().getString(R.string.found_newVersion), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        downloadApk(versionUrl);
-                    }
-                }, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ToMain();
-                    }
-                }, false).show();
-            }
-        }else{
-            //not prompt dialog , background do update , if not constraint update..so not update
-            if(needUpdate){
-                //constraint update , prompt download dialog
-                downloadApk(versionUrl);
-            }
-            //not need constraint update and not do update
-        }
-    }
-
-    private void downloadApk(String url){
-//		url = "http://www.imenu.so/android/iMenu.apk";//TEST
-        final ProgressDialog downloadDialog = new ProgressDialog(mContext, R.style.LightDialog);
-        downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        downloadDialog.setTitle(getResources().getString(R.string.down_downing));
-        downloadDialog.setIndeterminate(false);
-        downloadDialog.setCancelable(false);
-        downloadDialog.setCanceledOnTouchOutside(false);
-        downloadDialog.show();
-        finalHttp.download(url, Constant.APK_TARGET, new AjaxCallBack<File>() {
-            @Override
-            public void onFailure(Throwable t, int errorNo, String strMsg) {
-                super.onFailure(t, errorNo, strMsg);
-                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
-                prompt(getResources().getString(R.string.request_erro) + strMsg);
-            }
-
-            @Override
-            public void onLoading(long count, long current) {
-                super.onLoading(count, current);
-                int progress;
-                if (current != count && current != 0) {
-                    progress = (int) (current / (float) count * 100);
-                } else {
-                    progress = 100;
-                }
-                downloadDialog.setProgress(progress);
-                Log.e(TAG, "download:" + progress + "%");
-            }
-
-            @Override
-            public void onStart() {
-                super.onStart();
-                Log.e(TAG, "start download");
-            }
-
-            @Override
-            public void onSuccess(File t) {
-                super.onSuccess(t);
-                Log.e(TAG, "download success");
-                downloadDialog.dismiss();
-                PackageUtils.installNormal(mContext, Constant.APK_TARGET);
-            }
-        });
-    }
-
-    private String getVersionCode() {
-        PackageManager pm = getPackageManager();
-        PackageInfo packageInfo;
-        try {
-            packageInfo = pm.getPackageInfo(getPackageName(),
-                    PackageManager.GET_CONFIGURATIONS);
-            versionCode = packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        Log.e(TAG, "versionCode:" + versionCode);
-        return versionCode + "";
-    }
-
-    private void ToMain() {
-        Upload();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.e(TAG, "2000run -> ToMain");
-                startActivity(new Intent(mContext, MainActivity.class));
-                if (getIntent() != null && getIntent().getExtras() != null) {
-                    if (getIntent().getExtras().getSerializable("linkPushParams") != null) {
-                        LinkPushParams linkPushParams = (LinkPushParams) getIntent().getExtras().getSerializable("linkPushParams");
-                        switchPage(linkPushParams);
-                    }
-                }
-                finish();
-            }
-        }, 1800);
-    }
-
-    /** 获取城市列表请求*/
-    private void Upload(){
-        LHttpLib.getRegionList(context, new LHttpResponseHandler() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onLoading(long count, long current) {
-
-            }
-
-            @Override
-            public void onSuccess(JSONStatus jsonStatus) {
-                if (jsonStatus.isSuccess) {
-                    JSONObject data = jsonStatus.data;
-                    if(data != null){
-                        JSONArray jsonArray = data.optJSONArray("region_list");
-                        if(jsonArray != null && jsonArray.length() > 0){
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                Region region = new Region().parse(jsonArray.optJSONObject(i));
-                                if(db.findById(region.region_id, Region.class) != null){
-                                    db.update(region);
-                                }else{
-                                    db.save(region);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t, int errorNo, String strMsg) {
-
-            }
-        });
-    }
+//    private String getVersionCode() {
+//        PackageManager pm = getPackageManager();
+//        PackageInfo packageInfo;
+//        try {
+//            packageInfo = pm.getPackageInfo(getPackageName(),
+//                    PackageManager.GET_CONFIGURATIONS);
+//            versionCode = packageInfo.versionName;
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        Log.e(TAG, "versionCode:" + versionCode);
+//        return versionCode + "";
+//    }
 }

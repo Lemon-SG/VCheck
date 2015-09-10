@@ -149,7 +149,13 @@ public class OrderDetailActivity extends BaseActivity {
         finalBitmap.configLoadfailImage(R.mipmap.default_menu);
         finalHttp = new FinalHttp();
         orderId = getIntent().getExtras().getString("orderId");
-        UploadAdapter();
+        if(StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_TOKEN))
+                && StringUtils.isBlank(PreferencesUtils.getString(context, Constant.KEY_MEMBER_ID))) {
+            //未登录状态
+            startActivityForResult(new Intent(context, LoginActivity.class), Constant.RESQUEST_CODE);
+        } else {
+            UploadAdapter();
+        }
         if(!StringUtils.isBlank(getIntent().getExtras().getString("orderType"))) {
             orderType = getIntent().getExtras().getString("orderType");
             if(orderType.equals(Constant.ORDER_TYPE_RETURN_OVER) || orderType.equals(Constant.ORDER_TYPE_RETURN_IN)) {
@@ -614,6 +620,14 @@ public class OrderDetailActivity extends BaseActivity {
                     //申请退款返回
                     changeOrderStatus = true;
                     UploadAdapter_ReturnDetail();
+                    break;
+                case Constant.RESULT_CODE_LOGIN:
+                    Log.e(TAG, "resultCode ->" + resultCode);
+                    initData();
+                    break;
+                case Constant.RESULT_CODE_CANCEL_LOGIN:
+                    Log.e(TAG, "resultCode(取消登录) ->" + resultCode);
+                    finish();
                     break;
             }
         }

@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/gray_b3"
             android:layout_centerInParent="true"
-            android:text="2张可使用礼券"/>
+            android:text="0张可使用礼券"/>
 
         <TextView
             android:id="@+id/tvRightLinePoint"
@@ -122,7 +122,7 @@
         android:textColor="@color/top_black"
         android:gravity="center"
         android:textSize="16sp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@drawable/bg_voucher_shape"/>
 
     <cc.siyo.iMenu.VCheck.view.RefreshListView

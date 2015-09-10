@@ -7,7 +7,7 @@
     <!-- 描边 -->
      <stroke
      android:width="5dp"
-     android:color="@color/blue_2" />
+     android:color="@color/gray_b3" />
 
     <!-- 渐变 -->
     <!-- <gradient -->
@@ -18,7 +18,7 @@
     <!-- 圆角 -->
     <corners
 
-        android:radius="300dp" />
+        android:radius="200dp" />
 
     <!--<corners-->
         <!--android:bottomLeftRadius="5dp"-->
