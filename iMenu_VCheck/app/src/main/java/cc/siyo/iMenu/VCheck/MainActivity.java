@@ -37,6 +37,7 @@ import java.util.TimerTask;
 
 import cc.siyo.iMenu.VCheck.activity.CollectListActivity;
 import cc.siyo.iMenu.VCheck.activity.DetailActivity;
+import cc.siyo.iMenu.VCheck.activity.Launch;
 import cc.siyo.iMenu.VCheck.activity.MineActivity;
 import cc.siyo.iMenu.VCheck.activity.OrderDetailActivity;
 import cc.siyo.iMenu.VCheck.activity.OrderListActivity;
@@ -71,20 +72,20 @@ public class MainActivity extends FragmentActivity {
     /** 城市名称*/
     private ListView list_city;
     private PopupWindow popupWindow;
-    /** 动画控制类*/
-    private AnimationController animationController;
     /** 城市列表*/
     private List<Region> regionList;
     private FinalDb db;
     private Handler handler = new Handler() {};
     private Region region;
-    LocationBroadcastReceiver locationBroadcastReceiver;
+//    LocationBroadcastReceiver locationBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        Launch.instance = this;
 
         db = FinalDb.create(MainActivity.this, true);
         region = db.findById(29, Region.class);
@@ -103,10 +104,10 @@ public class MainActivity extends FragmentActivity {
         /** 只留一个分类*/
         //        TabPageIndicator indicator = (TabPageIndicator)findViewById(R.id.indicator);
         //        indicator.setViewPager(pager);
-        animationController = new AnimationController();
 
-        if(getIntent().getExtras() != null
+        if(getIntent() != null && getIntent().getExtras() != null
                 && getIntent().getExtras().getSerializable("linkPushParams") != null) {
+            Log.e(TAG, "have link");
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -116,15 +117,15 @@ public class MainActivity extends FragmentActivity {
         }
 
         // 注册广播
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constant.LOCATION_ACTION);
-        locationBroadcastReceiver  = new LocationBroadcastReceiver();
-        this.registerReceiver(locationBroadcastReceiver, filter);
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(Constant.LOCATION_ACTION);
+//        locationBroadcastReceiver  = new LocationBroadcastReceiver();
+//        this.registerReceiver(locationBroadcastReceiver, filter);
 
-        // 启动服务
-        Intent intent = new Intent();
-        intent.setClass(this, LocationSvc.class);
-        startService(intent);
+//        // 启动服务
+//        Intent intent = new Intent();
+//        intent.setClass(this, LocationSvc.class);
+//        startService(intent);
     }
 
     private void initView() {
@@ -283,20 +284,22 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    public class LocationBroadcastReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (!intent.getAction().equals(Constant.LOCATION_ACTION)) return;
-            String locationInfo = intent.getStringExtra(Constant.LOCATION);
-            Log.e(TAG, "locationInfo->" + locationInfo);
-
-        }
-    }
+//    public class LocationBroadcastReceiver extends BroadcastReceiver {
+//
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            if (!intent.getAction().equals(Constant.LOCATION_ACTION)) return;
+//            String locationInfo = intent.getStringExtra(Constant.LOCATION);
+//            Log.e(TAG, "locationInfo->" + locationInfo);
+//
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(locationBroadcastReceiver);// 不需要时注销
+        Log.e(TAG, "onDestroy");
+//        unregisterReceiver(locationBroadcastReceiver);// 不需要时注销
     }
+
 }

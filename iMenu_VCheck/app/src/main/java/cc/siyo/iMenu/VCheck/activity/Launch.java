@@ -1,5 +1,6 @@
 package cc.siyo.iMenu.VCheck.activity;
 
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,6 +36,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cc.siyo.iMenu.VCheck.MainActivity;
 import cc.siyo.iMenu.VCheck.MyApplication;
 import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.API;
@@ -45,6 +47,7 @@ import cc.siyo.iMenu.VCheck.model.FirstLaunch;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.LinkPushParams;
 import cc.siyo.iMenu.VCheck.model.Region;
+import cc.siyo.iMenu.VCheck.util.ActivityStackManager;
 import cc.siyo.iMenu.VCheck.util.CheckNetWorkUtil;
 import cc.siyo.iMenu.VCheck.util.PackageUtils;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
@@ -90,6 +93,13 @@ public class Launch extends BaseActivity{
         // 传递的参数为ApplicationContext
         Context context = getApplicationContext();
         XGPushManager.registerPush(context);
+        if(PreferencesUtils.getInt(context, Constant.KEY_PUSH_ALL, Constant.PUSH_ON) == Constant.PUSH_ON) {
+            XGPushManager.deleteTag(this, Constant.PUSH_CLOSE);
+            XGPushManager.setTag(this, Constant.PUSH_OPEN);
+        } else {
+            XGPushManager.deleteTag(this, Constant.PUSH_OPEN);
+            XGPushManager.setTag(this, Constant.PUSH_CLOSE);
+        }
         return R.layout.activity_launch;
     }
 
@@ -111,13 +121,17 @@ public class Launch extends BaseActivity{
             linkPushParams = (LinkPushParams) getIntent().getExtras().getSerializable("linkPushParams");
         }
     }
-
+    public static MainActivity instance = null;
     @Override
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "onResume");
-        finalHttp = new FinalHttp();
+        if(instance != null) {
+            Log.e(TAG, "instance");
+            instance.finish();
+        }
         mContext = this;
+        finalHttp = new FinalHttp();
         //第一次启动为-1，启动后为1
         int firstLaunch = PreferencesUtils.getInt(context, Constant.KEY_IS_LAUNCH);
         if(firstLaunch == -1) {
@@ -127,6 +141,7 @@ public class Launch extends BaseActivity{
             Intent intent = new Intent(mContext, VideoActivity.class);
             startActivity(intent);
         } else {
+            GetPushMsg();
             finalHttp = new FinalHttp();
             if (checkNetwork()) {
                 if (!isHttp) {
@@ -134,7 +149,6 @@ public class Launch extends BaseActivity{
                     UploadAdapter(getVersionCode());
                 }
             }
-            GetPushMsg();
         }
     }
 
@@ -143,7 +157,7 @@ public class Launch extends BaseActivity{
     /** 获取推送命令*/
     private void GetPushMsg() {
         XGPushClickedResult result = XGPushManager.onActivityStarted(this);
-        Log.d("Launch", "onResumeXGPushClickedResult:" + result);
+        Log.e("Launch", "onResumeXGPushClickedResult:" + result);
         //[msgId=9, title=知味, customContent={"link_value":"article_id=2","link_route":"article"}, activityName=cc.siyo.iMenu.VCheck.activity.Launch, actionType=0, notificationActionType1]
         if (result != null) { // 判断是否来自信鸽的打开方式
             try {
@@ -159,6 +173,9 @@ public class Launch extends BaseActivity{
         Log.e(TAG, "run -> ToIndex");
         Intent intent = new Intent(mContext, LaunchIndexActivity.class);
         intent.putExtra("BannerInfo", bannerInfo);
+        if(linkPushParams != null) {
+            Log.e(TAG, "have link-->" + linkPushParams.link_route + linkPushParams.link_value);
+        }
         intent.putExtra("linkPushParams", linkPushParams);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -550,47 +567,52 @@ public class Launch extends BaseActivity{
 
     private void downloadApk(String url){
 //		url = "http://www.imenu.so/android/iMenu.apk";//TEST
-        final ProgressDialog downloadDialog = new ProgressDialog(mContext, R.style.LightDialog);
-        downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        downloadDialog.setTitle(getResources().getString(R.string.down_downing));
-        downloadDialog.setIndeterminate(false);
-        downloadDialog.setCancelable(false);
-        downloadDialog.setCanceledOnTouchOutside(false);
-        downloadDialog.show();
-        finalHttp.download(url, Constant.APK_TARGET, new AjaxCallBack<File>() {
-            @Override
-            public void onFailure(Throwable t, int errorNo, String strMsg) {
-                super.onFailure(t, errorNo, strMsg);
-                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
-                prompt(getResources().getString(R.string.request_erro) + strMsg);
-            }
 
-            @Override
-            public void onLoading(long count, long current) {
-                super.onLoading(count, current);
-                int progress;
-                if (current != count && current != 0) {
-                    progress = (int) (current / (float) count * 100);
-                } else {
-                    progress = 100;
-                }
-                downloadDialog.setProgress(progress);
-                Log.e(TAG, "download:" + progress + "%");
-            }
+        Uri uri = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
 
-            @Override
-            public void onStart() {
-                super.onStart();
-                Log.e(TAG, "start download");
-            }
-
-            @Override
-            public void onSuccess(File t) {
-                super.onSuccess(t);
-                Log.e(TAG, "download success");
-                downloadDialog.dismiss();
-                PackageUtils.installNormal(mContext, Constant.APK_TARGET);
-            }
-        });
+//        final ProgressDialog downloadDialog = new ProgressDialog(mContext, R.style.LightDialog);
+//        downloadDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//        downloadDialog.setTitle(getResources().getString(R.string.down_downing));
+//        downloadDialog.setIndeterminate(false);
+//        downloadDialog.setCancelable(false);
+//        downloadDialog.setCanceledOnTouchOutside(false);
+//        downloadDialog.show();
+//        finalHttp.download(url, Constant.APK_TARGET, new AjaxCallBack<File>() {
+//            @Override
+//            public void onFailure(Throwable t, int errorNo, String strMsg) {
+//                super.onFailure(t, errorNo, strMsg);
+//                System.out.println("errorNo:" + errorNo + ",strMsg:" + strMsg);
+//                prompt(getResources().getString(R.string.request_erro) + strMsg);
+//            }
+//
+//            @Override
+//            public void onLoading(long count, long current) {
+//                super.onLoading(count, current);
+//                int progress;
+//                if (current != count && current != 0) {
+//                    progress = (int) (current / (float) count * 100);
+//                } else {
+//                    progress = 100;
+//                }
+//                downloadDialog.setProgress(progress);
+//                Log.e(TAG, "download:" + progress + "%");
+//            }
+//
+//            @Override
+//            public void onStart() {
+//                super.onStart();
+//                Log.e(TAG, "start download");
+//            }
+//
+//            @Override
+//            public void onSuccess(File t) {
+//                super.onSuccess(t);
+//                Log.e(TAG, "download success");
+//                downloadDialog.dismiss();
+//                PackageUtils.installNormal(mContext, Constant.APK_TARGET);
+//            }
+//        });
     }
 }

@@ -84,7 +84,8 @@ public class LaunchIndexActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
                 //跳过
-                if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().getSerializable("linkPushParams") != null) {
+                if (getIntent() != null && getIntent().getExtras() != null
+                        && getIntent().getExtras().getSerializable("linkPushParams") != null) {
                     LinkPushParams linkPushParams = (LinkPushParams) getIntent().getExtras().getSerializable("linkPushParams");
                     ToMain(linkPushParams, true);
                 } else {
@@ -107,15 +108,28 @@ public class LaunchIndexActivity extends BaseActivity{
                 }
             });
         }
-        ToMain(null, false);
+        if (getIntent() != null && getIntent().getExtras() != null
+                && getIntent().getExtras().getSerializable("linkPushParams") != null) {
+            Log.e(TAG, "have link");
+            LinkPushParams linkPushParams = (LinkPushParams) getIntent().getExtras().getSerializable("linkPushParams");
+            ToMain(linkPushParams, true);
+        } else {
+            ToMain(null, false);
+        }
     }
 
     private void ToMain(final LinkPushParams linkPushParams, boolean isSkip) {
-        final Intent intent = new Intent(mContext, MainActivity.class);
+        final Intent intent = new Intent(LaunchIndexActivity.this, MainActivity.class);
         if (linkPushParams != null) {
+            Log.e(TAG, "linkPushParams have link" + linkPushParams.link_route + linkPushParams.link_value);
             intent.putExtra("linkPushParams", linkPushParams);
         }
         if(isSkip) {
+            Log.e(TAG, "isSkipRun -> ToMain");
+//            if(intent.getExtras().getSerializable("linkPushParams") == null) {
+//                Log.e(TAG, "intent no have params");
+//            }
+//            intent.putExtra("linkPushParam", "yyyyyyy");
             startActivity(intent);
             finish();
         } else {
@@ -170,49 +184,49 @@ public class LaunchIndexActivity extends BaseActivity{
         });
     }
 
-    /** 根据参数进行跳转*/
-    private void switchPage(LinkPushParams linkPushParams) {
-        if(linkPushParams.link_route.equals(Constant.LINK_WEB)) {
-            //打开网页链接
-            Intent intent = new Intent(this, WebViewActivity.class);
-            intent.putExtra(Constant.INTENT_WEB_URL, linkPushParams.link_value);
-            intent.putExtra(Constant.INTENT_WEB_NAME, Constant.INTENT_WEB_NAME_WEB);
-            startActivity(intent);
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_HOME)) {
-            //打开首页，不做操作
-            Intent intent = new Intent(mContext, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_ARTICLE)) {
-            //打开文章详情,传递ID
-            Intent intent = new Intent(context, DetailActivity.class);
-            intent.putExtra(Constant.INTENT_ARTICLE_ID, linkPushParams.id);
-            startActivity(intent);
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_MEMBER)) {//打开用户中心
-            startActivity(new Intent(context, MineActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_MESSAGE)) {//打开消息列表
-            startActivity(new Intent(context, MessageActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_COLLECTION)) {//打开收藏列表
-            startActivity(new Intent(context, CollectListActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_ORDER_LIST)) {//打开订单列表
-            startActivity(new Intent(context, OrderListActivity.class));
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_ORDER_DETAIL)) {//打开订单详情,传递ID
-            Intent intent = new Intent(context, OrderDetailActivity.class);
-            intent.putExtra("orderId", linkPushParams.id);
-            startActivity(intent);
-        }
-        if(linkPushParams.link_route.equals(Constant.LINK_VOUCHER)) {//打开礼券列表
-            startActivity(new Intent(context, VoucherListActivity.class));
-        }
-        finish();
-    }
+//    /** 根据参数进行跳转*/
+//    private void switchPage(LinkPushParams linkPushParams) {
+//        if(linkPushParams.link_route.equals(Constant.LINK_WEB)) {
+//            //打开网页链接
+//            Intent intent = new Intent(this, WebViewActivity.class);
+//            intent.putExtra(Constant.INTENT_WEB_URL, linkPushParams.link_value);
+//            intent.putExtra(Constant.INTENT_WEB_NAME, Constant.INTENT_WEB_NAME_WEB);
+//            startActivity(intent);
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_HOME)) {
+//            //打开首页，不做操作
+//            Intent intent = new Intent(mContext, MainActivity.class);
+//            startActivity(intent);
+//            finish();
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_ARTICLE)) {
+//            //打开文章详情,传递ID
+//            Intent intent = new Intent(context, DetailActivity.class);
+//            intent.putExtra(Constant.INTENT_ARTICLE_ID, linkPushParams.id);
+//            startActivity(intent);
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_MEMBER)) {//打开用户中心
+//            startActivity(new Intent(context, MineActivity.class));
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_MESSAGE)) {//打开消息列表
+//            startActivity(new Intent(context, MessageActivity.class));
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_COLLECTION)) {//打开收藏列表
+//            startActivity(new Intent(context, CollectListActivity.class));
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_ORDER_LIST)) {//打开订单列表
+//            startActivity(new Intent(context, OrderListActivity.class));
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_ORDER_DETAIL)) {//打开订单详情,传递ID
+//            Intent intent = new Intent(context, OrderDetailActivity.class);
+//            intent.putExtra("orderId", linkPushParams.id);
+//            startActivity(intent);
+//        }
+//        if(linkPushParams.link_route.equals(Constant.LINK_VOUCHER)) {//打开礼券列表
+//            startActivity(new Intent(context, VoucherListActivity.class));
+//        }
+//        finish();
+//    }
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {

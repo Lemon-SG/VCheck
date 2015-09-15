@@ -7,6 +7,7 @@ package cc.siyo.iMenu.VCheck.model;
 public class API {
 
     public static final String server = "http://218.244.158.175/imenu_test/app_interface_vcheck/index.php";
+//    public static final String server = "http://www.imenu.so/app_interface_vcheck/index.php";
     /** LOGO图片路径*/
     public static final String LOGO = "http://www.imenu.so/app_interface_vcheck/view/image/icon.png";
 

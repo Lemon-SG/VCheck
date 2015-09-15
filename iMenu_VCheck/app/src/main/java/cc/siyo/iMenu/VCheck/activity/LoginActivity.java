@@ -334,7 +334,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.iv_login_weChat:
                 //微信登录
-                showProgressDialog(getResources().getString(R.string.loading));
+//                showProgressDialog(getResources().getString(R.string.loading));
                 Platform weChat = ShareSDK.getPlatform(context, Wechat.NAME);
                 weChat.setPlatformActionListener(new WeChatPlatformActionListener());
                 weChat.showUser(null);
@@ -390,23 +390,25 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
         @Override
         public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-            closeProgressDialog();
+//            closeProgressDialog();
             Log.e(TAG, "微信登录回调onComplete ->");
             if(hashMap != null && !hashMap.isEmpty()){
+                showProgressDialog(getResources().getString(R.string.loading));
                 UploadAdapter(hashMap);
             }
         }
 
         @Override
         public void onError(Platform platform, int i, Throwable throwable) {
-            closeProgressDialog();
+//            closeProgressDialog();
             Log.e(TAG, "微信登录回调onError ->");
             throwable.printStackTrace();
         }
 
         @Override
         public void onCancel(Platform platform, int i) {
-            closeProgressDialog();
+//            closeProgressDialog();
+            prompt("您已取消登录");
             Log.e(TAG, "微信登录回调onCancel ->");
         }
     }
@@ -482,4 +484,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private ProFile proFile;
+
+    @Override
+    public void onBackPressed() {
+        setResult(Constant.RESULT_CODE_CANCEL_LOGIN);
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        super.onBackPressed();
+    }
 }

@@ -106,6 +106,8 @@ public class MainFragment extends BaseFragment{
     private Timer timer;
     /** 当前展示的页面 */
     private int arg0;
+    /** 有无广告头部所影响的item的点击postion差*/
+    private int pos = 1;
 
     public static MainFragment newInstance(Region region) {
         Bundle args = new Bundle();
@@ -138,12 +140,7 @@ public class MainFragment extends BaseFragment{
         store_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int pos = 1;
-                if(rl_main_imgList.isShown()) {//有广告，索引+1
-                    pos ++;
-                } else {//无广告
-                    pos = 1;
-                }
+//                Log.e(TAG, "position->" + position + "pos->" + pos + "----=>" + (position - pos));
                 if (mainAdapter.getDataList().size() > (position - pos)) {
                     Intent intent = new Intent(getActivity(), DetailActivity.class);
                     intent.putExtra("article_id", mainAdapter.getDataList().get(position - pos).article_id);
@@ -377,6 +374,7 @@ public class MainFragment extends BaseFragment{
                     if(jsonStatus.data.optJSONArray("banner_list") != null
                             && jsonStatus.data.optJSONArray("banner_list").length() > 0) {
                         //有广告，显示
+                        pos ++;
                         store_list.addHeaderView(headView);
                         rl_main_imgList.setVisibility(View.VISIBLE);
                         driver.setVisibility(View.VISIBLE);
@@ -404,6 +402,7 @@ public class MainFragment extends BaseFragment{
                         initTimer();
                     } else {
                         //无广告
+                        pos = 1;
                         store_list.removeHeaderView(headView);
                         rl_main_imgList.setVisibility(View.GONE);
                         driver.setVisibility(View.GONE);

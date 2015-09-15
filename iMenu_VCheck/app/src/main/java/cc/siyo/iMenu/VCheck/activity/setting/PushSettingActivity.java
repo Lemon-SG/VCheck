@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.tencent.android.tpush.XGPushManager;
+
 import net.tsz.afinal.FinalHttp;
 import net.tsz.afinal.annotation.view.ViewInject;
 import net.tsz.afinal.http.AjaxCallBack;
@@ -147,8 +149,12 @@ public class PushSettingActivity extends BaseActivity implements View.OnClickLis
                 //推送总开关
                 if(AllStatus == Constant.PUSH_ON) {
                     AllStatus = Constant.PUSH_OFF;
+                    XGPushManager.deleteTag(this, Constant.PUSH_OPEN);
+                    XGPushManager.setTag(this, Constant.PUSH_CLOSE);
                 } else {
                     AllStatus = Constant.PUSH_ON;
+                    XGPushManager.deleteTag(this, Constant.PUSH_CLOSE);
+                    XGPushManager.setTag(this, Constant.PUSH_OPEN);
                 }
                 savePreferences(Constant.KEY_PUSH_ALL, AllStatus);
                 UploadAdapter_Edit(AllStatus + "", PayStatus + "", ReturnStatus + "", VoucherStatus + "");

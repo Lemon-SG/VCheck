@@ -273,6 +273,7 @@
             android:id="@+id/rlSettingSina"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:alpha="0.5"
             android:padding="15dp">
 
             <TextView

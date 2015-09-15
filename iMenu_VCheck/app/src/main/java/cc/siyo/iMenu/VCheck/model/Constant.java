@@ -10,6 +10,12 @@ public class Constant {
 
     /** 用于判断微信支付返回结果:true->是微信支付返回，false->不是*/
     public static boolean isWeChetPay = false;
+    /** 微信支付返回结果标石：-1->支付失败，-2->取消支付*/
+    public static String wePayResultCode = "-1";
+    /** 信鸽推送标签组 开启标石*/
+    public static final String PUSH_OPEN = "push_open";
+    /** 信鸽推送标签组 开启标石*/
+    public static final String PUSH_CLOSE = "push_close";
 
     /*****************************   标石类   *********************************/
     /** 匹配手机号码*/

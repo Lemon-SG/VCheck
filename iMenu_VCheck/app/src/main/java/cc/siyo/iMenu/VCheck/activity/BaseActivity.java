@@ -21,6 +21,7 @@ import cc.siyo.iMenu.VCheck.R;
 import cc.siyo.iMenu.VCheck.model.Constant;
 import cc.siyo.iMenu.VCheck.model.JSONStatus;
 import cc.siyo.iMenu.VCheck.model.Share;
+import cc.siyo.iMenu.VCheck.util.ActivityStackManager;
 import cc.siyo.iMenu.VCheck.util.PreferencesUtils;
 import cc.siyo.iMenu.VCheck.util.StringUtils;
 import cc.siyo.iMenu.VCheck.view.LoadingDialog;
@@ -58,7 +59,7 @@ public abstract class BaseActivity extends FinalActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        ActivityStackManager.getActivityManager().push(this);
+        ActivityStackManager.getActivityManager().push(this);
         context = this;
         TAG = context.getClass().getName();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -278,8 +279,8 @@ public abstract class BaseActivity extends FinalActivity {
     @Override
     public void onBackPressed() {
     	super.onBackPressed();
-    	finish();
-    	overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//    	finish();
+//    	overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     /** 公共解析返回数据成功与否

@@ -162,14 +162,14 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                                 }
                             }
                             if(data.optJSONObject("collection_info") != null){//收藏
-                                String couponTotalCount = data.optJSONObject("collection_info").optString("coupon_total_count");
-                                if(!couponTotalCount.equals("0")) {
-                                    tv_collect_count.setText(couponTotalCount);
+                                String collectionCount = data.optJSONObject("collection_info").optString("collection_total_count");
+                                if(!collectionCount.equals("0")) {
+                                    tv_collect_count.setText(collectionCount);
                                     tv_collect_count.setVisibility(View.VISIBLE);
                                 }
                             }
                             if(data.optJSONObject("voucher_info") != null){//礼券详情
-                                voucherCount = data.optJSONObject("voucher_info").optString("voucher_total_count");
+                                voucherCount = data.optJSONObject("voucher_info").optString("voucher_use_count");//可使用礼券数量
                                 if(!voucherCount.equals("0")) {
                                     tv_coupon_count.setText(voucherCount);
                                     tv_coupon_count.setVisibility(View.VISIBLE);
@@ -327,8 +327,7 @@ public class MineActivity extends BaseActivity implements View.OnClickListener{
                     startActivity(intent);
                 }else{prompt("请先登录");}
                 break;
-            case R.id.llVoucherList:
-                //我的礼券
+            case R.id.llVoucherList://我的礼券
                 if(!StringUtils.isBlank(PreferencesUtils.getString(MineActivity.this, Constant.KEY_TOKEN))){
                     Intent intent = new Intent(MineActivity.this, VoucherListActivity.class);
                     intent.putExtra(Constant.INTENT_VOUCHER_TYPE, Constant.INTENT_VOUCHER_SHOW);

@@ -76,19 +76,49 @@ public class CollectAdapter extends AbsAdapter<Article>{
         @Override
         public void updateData(final Article article, int position) {
             finalBitmap.display(iv_collect_menu, article.article_image.source);
-            switch (Integer.parseInt(article.menu_info.menu_status.menu_status_id)) {
-                case Constant.MENU_STATUS_OUT://已售罄
-                    tv_collect_status.setText(article.menu_info.menu_status.menu_status);
-                    tv_collect_pay.setVisibility(View.GONE);
-                    break;
-                case Constant.MENU_STATUS_OVER://已结束
-                    tv_collect_status.setText(article.menu_info.menu_status.menu_status);
-                    tv_collect_pay.setVisibility(View.GONE);
-                    break;
-                case Constant.MENU_STATUS_SALE://销售中
-                    tv_collect_status.setText("售卖中");
-                    tv_collect_pay.setVisibility(View.VISIBLE);
-                    break;
+
+            if(article.orderInfo != null) {
+                tv_collect_status.setText(article.menu_info.menu_status.menu_status);
+                tv_collect_pay.setVisibility(View.VISIBLE);
+                tv_collect_pay.setText("立即支付");
+                tv_collect_pay.setTextColor(context.getResources().getColor(R.color.green));
+                tv_collect_pay.setBackgroundResource(R.drawable.bg_order_green_shape);
+
+                tv_collect_pay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, OrderConfirmActivity.class);
+                        intent.putExtra("orderInfo", article.orderInfo);
+                        context.startActivity(intent);
+                    }
+                });
+            }else {
+                switch (Integer.parseInt(article.menu_info.menu_status.menu_status_id)) {
+                    case Constant.MENU_STATUS_OUT://已售罄
+                        tv_collect_status.setText(article.menu_info.menu_status.menu_status);
+                        tv_collect_pay.setVisibility(View.GONE);
+                        break;
+                    case Constant.MENU_STATUS_OVER://已结束
+                        tv_collect_status.setText(article.menu_info.menu_status.menu_status);
+                        tv_collect_pay.setVisibility(View.GONE);
+                        break;
+                    case Constant.MENU_STATUS_SALE://销售中
+                        tv_collect_status.setText("售卖中");
+                        tv_collect_pay.setVisibility(View.VISIBLE);
+                        tv_collect_pay.setText("立即购买");
+                        tv_collect_pay.setTextColor(context.getResources().getColor(R.color.orange_red));
+                        tv_collect_pay.setBackgroundResource(R.drawable.bg_order_org_shape);
+                        break;
+                }
+
+                tv_collect_pay.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, OrderWriteActivity.class);
+                        intent.putExtra("article", article);
+                        context.startActivity(intent);
+                    }
+                });
             }
             tv_collect_menu_name.setText(article.menu_info.menu_name);
             if(!StringUtils.isBlank(article.menu_info.price.special_price)) {
@@ -98,14 +128,6 @@ public class CollectAdapter extends AbsAdapter<Article>{
                 //无促销价格
                 tv_collect_menu_price.setText(article.menu_info.price.original_price + article.menu_info.price.price_unit);
             }
-            tv_collect_pay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, OrderWriteActivity.class);
-                    intent.putExtra("article", article);
-                    context.startActivity(intent);
-                }
-            });
             llCollectItem.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {

@@ -509,8 +509,16 @@ public class OrderConfirmActivity extends BaseActivity implements View.OnClickLi
         super.onResume();
         if(Constant.isWeChetPay) {
             Constant.isWeChetPay = false;
-            //微信支付返回
-            Upload(BaseAjaxParams(API.SUBMIT_PAY_ORDER, makeJsonTextSubmitOrder("")), SUBMIT_PAY_ORDER_SUCCESS);
+            if(Constant.wePayResultCode.equals("-1")) {
+                //支付失败
+                prompt("支付失败，请重试");
+            } else if(Constant.wePayResultCode.equals("-2")) {
+                //取消支付
+                prompt("您取消了支付，如有疑问请联系客服[400-836-9917]");
+            } else {
+                //微信支付返回
+                Upload(BaseAjaxParams(API.SUBMIT_PAY_ORDER, makeJsonTextSubmitOrder("")), SUBMIT_PAY_ORDER_SUCCESS);
+            }
         }
     }
 

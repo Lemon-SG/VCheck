@@ -81,10 +81,12 @@ public class OrderAdapter extends AbsAdapter<MemberOrder>{
             tv_order_menu_name.setText(memberOrder.order_info.menu.menu_name);
             if(!StringUtils.isBlank(memberOrder.order_info.menu.price.special_price)) {
                 //有促销价格
-                tv_order_menu_price.setText(memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
+//                tv_order_menu_price.setText(memberOrder.order_info.menu.price.special_price + memberOrder.order_info.menu.price.price_unit);
+                tv_order_menu_price.setText(memberOrder.order_info.totalPrice.special_price + memberOrder.order_info.totalPrice.price_unit);
             } else {
                 //无促销价格
-                tv_order_menu_price.setText(memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
+//                tv_order_menu_price.setText(memberOrder.order_info.menu.price.original_price + memberOrder.order_info.menu.price.price_unit);
+                tv_order_menu_price.setText(memberOrder.order_info.totalPrice.original_price + memberOrder.order_info.totalPrice.price_unit);
             }
             tv_order_menu_count.setText(memberOrder.order_info.menu.count);
             if(memberOrder.order_info.order_type.equals(Constant.ORDER_TYPE_NO_PAY)) {

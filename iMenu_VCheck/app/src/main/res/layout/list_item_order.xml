@@ -53,7 +53,7 @@
                 android:textColor="@color/gray_b3"
                 android:textSize="12sp"
                 android:singleLine="true"
-                android:text="单价:"/>
+                android:text="合计:"/>
 
             <TextView
                 android:id="@+id/tv_order_menu_price"

@@ -58,15 +58,16 @@ public class WebViewActivity extends BaseActivity {
 
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                    view.loadUrl(url);
                     if (url.contains("vcheck://")) {
                         Log.e(TAG, "contains");
                         try {
+                            view.loadUrl("file:///android_asset/skip.html");
                             GetWebMsg(url);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     } else {
+                        view.loadUrl(url);
                         Log.e(TAG, "no contains");
                     }
                     return true;

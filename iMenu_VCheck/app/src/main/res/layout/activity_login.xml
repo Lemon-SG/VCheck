@@ -35,9 +35,9 @@
             android:textColor="@color/black"
             android:singleLine="true"
             android:textSize="14sp"
-            android:text="18629692029"
+            android:text=""
             android:hint="注册邮箱/手机号"/>
-
+        <!--18629692029-->
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -51,10 +51,10 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 android:singleLine="true"
-                android:text="111111"
+                android:text=""
                 android:inputType="textPassword"
                 android:hint="密码"/>
-
+            <!--111111-->
             <ImageView
                 android:id="@+id/iv_forget_pass"
                 android:layout_width="wrap_content"

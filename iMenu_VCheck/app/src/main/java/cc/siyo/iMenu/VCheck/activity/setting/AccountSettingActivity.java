@@ -179,7 +179,7 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
                 rlSettinWeChat.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showProgressDialog(getResources().getString(R.string.loading));
+//                        showProgressDialog(getResources().getString(R.string.loading));
                         Platform weChat = ShareSDK.getPlatform(context, Wechat.NAME);
                         weChat.setPlatformActionListener(new WeChatPlatformActionListener());
                         weChat.showUser(null);
@@ -194,15 +194,15 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
             } else {
                 tv_setting_sina.setText("未启用");
                 tv_setting_sina.setTextColor(getResources().getColor(R.color.gray_87));
-                rlSettingSina.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showProgressDialog(getResources().getString(R.string.loading));
-                        Platform sina = ShareSDK.getPlatform(context, SinaWeibo.NAME);
-                        sina.setPlatformActionListener(new SinaPlatformActionListener());
-                        sina.showUser(null);
-                    }
-                });
+//                rlSettingSina.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        showProgressDialog(getResources().getString(R.string.loading));
+//                        Platform sina = ShareSDK.getPlatform(context, SinaWeibo.NAME);
+//                        sina.setPlatformActionListener(new SinaPlatformActionListener());
+//                        sina.showUser(null);
+//                    }
+//                });
             }
             if(!StringUtils.isBlank(member.email)){
                 tv_setting_email.setText(hidEmail(member.email));
@@ -629,9 +629,10 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
 
         @Override
         public void onComplete(Platform platform, int i, HashMap<String, Object> hashMap) {
-            closeProgressDialog();
+//            closeProgressDialog();
             Log.e(TAG, "微信登录回调onComplete ->");
             if(hashMap != null && !hashMap.isEmpty()){//绑定微信
+                showProgressDialog(getResources().getString(R.string.loading));
                 LHttpLib.editWithWx(context, memberId, "1", new ProFile().GetWxJson(hashMap),
                         new LHttpResponseHandler() {
                             @Override
@@ -674,14 +675,14 @@ public class AccountSettingActivity extends BaseActivity implements View.OnClick
 
         @Override
         public void onError(Platform platform, int i, Throwable throwable) {
-            closeProgressDialog();
+//            closeProgressDialog();
             Log.e(TAG, "微信登录回调onError ->");
             throwable.printStackTrace();
         }
 
         @Override
         public void onCancel(Platform platform, int i) {
-            closeProgressDialog();
+//            closeProgressDialog();
             Log.e(TAG, "微信登录回调onCancel ->");
         }
     }
